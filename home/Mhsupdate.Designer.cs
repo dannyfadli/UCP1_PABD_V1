@@ -38,8 +38,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtEmail = new System.Windows.Forms.TextBox();
             this.txtNoHP = new System.Windows.Forms.TextBox();
-            this.txtProdi = new System.Windows.Forms.TextBox();
-            this.txtFakultas = new System.Windows.Forms.TextBox();
             this.txtNama = new System.Windows.Forms.TextBox();
             this.txtNim = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -47,6 +45,8 @@
             this.button1 = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.button3 = new System.Windows.Forms.Button();
+            this.comboBoxFakultas = new System.Windows.Forms.ComboBox();
+            this.comboBoxProdi = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -137,20 +137,6 @@
             this.txtNoHP.Size = new System.Drawing.Size(338, 22);
             this.txtNoHP.TabIndex = 40;
             // 
-            // txtProdi
-            // 
-            this.txtProdi.Location = new System.Drawing.Point(230, 222);
-            this.txtProdi.Name = "txtProdi";
-            this.txtProdi.Size = new System.Drawing.Size(338, 22);
-            this.txtProdi.TabIndex = 39;
-            // 
-            // txtFakultas
-            // 
-            this.txtFakultas.Location = new System.Drawing.Point(230, 178);
-            this.txtFakultas.Name = "txtFakultas";
-            this.txtFakultas.Size = new System.Drawing.Size(338, 22);
-            this.txtFakultas.TabIndex = 38;
-            // 
             // txtNama
             // 
             this.txtNama.Location = new System.Drawing.Point(230, 82);
@@ -184,6 +170,7 @@
             this.dataGridView1.Size = new System.Drawing.Size(336, 304);
             this.dataGridView1.TabIndex = 50;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // button1
             // 
@@ -216,11 +203,66 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.DeleteMahasiswa);
             // 
+            // comboBoxFakultas
+            // 
+            this.comboBoxFakultas.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxFakultas.FormattingEnabled = true;
+            this.comboBoxFakultas.Items.AddRange(new object[] {
+            "Teknik",
+            "Ekonomi dan Bisnis",
+            "Hukum",
+            "Ilmu Sosial dan Ilmu Politik",
+            "Agama Islam",
+            "Pendidikan Bahasa",
+            "Kedokteran dan Ilmu Kesehatan",
+            "Pertanian",
+            "Vokasi"});
+            this.comboBoxFakultas.Location = new System.Drawing.Point(230, 176);
+            this.comboBoxFakultas.Name = "comboBoxFakultas";
+            this.comboBoxFakultas.Size = new System.Drawing.Size(338, 24);
+            this.comboBoxFakultas.TabIndex = 55;
+            // 
+            // comboBoxProdi
+            // 
+            this.comboBoxProdi.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxProdi.FormattingEnabled = true;
+            this.comboBoxProdi.Items.AddRange(new object[] {
+            "Teknik Mesin",
+            "Teknik Informatika",
+            "Teknik Sipil",
+            "Teknik Elektro",
+            "Akuntansi",
+            "Manajemen",
+            "Ilmu Hukum",
+            "Ilmu Komunikasi",
+            "Hubungan Internasional",
+            "Ilmu Pemerintahan",
+            "Pendidikan Agama Islam",
+            "Komunikasi dan Penyiaran Islam",
+            "Ekonomi Syariah",
+            "Pendidikan Bahasa Inggris",
+            "Pendidikan Bahasa Arab",
+            "Pendidikan Bahasa Jepang",
+            "Kedokteran",
+            "Kedokteran Gigi",
+            "Ilmu Keperawatan",
+            "Farmasi",
+            "Agroteknologi",
+            "Agribisnis",
+            "Teknologi Rekayasa Otomotif",
+            "Teknik Elektro-medis"});
+            this.comboBoxProdi.Location = new System.Drawing.Point(230, 220);
+            this.comboBoxProdi.Name = "comboBoxProdi";
+            this.comboBoxProdi.Size = new System.Drawing.Size(338, 24);
+            this.comboBoxProdi.TabIndex = 54;
+            // 
             // Mhsupdate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(937, 450);
+            this.Controls.Add(this.comboBoxFakultas);
+            this.Controls.Add(this.comboBoxProdi);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.button1);
@@ -235,8 +277,6 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtEmail);
             this.Controls.Add(this.txtNoHP);
-            this.Controls.Add(this.txtProdi);
-            this.Controls.Add(this.txtFakultas);
             this.Controls.Add(this.txtNama);
             this.Controls.Add(this.txtNim);
             this.Controls.Add(this.label1);
@@ -261,8 +301,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.TextBox txtNoHP;
-        private System.Windows.Forms.TextBox txtProdi;
-        private System.Windows.Forms.TextBox txtFakultas;
         private System.Windows.Forms.TextBox txtNama;
         private System.Windows.Forms.TextBox txtNim;
         private System.Windows.Forms.Label label1;
@@ -270,5 +308,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.ComboBox comboBoxFakultas;
+        private System.Windows.Forms.ComboBox comboBoxProdi;
     }
 }

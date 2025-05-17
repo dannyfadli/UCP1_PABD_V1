@@ -25,7 +25,13 @@ namespace home
             // 
             this.ClientSize = new System.Drawing.Size(814, 453);
             this.Name = "BaseForm";
+            this.Load += new System.EventHandler(this.BaseForm_Load);
             this.ResumeLayout(false);
+
+            }
+
+            private void BaseForm_Load(object sender, EventArgs e)
+            {
 
             }
         }

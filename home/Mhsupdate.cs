@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace home
 {
@@ -23,8 +24,83 @@ namespace home
 
         public void Mhsupdate_Load(object sender, EventArgs e)
         {
+
             LoadData();
+
+            // Hindari dobel isi
+            if (comboBoxFakultas.Items.Count == 0)
+            {
+                comboBoxFakultas.Items.AddRange(new string[] { "Teknik", "Ekonomi dan Bisnis", "Hukum", "Ilmu Sosial dan Ilmu Politik", "Agama Islam", "Pendidikan Bahasa", "Kedokteran dan Ilmu Kesehatan", "Pertanian", "Vokasi" });
+            }
+
+            // Tambah event handler hanya sekali
+            comboBoxFakultas.SelectedIndexChanged -= comboBoxFakultas_SelectedIndexChanged;
+            comboBoxFakultas.SelectedIndexChanged += comboBoxFakultas_SelectedIndexChanged;
+
+            
         }
+
+        private void comboBoxFakultas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            comboBoxProdi.Items.Clear(); // Kosongkan prodi dulu
+
+            switch (comboBoxFakultas.SelectedItem.ToString())
+            {
+                case "Teknik":
+                    comboBoxProdi.Items.AddRange(new string[] {
+                "Teknik Mesin", "Teknik Elektro", "Teknik Sipil", "Teknologi Informasi"
+            });
+                    break;
+                case "Ekonomi dan Bisnis":
+                    comboBoxProdi.Items.AddRange(new string[] {
+                "Manajemen", "Akuntansi", "Ilmu Ekonomi"
+            });
+                    break;
+                case "Hukum":
+                    comboBoxProdi.Items.AddRange(new string[]{
+                "Hukum kelas Reguler", "Hukum kelas Internasional"
+            });
+                    break;
+                case "Ilmu Sosial dan Ilmu Politik":
+                    comboBoxProdi.Items.AddRange(new string[] {
+                "Ilmu Komunikasi", "Hubungan Internasional ", "Ilmu Pemerintahan"
+            });
+                    break;
+                case "Agama Islam":
+                    comboBoxProdi.Items.AddRange(new string[] {
+                "Pendidikan Agama Islam", "Komunikasi dan Penyiaran Islam", "Ekonomi Syariah"
+            });
+                    break;
+                case "Pendidikan Bahasa":
+                    comboBoxProdi.Items.AddRange(new string[] {
+                "Pendidikan Bahasa Inggris", "Pendidikan Bahasa Arab", "Pendidikan Bahasa Jepang"
+            });
+                    break;
+                case "Kedokteran dan Ilmu Kesehatan":
+                    comboBoxProdi.Items.AddRange(new string[] {
+                "Kedokteran", "Kedokteran Gigi", "Ilmu Keperawatan", "Farmasi"
+            });
+                    break;
+                case "Pertanian":
+                    comboBoxProdi.Items.AddRange(new string[] {
+                "Agroteknologi", "Agribisnis"
+            });
+                    break;
+                case "Vokasi":
+                    comboBoxProdi.Items.AddRange(new string[] {
+                "Teknologi Rekayasa Otomotif",
+                "Teknik Elektro-medis"
+
+            });
+                    break;
+                default:
+                    comboBoxProdi.Items.Clear(); // Tidak ditemukan
+                    break;
+            }
+
+            comboBoxProdi.SelectedIndex = 0; // Pilih default pertama
+        }
+
 
         private void UpdateMahasiswa()
         {
@@ -37,8 +113,8 @@ namespace home
                     cmd.Parameters.AddWithValue("@Nim", txtNim.Text);
                     cmd.Parameters.AddWithValue("@Nama", txtNama.Text);
                     cmd.Parameters.AddWithValue("@jenis_kelamin", comboBox1.SelectedItem.ToString());
-                    cmd.Parameters.AddWithValue("@Fakultas", txtFakultas.Text);
-                    cmd.Parameters.AddWithValue("@Prodi", txtProdi.Text);
+                    cmd.Parameters.AddWithValue("@Fakultas", comboBoxFakultas.Text);
+                    cmd.Parameters.AddWithValue("@Prodi", comboBoxProdi.Text);
                     cmd.Parameters.AddWithValue("@no_hp", txtNoHP.Text);
                     cmd.Parameters.AddWithValue("@Email", txtEmail.Text);
 
@@ -108,7 +184,7 @@ namespace home
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (txtNim.Text == "" || txtNama.Text == "" || txtFakultas.Text == "" || txtProdi.Text == "")
+            if (txtNim.Text == "" || txtNama.Text == "")
             {
                 MessageBox.Show("Pilih data yang mau diubah dulu dong~", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -124,8 +200,8 @@ namespace home
                     cmd.Parameters.AddWithValue("@Nim", txtNim.Text);
                     cmd.Parameters.AddWithValue("@Nama", txtNama.Text);
                     cmd.Parameters.AddWithValue("@jenis_kelamin", comboBox1.SelectedItem.ToString());
-                    cmd.Parameters.AddWithValue("@Fakultas", txtFakultas.Text);
-                    cmd.Parameters.AddWithValue("@Prodi", txtProdi.Text);
+                    cmd.Parameters.AddWithValue("@Fakultas", comboBoxFakultas.SelectedItem.ToString());
+                    cmd.Parameters.AddWithValue("@Prodi", comboBoxProdi.SelectedItem.ToString());
                     cmd.Parameters.AddWithValue("@no_hp", txtNoHP.Text);
                     cmd.Parameters.AddWithValue("@Email", txtEmail.Text);
 
@@ -163,13 +239,18 @@ namespace home
                 txtNim.Text = row.Cells["nim"].Value.ToString();
                 txtNama.Text = row.Cells["nama"].Value.ToString();
                 comboBox1.SelectedItem = row.Cells["jenis_kelamin"].Value;
-                txtFakultas.Text = row.Cells["fakultas"].Value.ToString();
-                txtProdi.Text = row.Cells["prodi"].Value.ToString();
+                comboBoxFakultas.SelectedItem = row.Cells["fakultas"].Value.ToString();
+                comboBoxProdi.SelectedItem = row.Cells["prodi"].Value.ToString();
                 txtNoHP.Text = row.Cells["no_hp"].Value.ToString();
                 txtEmail.Text = row.Cells["email"].Value.ToString();
 
                 txtNim.ReadOnly = true; // Set NIM menjadi read-only agar tidak bisa diubah
             }
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

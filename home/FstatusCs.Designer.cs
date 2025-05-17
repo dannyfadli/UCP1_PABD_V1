@@ -33,11 +33,11 @@
             this.label8 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.txtIdPengaduan = new System.Windows.Forms.TextBox();
             this.txtIdRiwayat = new System.Windows.Forms.TextBox();
-            this.cbStatusBaru = new System.Windows.Forms.ComboBox();
+            this.comboBoxStatus = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.comboIdPengaduan = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // button4
@@ -84,13 +84,6 @@
             this.label4.TabIndex = 55;
             this.label4.Text = "id_riwayat*";
             // 
-            // txtIdPengaduan
-            // 
-            this.txtIdPengaduan.Location = new System.Drawing.Point(185, 101);
-            this.txtIdPengaduan.Name = "txtIdPengaduan";
-            this.txtIdPengaduan.Size = new System.Drawing.Size(400, 22);
-            this.txtIdPengaduan.TabIndex = 54;
-            // 
             // txtIdRiwayat
             // 
             this.txtIdRiwayat.Location = new System.Drawing.Point(185, 50);
@@ -98,18 +91,18 @@
             this.txtIdRiwayat.Size = new System.Drawing.Size(400, 22);
             this.txtIdRiwayat.TabIndex = 53;
             // 
-            // cbStatusBaru
+            // comboBoxStatus
             // 
-            this.cbStatusBaru.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbStatusBaru.FormattingEnabled = true;
-            this.cbStatusBaru.Items.AddRange(new object[] {
+            this.comboBoxStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxStatus.FormattingEnabled = true;
+            this.comboBoxStatus.Items.AddRange(new object[] {
             "Masuk",
             "Diproses",
             "Selesai"});
-            this.cbStatusBaru.Location = new System.Drawing.Point(185, 154);
-            this.cbStatusBaru.Name = "cbStatusBaru";
-            this.cbStatusBaru.Size = new System.Drawing.Size(400, 24);
-            this.cbStatusBaru.TabIndex = 60;
+            this.comboBoxStatus.Location = new System.Drawing.Point(185, 154);
+            this.comboBoxStatus.Name = "comboBoxStatus";
+            this.comboBoxStatus.Size = new System.Drawing.Size(400, 24);
+            this.comboBoxStatus.TabIndex = 60;
             // 
             // label1
             // 
@@ -128,25 +121,34 @@
             this.button1.TabIndex = 61;
             this.button1.Text = "Submit";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.btnSubmit_Click);
+            this.button1.Click += new System.EventHandler(this.BtnSubmit_Click);
+            // 
+            // comboIdPengaduan
+            // 
+            this.comboIdPengaduan.FormattingEnabled = true;
+            this.comboIdPengaduan.Location = new System.Drawing.Point(185, 99);
+            this.comboIdPengaduan.Name = "comboIdPengaduan";
+            this.comboIdPengaduan.Size = new System.Drawing.Size(400, 24);
+            this.comboIdPengaduan.TabIndex = 62;
             // 
             // FstatusCs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.comboIdPengaduan);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.cbStatusBaru);
+            this.Controls.Add(this.comboBoxStatus);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.datePickerSelesai);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.txtIdPengaduan);
             this.Controls.Add(this.txtIdRiwayat);
             this.Controls.Add(this.button4);
             this.Name = "FstatusCs";
             this.Text = "FstatusCs";
+            this.Load += new System.EventHandler(this.FstatusCs_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -158,10 +160,10 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox txtIdPengaduan;
         private System.Windows.Forms.TextBox txtIdRiwayat;
-        private System.Windows.Forms.ComboBox cbStatusBaru;
+        private System.Windows.Forms.ComboBox comboBoxStatus;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox comboIdPengaduan;
     }
 }

@@ -47,7 +47,7 @@ namespace home
         private void btnstatusn_Click(object sender, EventArgs e)
         {
             this.Hide(); // Kalau mau sembunyikan Form2, bisa juga dihapus kalau nggak perlu
-            FstatusCs form = new FstatusCs();
+            Form7 form = new Form7();
             form.Show();
         }
 

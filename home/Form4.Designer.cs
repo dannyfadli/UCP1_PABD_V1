@@ -39,12 +39,12 @@
             this.label2 = new System.Windows.Forms.Label();
             this.txtEmail = new System.Windows.Forms.TextBox();
             this.txtNoHP = new System.Windows.Forms.TextBox();
-            this.txtProdi = new System.Windows.Forms.TextBox();
-            this.txtFakultas = new System.Windows.Forms.TextBox();
             this.txtNama = new System.Windows.Forms.TextBox();
             this.txtNIM = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.comboBoxJK = new System.Windows.Forms.ComboBox();
+            this.comboBoxProdi = new System.Windows.Forms.ComboBox();
+            this.comboBoxFakultas = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // button3
@@ -147,27 +147,11 @@
             // 
             // txtNoHP
             // 
-            this.txtNoHP.Location = new System.Drawing.Point(170, 274);
+            this.txtNoHP.Location = new System.Drawing.Point(170, 280);
             this.txtNoHP.Name = "txtNoHP";
             this.txtNoHP.Size = new System.Drawing.Size(400, 22);
             this.txtNoHP.TabIndex = 24;
             this.txtNoHP.TextChanged += new System.EventHandler(this.textBox6_TextChanged);
-            // 
-            // txtProdi
-            // 
-            this.txtProdi.Location = new System.Drawing.Point(170, 224);
-            this.txtProdi.Name = "txtProdi";
-            this.txtProdi.Size = new System.Drawing.Size(400, 22);
-            this.txtProdi.TabIndex = 23;
-            this.txtProdi.TextChanged += new System.EventHandler(this.textBox5_TextChanged);
-            // 
-            // txtFakultas
-            // 
-            this.txtFakultas.Location = new System.Drawing.Point(170, 180);
-            this.txtFakultas.Name = "txtFakultas";
-            this.txtFakultas.Size = new System.Drawing.Size(400, 22);
-            this.txtFakultas.TabIndex = 22;
-            this.txtFakultas.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
             // txtNama
             // 
@@ -207,11 +191,68 @@
             this.comboBoxJK.Size = new System.Drawing.Size(400, 24);
             this.comboBoxJK.TabIndex = 35;
             // 
+            // comboBoxProdi
+            // 
+            this.comboBoxProdi.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxProdi.FormattingEnabled = true;
+            this.comboBoxProdi.Items.AddRange(new object[] {
+            "Teknik Mesin",
+            "Teknik Informatika",
+            "Teknik Sipil",
+            "Teknik Elektro",
+            "Akuntansi",
+            "Manajemen",
+            "Ilmu Hukum",
+            "Ilmu Komunikasi",
+            "Hubungan Internasional",
+            "Ilmu Pemerintahan",
+            "Pendidikan Agama Islam",
+            "Komunikasi dan Penyiaran Islam",
+            "Ekonomi Syariah",
+            "Pendidikan Bahasa Inggris",
+            "Pendidikan Bahasa Arab",
+            "Pendidikan Bahasa Jepang",
+            "Kedokteran",
+            "Kedokteran Gigi",
+            "Ilmu Keperawatan",
+            "Farmasi",
+            "Agroteknologi",
+            "Agribisnis",
+            "Teknologi Rekayasa Otomotif",
+            "Teknik Elektro-medis"});
+            this.comboBoxProdi.Location = new System.Drawing.Point(170, 222);
+            this.comboBoxProdi.Name = "comboBoxProdi";
+            this.comboBoxProdi.Size = new System.Drawing.Size(400, 24);
+            this.comboBoxProdi.TabIndex = 36;
+            this.comboBoxProdi.SelectedIndexChanged += new System.EventHandler(this.comboBoxProdi_SelectedIndexChanged);
+            // 
+            // comboBoxFakultas
+            // 
+            this.comboBoxFakultas.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxFakultas.FormattingEnabled = true;
+            this.comboBoxFakultas.Items.AddRange(new object[] {
+            "Teknik",
+            "Ekonomi dan Bisnis",
+            "Hukum",
+            "Ilmu Sosial dan Ilmu Politik",
+            "Agama Islam",
+            "Pendidikan Bahasa",
+            "Kedokteran dan Ilmu Kesehatan",
+            "Pertanian",
+            "Vokasi"});
+            this.comboBoxFakultas.Location = new System.Drawing.Point(170, 178);
+            this.comboBoxFakultas.Name = "comboBoxFakultas";
+            this.comboBoxFakultas.Size = new System.Drawing.Size(400, 24);
+            this.comboBoxFakultas.TabIndex = 37;
+            this.comboBoxFakultas.SelectedIndexChanged += new System.EventHandler(this.comboBoxFakultas_SelectedIndexChanged_1);
+            // 
             // Form4
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.comboBoxFakultas);
+            this.Controls.Add(this.comboBoxProdi);
             this.Controls.Add(this.comboBoxJK);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -224,8 +265,6 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtEmail);
             this.Controls.Add(this.txtNoHP);
-            this.Controls.Add(this.txtProdi);
-            this.Controls.Add(this.txtFakultas);
             this.Controls.Add(this.txtNama);
             this.Controls.Add(this.txtNIM);
             this.Controls.Add(this.label1);
@@ -250,11 +289,11 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.TextBox txtNoHP;
-        private System.Windows.Forms.TextBox txtProdi;
-        private System.Windows.Forms.TextBox txtFakultas;
         private System.Windows.Forms.TextBox txtNama;
         private System.Windows.Forms.TextBox txtNIM;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBoxJK;
+        private System.Windows.Forms.ComboBox comboBoxProdi;
+        private System.Windows.Forms.ComboBox comboBoxFakultas;
     }
 }

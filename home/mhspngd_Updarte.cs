@@ -139,6 +139,7 @@ namespace home
                 cmbStatus.SelectedItem = row.Cells["status_pengaduan"].Value.ToString();
 
                 txtIdPengaduan.ReadOnly = true;
+                dtpTglPengaduan.Enabled = false;
             }
         }
 
