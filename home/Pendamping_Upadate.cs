@@ -32,15 +32,15 @@ namespace home
             }
         }
 
-        private void UpdatePendamping()
+        /*private void UpdatePendamping()
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string query = @"UPDATE Pendamping SET nama = @nama, no_hp = @no_hp, email = @email 
-                                 WHERE id_pendamping = @id_pendamping";
+  ;
 
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlCommand cmd = new SqlCommand("sp_UpdatePendamping", conn))
                 {
+                    cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@id_pendamping", txtIdPendamping.Text);
                     cmd.Parameters.AddWithValue("@nama", txtNama.Text);
                     cmd.Parameters.AddWithValue("@no_hp", txtNoHp.Text);
@@ -51,7 +51,7 @@ namespace home
                     MessageBox.Show("Data pendamping berhasil diperbarui!");
                 }
             }
-        }
+        }*/
 
         private void DeletePendamping(object sender, EventArgs e)
         {
@@ -67,20 +67,13 @@ namespace home
                         try
                         {
                             conn.Open();
-                            string query = "DELETE FROM Pendamping WHERE id_pendamping = @id_pendamping";
-                            SqlCommand cmd = new SqlCommand(query, conn);
+                            SqlCommand cmd = new SqlCommand("sp_DeletePendamping", conn);
+                            cmd.CommandType = CommandType.StoredProcedure;      
                             cmd.Parameters.AddWithValue("@id_pendamping", id);
-                            int affected = cmd.ExecuteNonQuery();
+                            cmd.ExecuteNonQuery();
+                            MessageBox.Show("Data Pendamping berhasil dihapus!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                            if (affected > 0)
-                            {
-                                MessageBox.Show("Data pendamping berhasil dihapus!");
-                                LoadData();
-                            }
-                            else
-                            {
-                                MessageBox.Show("Data pendamping tidak ditemukan.");
-                            }
+                            LoadData();
                         }
                         catch (Exception ex)
                         {
@@ -107,20 +100,68 @@ namespace home
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (txtIdPendamping.Text == "" || txtNama.Text == "" || txtNoHp.Text == "")
+            if (string.IsNullOrWhiteSpace(txtIdPendamping.Text) || string.IsNullOrWhiteSpace(txtNama.Text))
             {
-                MessageBox.Show("Harap isi semua data pendamping terlebih dahulu!");
+                MessageBox.Show("Pilih data pendamping yang ingin diubah dulu ya~", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            try
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                UpdatePendamping();
-                LoadData();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Kesalahan: " + ex.Message);
+                try
+                {
+                    conn.Open();
+
+                    // Ambil data lama berdasarkan ID
+                    SqlCommand selectCmd = new SqlCommand("sp_GetPendampingById", conn);
+                    selectCmd.CommandType = CommandType.StoredProcedure;
+                    selectCmd.Parameters.AddWithValue("@id_pendamping", txtIdPendamping.Text.Trim());
+                    SqlDataReader reader = selectCmd.ExecuteReader();
+
+                    bool isChanged = false;
+
+                    if (reader.Read())
+                    {
+                        if (!txtNama.Text.Equals(reader["nama"].ToString())) isChanged = true;
+                        else if (!txtNoHp.Text.Equals(reader["no_hp"].ToString())) isChanged = true;
+                        else if (!txtEmail.Text.Equals(reader["email"].ToString())) isChanged = true;
+
+                        reader.Close();
+
+                        if (!isChanged)
+                        {
+                            MessageBox.Show("Tidak ada perubahan data yang dilakukan.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        reader.Close();
+                        MessageBox.Show("Data pendamping tidak ditemukan.", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Lanjut update jika ada perubahan
+                    SqlCommand cmd = new SqlCommand("sp_UpdatePendamping", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@id_pendamping", txtIdPendamping.Text.Trim());
+                    cmd.Parameters.AddWithValue("@nama", txtNama.Text.Trim());
+                    cmd.Parameters.AddWithValue("@no_hp", txtNoHp.Text.Trim());
+                    cmd.Parameters.AddWithValue("@email", txtEmail.Text.Trim());
+
+                    SqlParameter returnValue = new SqlParameter("@ReturnVal", SqlDbType.Int);
+                    returnValue.Direction = ParameterDirection.ReturnValue;
+                    cmd.Parameters.Add(returnValue);
+
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Data Pendamping berhasil di-update, nice~", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadData();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Terjadi kesalahan saat update pendamping:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

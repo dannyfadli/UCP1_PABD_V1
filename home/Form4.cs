@@ -13,7 +13,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace home
 {
-    public partial class Form4 : Form
+    public partial class Form4 : BaseForm
     {
         string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
 
@@ -35,23 +35,31 @@ namespace home
 
    
 
-            string query = "INSERT INTO Mahasiswa (NIM, Nama, jenis_kelamin, Fakultas, Prodi, no_hp, Email) " +
-                           "VALUES (@NIM, @Nama, @JenisKelamin, @Fakultas, @Prodi, @NoHP, @Email)";
 
             try
             {
+
+                if (txtNIM.Text == "" || txtNama.Text == "" || comboBoxJK.SelectedItem == null ||
+                                       comboBoxFakultas.SelectedItem == null || comboBoxProdi.SelectedItem == null ||
+                                                          txtNoHP.Text == "" || txtEmail.Text == "")
+                {
+                    MessageBox.Show("Semua field harus diisi!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    using (SqlCommand cmd = new SqlCommand("sp_RegisterMahasiswa", conn))
                     {
+                        cmd.CommandType = CommandType.StoredProcedure;
                         // Tambahkan parameter untuk mencegah SQL Injection
-                        cmd.Parameters.AddWithValue("@NIM", nim);
-                        cmd.Parameters.AddWithValue("@Nama", nama);
-                        cmd.Parameters.AddWithValue("@JenisKelamin", jenis_kelamin);
-                        cmd.Parameters.AddWithValue("@Fakultas", fakultas);
-                        cmd.Parameters.AddWithValue("@Prodi", prodi);
-                        cmd.Parameters.AddWithValue("@NoHP", no_hp);
-                        cmd.Parameters.AddWithValue("@Email", email);
+                        cmd.Parameters.AddWithValue("@nim", nim);
+                        cmd.Parameters.AddWithValue("@nama", nama);
+                        cmd.Parameters.AddWithValue("@jenis_kelamin", jenis_kelamin);
+                        cmd.Parameters.AddWithValue("@fakultas", fakultas);
+                        cmd.Parameters.AddWithValue("@prodi", prodi);
+                        cmd.Parameters.AddWithValue("@no_hp", no_hp);
+                        cmd.Parameters.AddWithValue("@email", email);
 
                         conn.Open();
                         cmd.ExecuteNonQuery();

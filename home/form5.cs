@@ -60,34 +60,90 @@ namespace home
             }
         }
 
+       /* private void UpdateRiwayatStatus()
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                 using (SqlCommand cmd = new SqlCommand("sp_UpdateRiwayatStatusPengaduan", conn))
+                {
+ 
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@id_riwayat", txtIdRiwayat.Text);
+                    cmd.Parameters.AddWithValue("@id_pengaduan", comboIdPengaduan.Text);
+                    cmd.Parameters.AddWithValue("@status_baru", comboBoxStatus.SelectedItem.ToString());
+                    cmd.Parameters.AddWithValue("@tanggal_perubahan", datePickerSelesai.Value);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Data riwayatstatus berhasil diperbarui!");
+                }
+            }
+        }*/
+
+
+
         private void btnUpdate_Click(object sender, EventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(txtIdRiwayat.Text))
+            {
+                MessageBox.Show("Pilih data riwayat yang ingin diubah dulu ya~", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 try
                 {
                     conn.Open();
-                    string query = "UPDATE RiwayatStatusPengaduan SET id_pengaduan = @id_pengaduan, status_baru = @status, tanggal_perubahan = @tanggal_selesai WHERE id_riwayat = @id";
-                    SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@id", txtIdRiwayat.Text);
-                    cmd.Parameters.AddWithValue("@id_pengaduan", comboIdPengaduan.Text);
-                    cmd.Parameters.AddWithValue("@status", comboBoxStatus.SelectedItem.ToString());
-                    cmd.Parameters.AddWithValue("@tanggal_selesai", datePickerSelesai.Value);
 
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    if (rowsAffected > 0)
+                    // Ambil data lama berdasarkan id_riwayat
+                    SqlCommand selectCmd = new SqlCommand("sp_GetRiwayatStatusById", conn);
+                    selectCmd.CommandType = CommandType.StoredProcedure;
+                    selectCmd.Parameters.AddWithValue("@id_riwayat", txtIdRiwayat.Text.Trim());
+
+                    SqlDataReader reader = selectCmd.ExecuteReader();
+                    bool isChanged = false;
+
+                    if (reader.Read())
                     {
-                        MessageBox.Show("Data updated successfully.");
-                        LoadData();
+                        if (!comboIdPengaduan.Text.Equals(reader["id_pengaduan"].ToString())) isChanged = true;
+                        else if (!comboBoxStatus.SelectedItem.ToString().Equals(reader["status_baru"].ToString())) isChanged = true;
+                        else if (datePickerSelesai.Value != Convert.ToDateTime(reader["tanggal_perubahan"])) isChanged = true;
+
+                        reader.Close();
+
+                        if (!isChanged)
+                        {
+                            MessageBox.Show("Tidak ada perubahan data yang dilakukan.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
                     }
                     else
                     {
-                        MessageBox.Show("No data found to update.");
+                        reader.Close();
+                        MessageBox.Show("Data riwayat status tidak ditemukan.", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
                     }
+
+                    // Lanjut update
+                    SqlCommand cmd = new SqlCommand("sp_UpdateRiwayatStatusPengaduan", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@id_riwayat", txtIdRiwayat.Text.Trim());
+                    cmd.Parameters.AddWithValue("@id_pengaduan", comboIdPengaduan.Text.Trim());
+                    cmd.Parameters.AddWithValue("@status_baru", comboBoxStatus.SelectedItem.ToString());
+                    cmd.Parameters.AddWithValue("@tanggal_perubahan", datePickerSelesai.Value);
+
+                    SqlParameter returnValue = new SqlParameter("@ReturnVal", SqlDbType.Int);
+                    returnValue.Direction = ParameterDirection.ReturnValue;
+                    cmd.Parameters.Add(returnValue);
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Data riwayar status  berhasil di-update, nice~", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadData();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error: " + ex.Message);
+                    MessageBox.Show("Terjadi kesalahan saat update riwayat status:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -106,20 +162,21 @@ namespace home
                         try
                         {
                             conn.Open();
-                            string query = "DELETE FROM RiwayatStatusPengaduan WHERE id_riwayat = @id";
-                            SqlCommand cmd = new SqlCommand(query, conn);
-                            cmd.Parameters.AddWithValue("@id", txtIdRiwayat.Text);
 
-                            int rowsAffected = cmd.ExecuteNonQuery();
-                            if (rowsAffected > 0)
-                            {
-                                MessageBox.Show("Data deleted successfully.");
-                                LoadData();
-                            }
-                            else
-                            {
-                                MessageBox.Show("No data found to delete.");
-                            }
+                            SqlCommand cmd = new SqlCommand("sp_DeleteRiwayatStatusPengaduan", conn);
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@id_riwayat", txtIdRiwayat.Text.Trim());
+
+                            cmd.ExecuteNonQuery();
+
+                            // Kalau tidak ada exception, berarti berhasil
+                            MessageBox.Show("Data berhasil dihapus.");
+                            LoadData();
+                        }
+                        catch (SqlException ex)
+                        {
+                            // Tangkap pesan dari RAISERROR di SQL Server
+                            MessageBox.Show("Gagal menghapus data: " + ex.Message);
                         }
                         catch (Exception ex)
                         {
@@ -135,6 +192,11 @@ namespace home
             this.Hide();
             Form2 form1 = new Form2();
             form1.Show();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

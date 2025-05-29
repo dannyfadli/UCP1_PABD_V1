@@ -102,28 +102,29 @@ namespace home
         }
 
 
-        private void UpdateMahasiswa()
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                string query = "UPDATE Mahasiswa SET Nama = @Nama, jenis_kelamin = @jenis_kelamin, Fakultas = @Fakultas, Prodi = @Prodi, no_hp = @no_hp, Email = @Email WHERE Nim = @Nim";
+        /* private void UpdateMahasiswa()
+         {
+             using (SqlConnection conn = new SqlConnection(connectionString))
+             {
 
-                using (SqlCommand cmd = new SqlCommand(query, conn))
-                {
-                    cmd.Parameters.AddWithValue("@Nim", txtNim.Text);
-                    cmd.Parameters.AddWithValue("@Nama", txtNama.Text);
-                    cmd.Parameters.AddWithValue("@jenis_kelamin", comboBox1.SelectedItem.ToString());
-                    cmd.Parameters.AddWithValue("@Fakultas", comboBoxFakultas.Text);
-                    cmd.Parameters.AddWithValue("@Prodi", comboBoxProdi.Text);
-                    cmd.Parameters.AddWithValue("@no_hp", txtNoHP.Text);
-                    cmd.Parameters.AddWithValue("@Email", txtEmail.Text);
 
-                    conn.Open();
-                    cmd.ExecuteNonQuery();
-                    MessageBox.Show("Data berhasil diperbarui!");
-                }
-            }
-        }
+                 using (SqlCommand cmd = new SqlCommand("sp_UpdateMahasiswa", conn))
+                 {
+                     cmd.CommandType = CommandType.StoredProcedure;
+                     cmd.Parameters.AddWithValue("@nim", txtNim.Text);
+                     cmd.Parameters.AddWithValue("@Nama", txtNama.Text);
+                     cmd.Parameters.AddWithValue("@jenis_kelamin", comboBox1.SelectedItem.ToString());
+                     cmd.Parameters.AddWithValue("@Fakultas", comboBoxFakultas.Text);
+                     cmd.Parameters.AddWithValue("@Prodi", comboBoxProdi.Text);
+                     cmd.Parameters.AddWithValue("@no_hp", txtNoHP.Text);
+                     cmd.Parameters.AddWithValue("@Email", txtEmail.Text);
+
+                     conn.Open();
+                     cmd.ExecuteNonQuery();
+                     MessageBox.Show("Data berhasil diperbarui!");
+                 }
+             }
+         }*/
 
 
         private void DeleteMahasiswa(object sender, EventArgs e)
@@ -132,7 +133,12 @@ namespace home
             {
                 string nim = dataGridView1.SelectedRows[0].Cells["nim"].Value.ToString();
 
-                DialogResult result = MessageBox.Show("Yakin ingin menghapus pelanggan ini?", "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                DialogResult result = MessageBox.Show(
+                    $"Yakin ingin menghapus mahasiswa dengan NIM: {nim}?",
+                    "Konfirmasi",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                );
 
                 if (result == DialogResult.Yes)
                 {
@@ -141,20 +147,14 @@ namespace home
                         try
                         {
                             conn.Open();
-                            string query = "DELETE FROM Mahasiswa WHERE nim = @nim";
-                            SqlCommand cmd = new SqlCommand(query, conn);
-                            cmd.Parameters.AddWithValue("@nim", nim);
-                            int affected = cmd.ExecuteNonQuery();
 
-                            if (affected > 0)
-                            {
-                                MessageBox.Show("Data Mahasiswa berhasil dihapus!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                LoadData();
-                            }
-                            else
-                            {
-                                MessageBox.Show("Data Mahasiswa tidak ditemukan!", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                            }
+                            SqlCommand cmd = new SqlCommand("sp_DeleteMahasiswa", conn);
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@nim", nim);
+                            cmd.ExecuteNonQuery();
+                            MessageBox.Show("Data Mahasiswa berhasil dihapus!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                            LoadData();
                         }
                         catch (Exception ex)
                         {
@@ -195,27 +195,53 @@ namespace home
                 try
                 {
                     conn.Open();
-                    string query = "UPDATE Mahasiswa SET Nama = @Nama, jenis_kelamin = @jenis_kelamin, Fakultas = @Fakultas, Prodi = @Prodi, no_hp = @no_hp, Email = @Email WHERE Nim = @Nim";
-                    SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@Nim", txtNim.Text);
-                    cmd.Parameters.AddWithValue("@Nama", txtNama.Text);
-                    cmd.Parameters.AddWithValue("@jenis_kelamin", comboBox1.SelectedItem.ToString());
-                    cmd.Parameters.AddWithValue("@Fakultas", comboBoxFakultas.SelectedItem.ToString());
-                    cmd.Parameters.AddWithValue("@Prodi", comboBoxProdi.SelectedItem.ToString());
-                    cmd.Parameters.AddWithValue("@no_hp", txtNoHP.Text);
-                    cmd.Parameters.AddWithValue("@Email", txtEmail.Text);
 
-                    int rowsAffected = cmd.ExecuteNonQuery();
+                    // Cek apakah ada perubahan data
+                    SqlCommand selectCmd = new SqlCommand("sp_GetMahasiswaByNIM", conn);
+                    selectCmd.CommandType = CommandType.StoredProcedure;
+                    selectCmd.Parameters.AddWithValue("@nim", txtNim.Text);
+                    SqlDataReader reader = selectCmd.ExecuteReader();
 
-                    if (rowsAffected > 0)
+                    bool isChanged = false;
+
+                    if (reader.Read())
                     {
-                        MessageBox.Show("Data maintenance berhasil di-update, nice~", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        LoadData();
+                        if (!txtNama.Text.Equals(reader["nama"].ToString())) isChanged = true;
+                        else if (!comboBox1.SelectedItem.ToString().Equals(reader["jenis_kelamin"].ToString())) isChanged = true;
+                        else if (!comboBoxFakultas.SelectedItem.ToString().Equals(reader["fakultas"].ToString())) isChanged = true;
+                        else if (!comboBoxProdi.SelectedItem.ToString().Equals(reader["prodi"].ToString())) isChanged = true;
+                        else if (!txtNoHP.Text.Equals(reader["no_hp"].ToString())) isChanged = true;
+                        else if (!txtEmail.Text.Equals(reader["email"].ToString())) isChanged = true;
+
+                        reader.Close();
+
+                        if (!isChanged)
+                        {
+                            MessageBox.Show("Tidak ada perubahan data yang dilakukan.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
                     }
                     else
                     {
-                        MessageBox.Show("Gagal update, data ga ketemu atau belum diubah!", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        reader.Close();
+                        MessageBox.Show("Data mahasiswa tidak ditemukan.", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
                     }
+
+                    // Jika ada perubahan, lanjut update
+                    SqlCommand cmd = new SqlCommand("sp_UpdateMahasiswa", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@nim", txtNim.Text.Trim());
+                    cmd.Parameters.AddWithValue("@nama", txtNama.Text.Trim());
+                    cmd.Parameters.AddWithValue("@jenis_kelamin", comboBox1.SelectedItem?.ToString() ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@fakultas", comboBoxFakultas.SelectedItem?.ToString() ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@prodi", comboBoxProdi.SelectedItem?.ToString() ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@no_hp", string.IsNullOrWhiteSpace(txtNoHP.Text) ? (object)DBNull.Value : txtNoHP.Text.Trim());
+                    cmd.Parameters.AddWithValue("@email", string.IsNullOrWhiteSpace(txtEmail.Text) ? (object)DBNull.Value : txtEmail.Text.Trim());
+                    cmd.ExecuteNonQuery();
+                    MessageBox.Show("Data mahasiswa berhasil di-update, nice~", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadData();
+
                 }
                 catch (Exception ex)
                 {

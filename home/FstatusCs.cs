@@ -22,50 +22,41 @@ namespace home
 
         private void BtnSubmit_Click(object sender, EventArgs e)
         {
+            if (comboIdPengaduan.SelectedItem == null || comboBoxStatus.SelectedItem == null || string.IsNullOrWhiteSpace(txtIdRiwayat.Text))
+            {
+                MessageBox.Show("Pastikan semua field telah diisi.", "Validasi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             string idPengaduan = ((KeyValuePair<string, string>)comboIdPengaduan.SelectedItem).Key;
             DateTime tanggalPerubahan = datePickerSelesai.Value;
-            string statusPengaduan = comboBoxStatus.SelectedItem?.ToString();
+            string statusPengaduan = comboBoxStatus.SelectedItem.ToString();
             string idRiwayat = txtIdRiwayat.Text.Trim();
-
 
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                        try
-                        {
                     conn.Open();
-            string query = "INSERT INTO RiwayatStatusPengaduan (id_riwayat, id_pengaduan, status_baru, tanggal_perubahan) VALUES (@IdRiwayat, @IdPengaduan, @Status_baru, @TanggalPerubahan)";
-                            using (SqlCommand cmd = new SqlCommand(query, conn))
-                            {
-                                cmd.Parameters.AddWithValue("@IdPengaduan", idPengaduan);
-                                cmd.Parameters.AddWithValue("@IdRiwayat", idRiwayat);
-                                cmd.Parameters.AddWithValue("@Status_baru", statusPengaduan);
-                                cmd.Parameters.AddWithValue("@TanggalPerubahan", tanggalPerubahan);
-                            int rowsAffected = cmd.ExecuteNonQuery();
-                            if (rowsAffected > 0)
-                            {
-                                MessageBox.Show("Data berhasil disimpan.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            }
-                            else
-                            {
-                                MessageBox.Show("Gagal menyimpan data.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                            }
 
-
-                        }
-                        catch (Exception exTrans)
-                        {
-                            MessageBox.Show("Gagal menyimpan data: " + exTrans.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                    using (SqlCommand cmd = new SqlCommand("sp_InsertRiwayatStatus", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@id_pengaduan", idPengaduan);
+                        cmd.Parameters.AddWithValue("@id_riwayat", idRiwayat);
+                        cmd.Parameters.AddWithValue("@status_baru", statusPengaduan);
+                        cmd.Parameters.AddWithValue("@tanggal_perubahan", tanggalPerubahan);
+                        cmd.ExecuteNonQuery();
+                        MessageBox.Show("Data berhasil disimpan.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Terjadi kesalahan koneksi: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Terjadi kesalahan: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
         private void btnKembali_Click(object sender, EventArgs e)
         {
@@ -77,15 +68,15 @@ namespace home
         private void FstatusCs_Load(object sender, EventArgs e)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
-            {
+            { 
+               
                 try
                 {
                         conn.Open();
-                    string query = "SELECT id_pengaduan, nim FROM Pengaduan";
+                    string query = "select id_pengaduan, nim from Pengaduan";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-
                         Dictionary<string, string> idPengaduanList = new Dictionary<string, string>();
                         while (reader.Read())
                         {

@@ -90,9 +90,10 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(343, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(248, 16);
+            this.label1.Size = new System.Drawing.Size(260, 16);
             this.label1.TabIndex = 83;
-            this.label1.Text = "=========UpdatePengaduan=========";
+            this.label1.Text = "=========UpdateSatusRiwayat=========";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // comboBoxStatus
             // 

@@ -28,6 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.txtNim = new System.Windows.Forms.TextBox();
             this.cmbStatus = new System.Windows.Forms.ComboBox();
             this.dtpTglSelesai = new System.Windows.Forms.DateTimePicker();
             this.dtpTglPengaduan = new System.Windows.Forms.DateTimePicker();
@@ -45,10 +47,25 @@
             this.txtDeskripsi = new System.Windows.Forms.TextBox();
             this.txtIdPengaduan = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.txtNim = new System.Windows.Forms.TextBox();
-            this.btnDelete = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
+            // 
+            // btnDelete
+            // 
+            this.btnDelete.Location = new System.Drawing.Point(413, 389);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(102, 44);
+            this.btnDelete.TabIndex = 82;
+            this.btnDelete.Text = "Delete";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.DeletePengaduan);
+            // 
+            // txtNim
+            // 
+            this.txtNim.Location = new System.Drawing.Point(177, 78);
+            this.txtNim.Name = "txtNim";
+            this.txtNim.Size = new System.Drawing.Size(338, 22);
+            this.txtNim.TabIndex = 81;
             // 
             // cmbStatus
             // 
@@ -160,6 +177,7 @@
             this.dataGridView1.Size = new System.Drawing.Size(423, 304);
             this.dataGridView1.TabIndex = 68;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // button2
             // 
@@ -184,6 +202,7 @@
             this.txtDeskripsi.Name = "txtDeskripsi";
             this.txtDeskripsi.Size = new System.Drawing.Size(338, 22);
             this.txtDeskripsi.TabIndex = 55;
+            this.txtDeskripsi.TextChanged += new System.EventHandler(this.txtDeskripsi_TextChanged);
             // 
             // txtIdPengaduan
             // 
@@ -200,23 +219,7 @@
             this.label1.Size = new System.Drawing.Size(248, 16);
             this.label1.TabIndex = 52;
             this.label1.Text = "=========UpdatePengaduan=========";
-            // 
-            // txtNim
-            // 
-            this.txtNim.Location = new System.Drawing.Point(177, 78);
-            this.txtNim.Name = "txtNim";
-            this.txtNim.Size = new System.Drawing.Size(338, 22);
-            this.txtNim.TabIndex = 81;
-            // 
-            // btnDelete
-            // 
-            this.btnDelete.Location = new System.Drawing.Point(413, 389);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(102, 44);
-            this.btnDelete.TabIndex = 82;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.DeletePengaduan);
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // mhspngd_Updarte
             // 

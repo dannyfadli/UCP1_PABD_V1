@@ -28,19 +28,17 @@ namespace home
             string noHp = txtNoHP.Text;
             string email = txtEmail.Text;
 
-            string query = "INSERT INTO Pendamping (id_pendamping, nama, no_hp, email) " +
-                           "VALUES (@IdPendamping, @Nama, @NoHp, @Email)";
-
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    using (SqlCommand cmd = new SqlCommand("sp_InsertPendamping", conn))
                     {
-                        cmd.Parameters.AddWithValue("@IdPendamping", idPendamping);
-                        cmd.Parameters.AddWithValue("@Nama", nama);
-                        cmd.Parameters.AddWithValue("@NoHp", noHp);
-                        cmd.Parameters.AddWithValue("@Email", email);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@id_pendamping", idPendamping);
+                        cmd.Parameters.AddWithValue("@nama", nama);
+                        cmd.Parameters.AddWithValue("@no_hp", noHp);
+                        cmd.Parameters.AddWithValue("@email", email);
 
                         conn.Open();
                         cmd.ExecuteNonQuery();

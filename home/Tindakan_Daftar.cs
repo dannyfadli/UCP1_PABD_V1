@@ -65,8 +65,8 @@ namespace home
                 try
                 {
                     conn.Open();
-                    string query = "SELECT id_pendamping, nama FROM Pendamping";
 
+                    string query = "SELECT id_pendamping, nama FROM Pendamping";
                     using (SqlCommand cmd = new SqlCommand(query, conn))
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
@@ -101,26 +101,25 @@ namespace home
             DateTime tanggalTindakan = datePickerTindakan.Value;
             string statusTindakan = comboStatusTindakan.SelectedItem?.ToString();
 
-            string query = "INSERT INTO Tindakan (id_tindakan, id_pengaduan, id_pendamping, deskripsi, tanggal_tindakan, status_tindakan) " +
-                           "VALUES (@IdTindakan, @IdPengaduan, @IdPendamping, @Deskripsi, @TanggalTindakan, @StatusTindakan)";
-
+            
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    using (SqlCommand cmd = new SqlCommand("sp_AddTindakan", conn))
                     {
-                        cmd.Parameters.AddWithValue("@IdTindakan", idTindakan);
-                        cmd.Parameters.AddWithValue("@IdPengaduan", idPengaduan);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@Id_tindakan", idTindakan);
+                        cmd.Parameters.AddWithValue("@Id_Pengaduan", idPengaduan);
 
                         if (!string.IsNullOrEmpty(idPendamping))
-                            cmd.Parameters.AddWithValue("@IdPendamping", idPendamping);
+                            cmd.Parameters.AddWithValue("@Id_Pendamping", idPendamping);
                         else
-                            cmd.Parameters.AddWithValue("@IdPendamping", DBNull.Value);
+                            cmd.Parameters.AddWithValue("@Id_Pendamping", DBNull.Value);
 
                         cmd.Parameters.AddWithValue("@Deskripsi", deskripsi);
-                        cmd.Parameters.AddWithValue("@TanggalTindakan", tanggalTindakan);
-                        cmd.Parameters.AddWithValue("@StatusTindakan", statusTindakan);
+                        cmd.Parameters.AddWithValue("@Tanggal_Tindakan", tanggalTindakan);
+                        cmd.Parameters.AddWithValue("@Status_Tindakan", statusTindakan);
 
                         conn.Open();
                         cmd.ExecuteNonQuery();

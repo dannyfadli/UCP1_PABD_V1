@@ -61,7 +61,7 @@
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(552, 49);
+            this.dataGridView1.Location = new System.Drawing.Point(543, 49);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
@@ -97,10 +97,11 @@
             // 
             // dtpTanggalTindakan
             // 
-            this.dtpTanggalTindakan.Location = new System.Drawing.Point(168, 243);
+            this.dtpTanggalTindakan.Location = new System.Drawing.Point(167, 237);
             this.dtpTanggalTindakan.Name = "dtpTanggalTindakan";
             this.dtpTanggalTindakan.Size = new System.Drawing.Size(353, 22);
             this.dtpTanggalTindakan.TabIndex = 96;
+            this.dtpTanggalTindakan.ValueChanged += new System.EventHandler(this.dtpTanggalTindakan_ValueChanged);
             // 
             // label7
             // 

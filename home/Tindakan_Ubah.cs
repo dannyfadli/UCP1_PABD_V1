@@ -28,20 +28,14 @@ namespace home
             cmbStatusTindakan.SelectedItem = "Direncanakan";
         }
 
-        private void UpdateTindakan()
+       /* private void UpdateTindakan()
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                string query = @"UPDATE Tindakan SET 
-                                id_pengaduan = @id_pengaduan,
-                                id_pendamping = @id_pendamping,
-                                deskripsi = @deskripsi,
-                                tanggal_tindakan = @tanggal_tindakan,
-                                status_tindakan = @status_tindakan 
-                             WHERE id_tindakan = @id_tindakan";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                
+                using (SqlCommand cmd = new SqlCommand("sp_UpdateTindakan", conn))
                 {
+                    cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@id_tindakan", txtIdTindakan.Text);
                     cmd.Parameters.AddWithValue("@id_pengaduan", txtIdPengaduan.Text);
                     cmd.Parameters.AddWithValue("@id_pendamping", string.IsNullOrWhiteSpace(txtIdPendamping.Text) ? DBNull.Value : (object)txtIdPendamping.Text);
@@ -54,7 +48,7 @@ namespace home
                     MessageBox.Show("Data tindakan berhasil diperbarui!");
                 }
             }
-        }
+        }*/
 
         private void DeleteTindakan(object sender, EventArgs e)
         {
@@ -70,19 +64,22 @@ namespace home
                         try
                         {
                             conn.Open();
-                            string query = "DELETE FROM Tindakan WHERE id_tindakan = @id_tindakan";
-                            SqlCommand cmd = new SqlCommand(query, conn);
-                            cmd.Parameters.AddWithValue("@id_tindakan", id);
-                            int affected = cmd.ExecuteNonQuery();
+                            using (SqlCommand cmd = new SqlCommand("sp_DeleteTindakan", conn))
+                            {
+                                cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Parameters.AddWithValue("@id_tindakan", id);
+                                int affected = cmd.ExecuteNonQuery();
 
-                            if (affected > 0)
-                            {
-                                MessageBox.Show("Data tindakan berhasil dihapus!");
-                                LoadData();
-                            }
-                            else
-                            {
-                                MessageBox.Show("Data tindakan tidak ditemukan.");
+                                if (affected > 0)
+                                {
+                                    MessageBox.Show("Data tindakan berhasil dihapus!");
+                                    LoadData();
+                                }
+                                else
+                                {
+                                    MessageBox.Show("Data tindakan tidak ditemukan.");
+                                }
+                                
                             }
                         }
                         catch (Exception ex)
@@ -108,20 +105,74 @@ namespace home
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (txtIdTindakan.Text == "" || txtIdPengaduan.Text == "" || txtDeskripsi.Text == "")
+            if (string.IsNullOrWhiteSpace(txtIdTindakan.Text) || string.IsNullOrWhiteSpace(txtIdPengaduan.Text))
             {
-                MessageBox.Show("Harap isi semua data tindakan terlebih dahulu!");
+                MessageBox.Show("Pilih data tindakan yang ingin diubah dulu ya~", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            try
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                UpdateTindakan();
-                LoadData();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Kesalahan: " + ex.Message);
+                try
+                {
+                    conn.Open();
+
+                    // Ambil data lama
+                    SqlCommand selectCmd = new SqlCommand("sp_GetTindakanById", conn);
+                    selectCmd.CommandType = CommandType.StoredProcedure;
+                    selectCmd.Parameters.AddWithValue("@id_tindakan", txtIdTindakan.Text.Trim());
+                    SqlDataReader reader = selectCmd.ExecuteReader();
+
+                    bool isChanged = false;
+
+                    if (reader.Read())
+                    {
+                        if (!txtIdPengaduan.Text.Equals(reader["id_pengaduan"].ToString())) isChanged = true;
+                        else if (!txtIdPendamping.Text.Equals(reader["id_pendamping"] == DBNull.Value ? "" : reader["id_pendamping"].ToString())) isChanged = true;
+                        else if (!txtDeskripsi.Text.Equals(reader["deskripsi"].ToString())) isChanged = true;
+                        else if (dtpTanggalTindakan.Value.Date != Convert.ToDateTime(reader["tanggal_tindakan"]).Date) isChanged = true;
+                        else if (!cmbStatusTindakan.SelectedItem.ToString().Equals(reader["status_tindakan"].ToString())) isChanged = true;
+
+                        reader.Close();
+
+                        if (!isChanged)
+                        {
+                            MessageBox.Show("Tidak ada perubahan data yang dilakukan.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        reader.Close();
+                        MessageBox.Show("Data tindakan tidak ditemukan.", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Lanjut update jika ada perubahan
+                    SqlCommand cmd = new SqlCommand("sp_UpdateTindakan", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@id_tindakan", txtIdTindakan.Text.Trim());
+                    cmd.Parameters.AddWithValue("@id_pengaduan", txtIdPengaduan.Text.Trim());
+                    cmd.Parameters.AddWithValue("@id_pendamping", string.IsNullOrWhiteSpace(txtIdPendamping.Text) ? DBNull.Value : (object)txtIdPendamping.Text.Trim());
+                    cmd.Parameters.AddWithValue("@deskripsi", txtDeskripsi.Text.Trim());
+                    cmd.Parameters.AddWithValue("@tanggal_tindakan", dtpTanggalTindakan.Value.Date);
+                    cmd.Parameters.AddWithValue("@status_tindakan", cmbStatusTindakan.SelectedItem?.ToString());
+
+                    SqlParameter returnValue = new SqlParameter("@ReturnVal", SqlDbType.Int);
+                    returnValue.Direction = ParameterDirection.ReturnValue;
+                    cmd.Parameters.Add(returnValue);
+
+                    cmd.ExecuteNonQuery();
+
+                    int result = (int)returnValue.Value;
+                    MessageBox.Show("Data Tindakan berhasil di-update, nice~", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadData();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Terjadi kesalahan saat update tindakan:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -148,6 +199,11 @@ namespace home
             this.Hide();
             Tindakan form = new Tindakan();
             form.Show();
+        }
+
+        private void dtpTanggalTindakan_ValueChanged(object sender, EventArgs e)
+        {
+
         }
     }
 

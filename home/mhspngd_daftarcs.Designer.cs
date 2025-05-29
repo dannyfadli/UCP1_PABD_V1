@@ -194,6 +194,7 @@
             this.comboNIM.Name = "comboNIM";
             this.comboNIM.Size = new System.Drawing.Size(400, 24);
             this.comboNIM.TabIndex = 55;
+            this.comboNIM.SelectedIndexChanged += new System.EventHandler(this.comboNIM_SelectedIndexChanged);
             // 
             // mhspngd_daftarcs
             // 

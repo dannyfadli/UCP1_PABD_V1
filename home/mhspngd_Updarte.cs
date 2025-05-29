@@ -31,30 +31,48 @@ namespace home
             dtpTglSelesai.ShowCheckBox = true;
         }
 
-        private void UpdatePengaduan()
+        /*private void UpdatePengaduan()
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                string query = @"UPDATE Pengaduan SET nim = @nim, deskripsi = @deskripsi, bukti = @bukti, 
-                             tanggal_pengaduan = @tanggal_pengaduan, tanggal_selesai = @tanggal_selesai, 
-                             status_pengaduan = @status_pengaduan WHERE id_pengaduan = @id_pengaduan";
-
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                using (SqlCommand cmd = new SqlCommand("sp_UpdatePengaduan", conn))
                 {
-                    cmd.Parameters.AddWithValue("@id_pengaduan", txtIdPengaduan.Text);
-                    cmd.Parameters.AddWithValue("@nim", txtNim.Text);
-                    cmd.Parameters.AddWithValue("@deskripsi", txtDeskripsi.Text);
-                    cmd.Parameters.AddWithValue("@bukti", txtBukti.Text);
-                    cmd.Parameters.AddWithValue("@tanggal_pengaduan", dtpTglPengaduan.Value);
-                    cmd.Parameters.AddWithValue("@tanggal_selesai", dtpTglSelesai.Value);
-                    cmd.Parameters.AddWithValue("@status_pengaduan", cmbStatus.SelectedItem.ToString());
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@id_pengaduan", txtIdPengaduan.Text.Trim());
+                    cmd.Parameters.AddWithValue("@nim", txtNim.Text.Trim());
+                    cmd.Parameters.AddWithValue("@deskripsi", txtDeskripsi.Text.Trim());
+                    cmd.Parameters.AddWithValue("@bukti", txtBukti.Text.Trim());
+                    cmd.Parameters.AddWithValue("@tanggal_pengaduan", dtpTglPengaduan.Value.Date);
+                    cmd.Parameters.AddWithValue("@tanggal_selesai", dtpTglSelesai.Value.Date);
+                    cmd.Parameters.AddWithValue("@status_pengaduan", cmbStatus.SelectedItem?.ToString());
+
+                    // Parameter untuk menangkap RETURN VALUE dari stored procedure
+                    SqlParameter returnValue = new SqlParameter("@ReturnVal", SqlDbType.Int);
+                    returnValue.Direction = ParameterDirection.ReturnValue;
+                    cmd.Parameters.Add(returnValue);
 
                     conn.Open();
                     cmd.ExecuteNonQuery();
-                    MessageBox.Show("Data pengaduan berhasil diperbarui!");
+
+                    int result = (int)returnValue.Value;
+
+                    if (result > 0)
+                    {
+                        MessageBox.Show("Data pengaduan berhasil diperbarui!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Tidak ada perubahan data. Mungkin data yang diinput sama seperti sebelumnya.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
                 }
             }
-        }
+            catch (SqlException ex)
+            {
+                MessageBox.Show("Terjadi kesalahan saat update pengaduan:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }*/
 
         private void DeletePengaduan(object sender, EventArgs e)
         {
@@ -70,20 +88,20 @@ namespace home
                         try
                         {
                             conn.Open();
-                            string query = "DELETE FROM Pengaduan WHERE id_pengaduan = @id_pengaduan";
-                            SqlCommand cmd = new SqlCommand(query, conn);
+                            SqlCommand cmd = new SqlCommand("sp_DeletePengaduan", conn);
+                            cmd.CommandType = CommandType.StoredProcedure;
                             cmd.Parameters.AddWithValue("@id_pengaduan", id);
-                            int affected = cmd.ExecuteNonQuery();
 
-                            if (affected > 0)
-                            {
-                                MessageBox.Show("Data pengaduan berhasil dihapus!");
-                                LoadData();
-                            }
-                            else
-                            {
-                                MessageBox.Show("Data pengaduan tidak ditemukan.");
-                            }
+                            // Eksekusi langsung tanpa cek rowsAffected
+                            cmd.ExecuteNonQuery();
+
+                            // Kalau tidak ada exception, berarti sukses
+                            MessageBox.Show("Data pengaduan berhasil dihapus!");
+                            LoadData();
+                        }
+                        catch (SqlException ex)
+                        {
+                            MessageBox.Show("Gagal menghapus data pengaduan: " + ex.Message);
                         }
                         catch (Exception ex)
                         {
@@ -108,20 +126,84 @@ namespace home
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (txtIdPengaduan.Text == "" || txtNim.Text == "" || txtDeskripsi.Text == "")
+            if (string.IsNullOrWhiteSpace(txtIdPengaduan.Text) || string.IsNullOrWhiteSpace(txtNim.Text))
             {
-                MessageBox.Show("Harap isi semua data pengaduan terlebih dahulu!");
+                MessageBox.Show("Pilih data pengaduan yang mau diubah dulu ya~", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            try
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                UpdatePengaduan();
-                LoadData();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Kesalahan: " + ex.Message);
+                try
+                {
+                    conn.Open();
+
+                    // Ambil data lama untuk cek perubahan
+                    SqlCommand selectCmd = new SqlCommand("sp_GetPengaduanById", conn);
+                    selectCmd.CommandType = CommandType.StoredProcedure;
+                    selectCmd.Parameters.AddWithValue("@id_pengaduan", txtIdPengaduan.Text.Trim());
+                    SqlDataReader reader = selectCmd.ExecuteReader();
+
+                    bool isChanged = false;
+
+                    if (reader.Read())
+                    {
+                        if (!txtNim.Text.Equals(reader["nim"].ToString())) isChanged = true;
+                        else if (!txtDeskripsi.Text.Equals(reader["deskripsi"].ToString())) isChanged = true;
+                        else if (!txtBukti.Text.Equals(reader["bukti"].ToString())) isChanged = true;
+                        else if (dtpTglPengaduan.Value.Date != Convert.ToDateTime(reader["tanggal_pengaduan"]).Date) isChanged = true;
+                        else if (dtpTglSelesai.Value.Date != Convert.ToDateTime(reader["tanggal_selesai"]).Date) isChanged = true;
+                        else if (!cmbStatus.SelectedItem.ToString().Equals(reader["status_pengaduan"].ToString())) isChanged = true;
+
+                        reader.Close();
+
+                        if (!isChanged)
+                        {
+                            MessageBox.Show("Tidak ada perubahan data yang dilakukan.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        reader.Close();
+                        MessageBox.Show("Data pengaduan tidak ditemukan.", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    // Jika ada perubahan, lakukan update
+                    SqlCommand cmd = new SqlCommand("sp_UpdatePengaduan", conn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@id_pengaduan", txtIdPengaduan.Text.Trim());
+                    cmd.Parameters.AddWithValue("@nim", txtNim.Text.Trim());
+                    cmd.Parameters.AddWithValue("@deskripsi", txtDeskripsi.Text.Trim());
+                    cmd.Parameters.AddWithValue("@bukti", txtBukti.Text.Trim());
+                    cmd.Parameters.AddWithValue("@tanggal_pengaduan", dtpTglPengaduan.Value.Date);
+                    cmd.Parameters.AddWithValue("@tanggal_selesai", dtpTglSelesai.Value.Date);
+                    cmd.Parameters.AddWithValue("@status_pengaduan", cmbStatus.SelectedItem?.ToString());
+
+                    SqlParameter returnValue = new SqlParameter("@ReturnVal", SqlDbType.Int);
+                    returnValue.Direction = ParameterDirection.ReturnValue;
+                    cmd.Parameters.Add(returnValue);
+
+                    cmd.ExecuteNonQuery();
+
+                    int result = (int)returnValue.Value;
+
+                    if (result > 0)
+                    {
+                        MessageBox.Show("Data pengaduan berhasil diperbarui!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadData(); // Pastikan kamu punya fungsi LoadData()
+                    }
+                    else
+                    {
+                        MessageBox.Show("Tidak ada perubahan data. Mungkin data yang diinput sama seperti sebelumnya.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Terjadi kesalahan saat update pengaduan:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -146,8 +228,23 @@ namespace home
         private void btnKembali_Click(object sender, EventArgs e)
         {
             this.Hide();
-            Form3 form = new Form3();
+            mhspngd form = new mhspngd();
             form.Show();
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void txtDeskripsi_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

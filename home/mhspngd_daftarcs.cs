@@ -42,28 +42,25 @@ namespace home
             DateTime tanggalPengaduan = datePickerPengaduan.Value;
             DateTime? tanggalSelesai = datePickerSelesai.Checked ? datePickerSelesai.Value : (DateTime?)null;
             string statusPengaduan = comboBoxStatus.SelectedItem?.ToString() ?? "Masuk";
-
-            string query = "INSERT INTO Pengaduan (id_pengaduan, nim, deskripsi, bukti, tanggal_pengaduan, tanggal_selesai, status_pengaduan) " +
-                           "VALUES (@IdPengaduan, @NIM, @Deskripsi, @Bukti, @TanggalPengaduan, @TanggalSelesai, @StatusPengaduan)";
-
             try
             {
                 using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    using (SqlCommand cmd = new SqlCommand("sp_CreatePengaduan", conn))
                     {
-                        cmd.Parameters.AddWithValue("@IdPengaduan", idPengaduan);
-                        cmd.Parameters.AddWithValue("@NIM", nim);
-                        cmd.Parameters.AddWithValue("@Deskripsi", deskripsi);
-                        cmd.Parameters.AddWithValue("@Bukti", bukti);
-                        cmd.Parameters.AddWithValue("@TanggalPengaduan", tanggalPengaduan);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@id_pengaduan", idPengaduan);
+                        cmd.Parameters.AddWithValue("@nim", nim);
+                        cmd.Parameters.AddWithValue("@deskripsi", deskripsi);
+                        cmd.Parameters.AddWithValue("@bukti", bukti);
+                        cmd.Parameters.AddWithValue("@tanggal_pengaduan", tanggalPengaduan);
 
                         if (tanggalSelesai.HasValue)
-                            cmd.Parameters.AddWithValue("@TanggalSelesai", tanggalSelesai.Value);
+                            cmd.Parameters.AddWithValue("@tanggal_selesai", tanggalSelesai.Value);
                         else
-                            cmd.Parameters.AddWithValue("@TanggalSelesai", DBNull.Value);
+                            cmd.Parameters.AddWithValue("@tanggal_selesai", DBNull.Value);
 
-                        cmd.Parameters.AddWithValue("@StatusPengaduan", statusPengaduan);
+                        cmd.Parameters.AddWithValue("@status_pengaduan", statusPengaduan);
 
                         conn.Open();
                         cmd.ExecuteNonQuery();
@@ -116,5 +113,9 @@ namespace home
             form.Show();
         }
 
+        private void comboNIM_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
