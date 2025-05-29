@@ -10,12 +10,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.IO;
+using System.Runtime.Caching;
+using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
+
 
 namespace home
 {
     public partial class Mhsupdate : BaseForm
     {
         string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly CacheItemPolicy _Policy = new CacheItemPolicy
+        {
+            AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(10) // Cache selama 10 menit
+        };
+        private const string CacheKey = "MahasiswaData";
+
         public Mhsupdate()
         {
             InitializeComponent();
@@ -39,6 +52,66 @@ namespace home
 
             
         }
+
+        private void EnsureIndexs()
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                var indexScript = @"
+                IF NOT EXISTS (
+                    SELECT 1 
+                    FROM sys.indexes 
+                    WHERE name = 'idx_Mahasiswa_FakultasProdi'
+                      AND object_id = OBJECT_ID('dbo.Mahasiswa')
+                )
+                BEGIN
+                    CREATE NONCLUSTERED INDEX idx_Mahasiswa_FakultasProdi
+                    ON dbo.Mahasiswa(fakultas, prodi);
+                    PRINT 'Created idx_Mahasiswa_FakultasProdi';
+                END
+                ELSE
+                    PRINT 'idx_Mahasiswa_FakultasProdi sudah ada.';
+
+                IF NOT EXISTS (
+                    SELECT 1 
+                    FROM sys.indexes 
+                    WHERE name = 'idx_Mahasiswa_Email_Include'
+                      AND object_id = OBJECT_ID('dbo.Mahasiswa')
+                )
+                BEGIN
+                    CREATE NONCLUSTERED INDEX idx_Mahasiswa_Email_Include
+                    ON dbo.Mahasiswa(email)
+                    INCLUDE(nama, no_hp);
+                    PRINT 'Created idx_Mahasiswa_Email_Include';
+                END
+                ELSE
+                    PRINT 'idx_Mahasiswa_Email_Include sudah ada.';
+
+                IF NOT EXISTS (
+                    SELECT 1 
+                    FROM sys.indexes 
+                    WHERE name = 'idx_Mahasiswa_JK_Fakultas'
+                      AND object_id = OBJECT_ID('dbo.Mahasiswa')
+                )
+                BEGIN
+                    CREATE NONCLUSTERED INDEX idx_Mahasiswa_JK_Fakultas
+                    ON dbo.Mahasiswa(jenis_kelamin, fakultas);
+                    PRINT 'Created idx_Mahasiswa_JK_Fakultas';
+                END
+                ELSE
+                    PRINT 'idx_Mahasiswa_JK_Fakultas sudah ada.';
+                ";
+
+                using (var cmd = new SqlCommand(indexScript, conn))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
 
         private void comboBoxFakultas_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -102,7 +175,7 @@ namespace home
         }
 
 
-        /* private void UpdateMahasiswa()
+         private void UpdateMahasiswa()
          {
              using (SqlConnection conn = new SqlConnection(connectionString))
              {
@@ -124,7 +197,7 @@ namespace home
                      MessageBox.Show("Data berhasil diperbarui!");
                  }
              }
-         }*/
+         }
 
 
         private void DeleteMahasiswa(object sender, EventArgs e)
@@ -171,14 +244,31 @@ namespace home
 
         private void LoadData()
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            DataTable dt;
+            if (_cache.Contains(CacheKey))
             {
-                string query = "SELECT * FROM Mahasiswa"; // ganti Mahasiswa dengan nama tabelmu
-                SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
-                DataTable dt = new DataTable();
-                adapter.Fill(dt);
-                dataGridView1.DataSource = dt;
+                dt = _cache.Get(CacheKey) as DataTable;
             }
+            else
+            {
+                dt = new DataTable();
+                using (var conn = new SqlConnection(connectionString))
+                {
+                    conn.Open();
+
+                    var query = @"
+                    SELECT nim, nama, email, no_hp, fakultas, prodi, jenis_kelamin
+                    FROM dbo.Mahasiswa"; // Tanpa filter, tapi tetap gunakan kolom yang ada di index
+
+                    var da = new SqlDataAdapter(query, conn);
+                    da.Fill(dt);
+                }
+
+                _cache.Add(CacheKey, dt, _Policy);
+            }
+
+            dataGridView1.AutoGenerateColumns = true;
+            dataGridView1.DataSource = dt;
         }
 
 
@@ -274,9 +364,117 @@ namespace home
             }
         }
 
+
+        private void AnalyzeQuery(string sqlQuery)
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.InfoMessage += (s, e) => MessageBox.Show(e.Message, "STATISTICS INFO");
+                conn.Open();
+
+                var wrapped = $@"
+            SET STATISTICS IO ON;
+            SET STATISTICS TIME ON;
+            {sqlQuery};
+            SET STATISTICS IO OFF;
+            SET STATISTICS TIME OFF;";
+
+                using (var cmd = new SqlCommand(wrapped, conn))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private void btninput(object sender, EventArgs e)
+        {
+            using (var openfile = new OpenFileDialog())
+            {
+                openfile.Filter = "Excel Files|*.xlsx;*.xlsm;*.xls";
+                if (openfile.ShowDialog() == DialogResult.OK)
+                    privewData(openfile.FileName);
+            }
+        }
+
+        private void privewData(string filePath)
+        {
+            try
+            {
+                using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    IWorkbook workbook = new XSSFWorkbook(fs);
+                    ISheet sheet = workbook.GetSheetAt(0);
+                    DataTable dt = new DataTable();
+
+                    // Ambil header dari baris pertama
+                    IRow headerRow = sheet.GetRow(0);
+                    foreach (ICell cell in headerRow.Cells)
+                        dt.Columns.Add(cell.ToString());
+
+                    // Ambil data dari baris berikutnya
+                    
+                    
+                        // Baris data
+                        for (int i = 1; i <= sheet.LastRowNum; i++)
+                        {
+                            IRow dataRow = sheet.GetRow(i);
+                            DataRow newRow = dt.NewRow();
+                            int cellIndex = 0;
+                            foreach (var cell in dataRow.Cells)
+                            {
+                                newRow[cellIndex++] = cell.ToString();
+                            }
+                            dt.Rows.Add(newRow);
+                        }
+                        PreviewForm previewForm = new PreviewForm(dt);
+                        previewForm.ShowDialog(); 
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error saat membaca file Excel: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BtnAnalyze_Click(object sender, EventArgs e)
+        {
+            // Ambil input fakultas dan prodi (opsional)
+            string fakultas = comboBoxFakultas.SelectedItem?.ToString();
+            string prodi = comboBoxProdi.SelectedItem?.ToString();
+
+            // Bangun query analisis dengan filter fakultas dan prodi jika ada
+            string heavyQuery = @"
+        SELECT email, nama, no_hp 
+        FROM dbo.Mahasiswa 
+        WHERE 1 = 1";
+
+            if (!string.IsNullOrWhiteSpace(fakultas))
+                heavyQuery += $" AND fakultas = '{fakultas}'";
+
+            if (!string.IsNullOrWhiteSpace(prodi))
+                heavyQuery += $" AND prodi = '{prodi}'";
+
+            AnalyzeQuery(heavyQuery);
+        }
+
+
+
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }
+
+        private void txtEmail_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnRefresh(object sender, EventArgs e)
+        {
+            LoadData();
+            _cache.Remove(CacheKey);
+        }
+
     }
 }
