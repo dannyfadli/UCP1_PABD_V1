@@ -40,6 +40,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.txtNoHp = new System.Windows.Forms.TextBox();
+            this.lblmsg = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -148,11 +149,21 @@
             this.txtNoHp.Size = new System.Drawing.Size(304, 22);
             this.txtNoHp.TabIndex = 86;
             // 
+            // lblmsg
+            // 
+            this.lblmsg.AutoSize = true;
+            this.lblmsg.Location = new System.Drawing.Point(154, 259);
+            this.lblmsg.Name = "lblmsg";
+            this.lblmsg.Size = new System.Drawing.Size(64, 16);
+            this.lblmsg.TabIndex = 87;
+            this.lblmsg.Text = "Message";
+            // 
             // Pendamping_Upadate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(865, 450);
+            this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.txtNoHp);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.button1);
@@ -188,5 +199,6 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TextBox txtNoHp;
+        private System.Windows.Forms.Label lblmsg;
     }
 }

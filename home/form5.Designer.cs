@@ -41,6 +41,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.txtIdRiwayat = new System.Windows.Forms.TextBox();
             this.comboIdPengaduan = new System.Windows.Forms.TextBox();
+            this.lblmsg = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -165,11 +166,21 @@
             this.comboIdPengaduan.Size = new System.Drawing.Size(328, 22);
             this.comboIdPengaduan.TabIndex = 109;
             // 
+            // lblmsg
+            // 
+            this.lblmsg.AutoSize = true;
+            this.lblmsg.Location = new System.Drawing.Point(156, 269);
+            this.lblmsg.Name = "lblmsg";
+            this.lblmsg.Size = new System.Drawing.Size(64, 16);
+            this.lblmsg.TabIndex = 110;
+            this.lblmsg.Text = "Massage";
+            // 
             // form5
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(945, 450);
+            this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.comboIdPengaduan);
             this.Controls.Add(this.comboBoxStatus);
             this.Controls.Add(this.label2);
@@ -207,5 +218,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txtIdRiwayat;
         private System.Windows.Forms.TextBox comboIdPengaduan;
+        private System.Windows.Forms.Label lblmsg;
     }
 }

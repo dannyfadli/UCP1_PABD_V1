@@ -39,6 +39,7 @@
             this.txtNama = new System.Windows.Forms.TextBox();
             this.txtIdPendamping = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.lblmsg = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtNoHP
@@ -134,11 +135,21 @@
             this.label1.TabIndex = 36;
             this.label1.Text = "=========DataPendamping=========";
             // 
+            // lblmsg
+            // 
+            this.lblmsg.AutoSize = true;
+            this.lblmsg.Location = new System.Drawing.Point(178, 220);
+            this.lblmsg.Name = "lblmsg";
+            this.lblmsg.Size = new System.Drawing.Size(64, 16);
+            this.lblmsg.TabIndex = 53;
+            this.lblmsg.Text = "Massage";
+            // 
             // Penadamping_Daftar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.txtNoHP);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
@@ -170,5 +181,6 @@
         private System.Windows.Forms.TextBox txtIdPendamping;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox txtNoHP;
+        private System.Windows.Forms.Label lblmsg;
     }
 }

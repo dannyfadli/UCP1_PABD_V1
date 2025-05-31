@@ -1,4 +1,5 @@
 ﻿using home.home;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Data;
 using System.Data.SqlClient;
@@ -53,34 +54,71 @@ namespace home
             }
         }*/
 
+        
         private void DeletePendamping(object sender, EventArgs e)
         {
             if (dataGridView1.SelectedRows.Count > 0)
             {
                 string id = dataGridView1.SelectedRows[0].Cells["id_pendamping"].Value.ToString();
-                DialogResult result = MessageBox.Show("Yakin ingin menghapus pendamping ini?", "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                DialogResult result = MessageBox.Show(
+                    $"Yakin ingin menghapus pendamping dengan ID: {id}?",
+                    "Konfirmasi",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning
+                );
 
                 if (result == DialogResult.Yes)
                 {
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
+                        SqlTransaction transaction = null;
+
                         try
                         {
                             conn.Open();
-                            SqlCommand cmd = new SqlCommand("sp_DeletePendamping", conn);
-                            cmd.CommandType = CommandType.StoredProcedure;      
-                            cmd.Parameters.AddWithValue("@id_pendamping", id);
-                            cmd.ExecuteNonQuery();
-                            MessageBox.Show("Data Pendamping berhasil dihapus!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            transaction = conn.BeginTransaction();
 
-                            LoadData();
+                            using (SqlCommand cmd = new SqlCommand("sp_DeletePendamping", conn, transaction))
+                            {
+                                cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Parameters.AddWithValue("@id_pendamping", id);
+
+                                int affected = cmd.ExecuteNonQuery();
+
+                                if (affected > 0)
+                                {
+                                    transaction.Commit();
+                                    lblmsg.Text = "Data pendamping berhasil dihapus!";
+                                    // Optional: MessageBox.Show("Data pendamping berhasil dihapus!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    LoadData();
+                                }
+                                else
+                                {
+                                    transaction.Rollback();
+                                    MessageBox.Show("Data pendamping tidak ditemukan atau sudah dihapus.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                }
+                            }
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("Error: " + ex.Message);
+                            transaction?.Rollback();
+
+                            if (ex.Message.Contains("tidak ditemukan"))
+                            {
+                                MessageBox.Show("Data pendamping tidak ditemukan atau sudah dihapus.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Gagal menghapus pendamping: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                     }
                 }
+            }
+            else
+            {
+                MessageBox.Show("Tekan kolom kosong paling kiri untuk memilih baris yang ingin dihapus!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -98,7 +136,8 @@ namespace home
             }
         }
 
-        private void btnUpdate_Click(object sender, EventArgs e)
+      
+    private void btnUpdate_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtIdPendamping.Text) || string.IsNullOrWhiteSpace(txtNama.Text))
             {
@@ -108,14 +147,18 @@ namespace home
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
+                SqlTransaction transaction = null;
+
                 try
                 {
                     conn.Open();
+                    transaction = conn.BeginTransaction();
 
-                    // Ambil data lama berdasarkan ID
-                    SqlCommand selectCmd = new SqlCommand("sp_GetPendampingById", conn);
+                    // Ambil data lama
+                    SqlCommand selectCmd = new SqlCommand("sp_GetPendampingById", conn, transaction);
                     selectCmd.CommandType = CommandType.StoredProcedure;
                     selectCmd.Parameters.AddWithValue("@id_pendamping", txtIdPendamping.Text.Trim());
+
                     SqlDataReader reader = selectCmd.ExecuteReader();
 
                     bool isChanged = false;
@@ -123,8 +166,8 @@ namespace home
                     if (reader.Read())
                     {
                         if (!txtNama.Text.Equals(reader["nama"].ToString())) isChanged = true;
-                        else if (!txtNoHp.Text.Equals(reader["no_hp"].ToString())) isChanged = true;
-                        else if (!txtEmail.Text.Equals(reader["email"].ToString())) isChanged = true;
+                        else if (!txtNoHp.Text.Equals(reader["no_hp"]?.ToString() ?? "")) isChanged = true;
+                        else if (!txtEmail.Text.Equals(reader["email"]?.ToString() ?? "")) isChanged = true;
 
                         reader.Close();
 
@@ -142,25 +185,46 @@ namespace home
                     }
 
                     // Lanjut update jika ada perubahan
-                    SqlCommand cmd = new SqlCommand("sp_UpdatePendamping", conn);
+                    SqlCommand cmd = new SqlCommand("sp_UpdatePendamping", conn, transaction);
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@id_pendamping", txtIdPendamping.Text.Trim());
                     cmd.Parameters.AddWithValue("@nama", txtNama.Text.Trim());
-                    cmd.Parameters.AddWithValue("@no_hp", txtNoHp.Text.Trim());
-                    cmd.Parameters.AddWithValue("@email", txtEmail.Text.Trim());
-
-                    SqlParameter returnValue = new SqlParameter("@ReturnVal", SqlDbType.Int);
-                    returnValue.Direction = ParameterDirection.ReturnValue;
-                    cmd.Parameters.Add(returnValue);
+                    cmd.Parameters.AddWithValue("@no_hp", string.IsNullOrWhiteSpace(txtNoHp.Text) ? (object)DBNull.Value : txtNoHp.Text.Trim());
+                    cmd.Parameters.AddWithValue("@email", string.IsNullOrWhiteSpace(txtEmail.Text) ? (object)DBNull.Value : txtEmail.Text.Trim());
 
                     cmd.ExecuteNonQuery();
-                    MessageBox.Show("Data Pendamping berhasil di-update, nice~", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    transaction.Commit();
+
+                    lblmsg.Text = "Data pendamping berhasil diperbarui!";
                     LoadData();
                 }
-                catch (Exception ex)
+                catch (SqlException ex)
                 {
-                    MessageBox.Show("Terjadi kesalahan saat update pendamping:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    transaction?.Rollback();
+
+                    string msg = ex.Message;
+
+                    if (msg.Contains("tidak ditemukan"))
+                    {
+                        lblmsg.Text = "Pendamping dengan ID tersebut tidak ditemukan.";
+                    }
+                    else if (msg.Contains("Format nomor HP tidak valid"))
+                    {
+                        lblmsg.Text = "Format nomor HP tidak valid! Harus diawali 62 dan panjang 11-14 digit.";
+                    }
+                    else if (msg.Contains("Format email tidak valid"))
+                    {
+                        lblmsg.Text = "Format email tidak valid!";
+                    }
+                    else if (msg.Contains("Nama wajib diisi"))
+                    {
+                        lblmsg.Text = "Nama wajib diisi!";
+                    }
+                    else
+                    {
+                        lblmsg.Text = "Gagal meng-update data. Periksa kembali input yang dimasukkan.";
+                    }
                 }
             }
         }

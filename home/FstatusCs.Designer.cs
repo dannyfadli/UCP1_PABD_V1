@@ -38,6 +38,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.comboIdPengaduan = new System.Windows.Forms.ComboBox();
+            this.lblmsg = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button4
@@ -131,11 +132,21 @@
             this.comboIdPengaduan.Size = new System.Drawing.Size(400, 24);
             this.comboIdPengaduan.TabIndex = 62;
             // 
+            // lblmsg
+            // 
+            this.lblmsg.AutoSize = true;
+            this.lblmsg.Location = new System.Drawing.Point(182, 259);
+            this.lblmsg.Name = "lblmsg";
+            this.lblmsg.Size = new System.Drawing.Size(64, 16);
+            this.lblmsg.TabIndex = 63;
+            this.lblmsg.Text = "Massage";
+            // 
             // FstatusCs
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.comboIdPengaduan);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.comboBoxStatus);
@@ -165,5 +176,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ComboBox comboIdPengaduan;
+        private System.Windows.Forms.Label lblmsg;
     }
 }

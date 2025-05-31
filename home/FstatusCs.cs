@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NPOI.SS.Formula.Functions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,44 +21,70 @@ namespace home
             InitializeComponent();
         }
 
-        private void BtnSubmit_Click(object sender, EventArgs e)
+        
+private void BtnSubmit_Click(object sender, EventArgs e)
         {
+            // Validasi input wajib
             if (comboIdPengaduan.SelectedItem == null || comboBoxStatus.SelectedItem == null || string.IsNullOrWhiteSpace(txtIdRiwayat.Text))
             {
-                MessageBox.Show("Pastikan semua field telah diisi.", "Validasi", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                lblmsg.Text = "Pastikan semua field telah diisi.";
                 return;
             }
 
+            // Ambil data dari form
             string idPengaduan = ((KeyValuePair<string, string>)comboIdPengaduan.SelectedItem).Key;
             DateTime tanggalPerubahan = datePickerSelesai.Value;
             string statusPengaduan = comboBoxStatus.SelectedItem.ToString();
             string idRiwayat = txtIdRiwayat.Text.Trim();
 
-            try
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                SqlTransaction transaction = null;
+
+                try
                 {
                     conn.Open();
+                    transaction = conn.BeginTransaction();
 
                     using (SqlCommand cmd = new SqlCommand("sp_InsertRiwayatStatus", conn))
                     {
+                        cmd.Transaction = transaction;
                         cmd.CommandType = CommandType.StoredProcedure;
+
                         cmd.Parameters.AddWithValue("@id_pengaduan", idPengaduan);
                         cmd.Parameters.AddWithValue("@id_riwayat", idRiwayat);
                         cmd.Parameters.AddWithValue("@status_baru", statusPengaduan);
                         cmd.Parameters.AddWithValue("@tanggal_perubahan", tanggalPerubahan);
+
                         cmd.ExecuteNonQuery();
-                        MessageBox.Show("Data berhasil disimpan.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+
+                    transaction.Commit();
+                    lblmsg.Text = "Data berhasil disimpan.";
+                    // Jika ingin menggunakan MessageBox:
+                    // MessageBox.Show("Data berhasil disimpan.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (SqlException ex)
+                {
+                    transaction?.Rollback();
+                    string errorMessage = ex.Message;
+
+                    // Deteksi error yang umum dari stored procedure (jika ada)
+                    if (errorMessage.Contains("Riwayat dengan ID tersebut sudah ada"))
+                    {
+                        lblmsg.Text = "Riwayat dengan ID tersebut sudah ada!";
+                    }
+                    else if (errorMessage.Contains("Format ID riwayat tidak valid"))
+                    {
+                        lblmsg.Text = "Format ID riwayat tidak valid!";
+                    }
+                    else
+                    {
+                        lblmsg.Text = "Terjadi kesalahan saat menyimpan data.";
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Terjadi kesalahan: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
-
-
         private void btnKembali_Click(object sender, EventArgs e)
         {
             this.Hide();

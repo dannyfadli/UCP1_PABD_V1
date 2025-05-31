@@ -45,6 +45,7 @@
             this.txtIdPengaduan = new System.Windows.Forms.TextBox();
             this.txtIdPendamping = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
+            this.lblmsg = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -196,11 +197,21 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.DeleteTindakan);
             // 
+            // lblmsg
+            // 
+            this.lblmsg.AutoSize = true;
+            this.lblmsg.Location = new System.Drawing.Point(562, 366);
+            this.lblmsg.Name = "lblmsg";
+            this.lblmsg.Size = new System.Drawing.Size(64, 16);
+            this.lblmsg.TabIndex = 102;
+            this.lblmsg.Text = "Message";
+            // 
             // Tindakan_Ubah
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(999, 450);
+            this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.txtIdPendamping);
             this.Controls.Add(this.txtIdPengaduan);
@@ -245,5 +256,6 @@
         private System.Windows.Forms.TextBox txtIdPengaduan;
         private System.Windows.Forms.TextBox txtIdPendamping;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label lblmsg;
     }
 }
