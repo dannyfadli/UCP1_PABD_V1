@@ -33,24 +33,29 @@ namespace home
             string no_hp = txtNoHP.Text;
             string email = txtEmail.Text;
 
-   
-
-
-            try
-            {
-
-                if (txtNIM.Text == "" || txtNama.Text == "" || comboBoxJK.SelectedItem == null ||
+           
+            if (txtNIM.Text == "" || txtNama.Text == "" || comboBoxJK.SelectedItem == null ||
                                        comboBoxFakultas.SelectedItem == null || comboBoxProdi.SelectedItem == null ||
                                                           txtNoHP.Text == "" || txtEmail.Text == "")
-                {
-                    MessageBox.Show("Semua field harus diisi!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            {
+                   /* MessageBox.Show("Semua field harus diisi!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);*/
+                   lblmsg.Text = "Semua field harus diisi!";
                     return;
-                }
+            }
 
-                using (SqlConnection conn = new SqlConnection(connectionString))
-                {
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                SqlTransaction transaction = null;
+                try {
+
+                    conn.Open();
+                    transaction = conn.BeginTransaction();
+
                     using (SqlCommand cmd = new SqlCommand("sp_RegisterMahasiswa", conn))
                     {
+
+                        cmd.Transaction = transaction; // Gunakan transaksi
                         cmd.CommandType = CommandType.StoredProcedure;
                         // Tambahkan parameter untuk mencegah SQL Injection
                         cmd.Parameters.AddWithValue("@nim", nim);
@@ -61,16 +66,53 @@ namespace home
                         cmd.Parameters.AddWithValue("@no_hp", no_hp);
                         cmd.Parameters.AddWithValue("@email", email);
 
-                        conn.Open();
+                        /*  conn.Open();*/
                         cmd.ExecuteNonQuery();
-                        MessageBox.Show("Data berhasil disimpan!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        /*MessageBox.Show("Data berhasil disimpan!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);*/
                     }
+                    transaction.Commit(); // Commit transaksi jika semua berhasil
+                    lblmsg.Text = "Data berhasil disimpan!"; // Tampilkan pesan sukses
                 }
+
+                catch (SqlException ex)
+                {
+                    transaction?.Rollback();
+
+                    // Tangkap pesan dari stored procedure
+                    string errorMessage = ex.Message;
+
+                    // Deteksi error karena NIM duplikat
+                    if (errorMessage.Contains("Mahasiswa dengan NIM tersebut sudah terdaftar"))
+                    {
+                        lblmsg.Text = "Mahasiswa dengan NIM tersebut sudah terdaftar!";
+                    }
+                    else if (errorMessage.Contains("Format nomor HP tidak valid"))
+                    {
+                        lblmsg.Text = "Format nomor HP tidak valid!";
+                    }
+                    else if (errorMessage.Contains("Format email tidak valid"))
+                    {
+                        lblmsg.Text = "Format email tidak valid!";
+                    }
+                    else if (errorMessage.Contains("Jenis kelamin harus L atau P"))
+                    {
+                        lblmsg.Text = "Jenis kelamin harus L atau P!";
+                    }
+                    else if (errorMessage.Contains("NIM, nama, fakultas, dan prodi wajib diisi"))
+                    {
+                        lblmsg.Text = "NIM, nama, fakultas, dan prodi wajib diisi!";
+                    }
+                    else
+                    {
+                        // Pesan umum jika tidak dikenali
+                        lblmsg.Text = "Gagal menyimpan data. Pastikan data yang dimasukkan sudah benar."; //
+                    }
+
+                }
+
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Terjadi kesalahan: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
+
         }
 
         private void btnKembali_Click(object sender, EventArgs e)

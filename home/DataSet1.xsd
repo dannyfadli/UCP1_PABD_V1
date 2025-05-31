@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="DataSet1" targetNamespace="http://tempuri.org/DataSet1.xsd" xmlns:mstns="http://tempuri.org/DataSet1.xsd" xmlns="http://tempuri.org/DataSet1.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection AppSettingsObjectName="Settings" AppSettingsPropertyName="layananPengaduanConnectionString" ConnectionStringObject="" IsAppSettingsProperty="true" Modifier="Assembly" Name="layananPengaduanConnectionString (Settings)" ParameterPrefix="@" PropertyReference="ApplicationSettings.home.Properties.Settings.GlobalReference.Default.layananPengaduanConnectionString" Provider="System.Data.SqlClient" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="vw_PengaduanMahasiswaTableAdapter" GeneratorDataComponentClassName="vw_PengaduanMahasiswaTableAdapter" Name="vw_PengaduanMahasiswa" UserDataComponentName="vw_PengaduanMahasiswaTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="layananPengaduanConnectionString (Settings)" DbObjectName="layananPengaduan.dbo.vw_PengaduanMahasiswa" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="true">
+                    <CommandText>SELECT vw_PengaduanMahasiswa.*
+FROM     vw_PengaduanMahasiswa</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="nim" DataSetColumn="nim" />
+              <Mapping SourceColumn="nama" DataSetColumn="nama" />
+              <Mapping SourceColumn="prodi" DataSetColumn="prodi" />
+              <Mapping SourceColumn="deskripsi" DataSetColumn="deskripsi" />
+              <Mapping SourceColumn="status_pengaduan" DataSetColumn="status_pengaduan" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="DataSet1" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="true" msprop:Generator_UserDSName="DataSet1" msprop:Generator_DataSetName="DataSet1">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="vw_PengaduanMahasiswa" msprop:Generator_RowEvHandlerName="vw_PengaduanMahasiswaRowChangeEventHandler" msprop:Generator_RowDeletedName="vw_PengaduanMahasiswaRowDeleted" msprop:Generator_RowDeletingName="vw_PengaduanMahasiswaRowDeleting" msprop:Generator_RowEvArgName="vw_PengaduanMahasiswaRowChangeEvent" msprop:Generator_TablePropName="vw_PengaduanMahasiswa" msprop:Generator_RowChangedName="vw_PengaduanMahasiswaRowChanged" msprop:Generator_RowChangingName="vw_PengaduanMahasiswaRowChanging" msprop:Generator_TableClassName="vw_PengaduanMahasiswaDataTable" msprop:Generator_RowClassName="vw_PengaduanMahasiswaRow" msprop:Generator_TableVarName="tablevw_PengaduanMahasiswa" msprop:Generator_UserTableName="vw_PengaduanMahasiswa">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="nim" msprop:Generator_ColumnPropNameInRow="nim" msprop:Generator_ColumnPropNameInTable="nimColumn" msprop:Generator_ColumnVarNameInTable="columnnim" msprop:Generator_UserColumnName="nim">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="11" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="nama" msprop:Generator_ColumnPropNameInRow="nama" msprop:Generator_ColumnPropNameInTable="namaColumn" msprop:Generator_ColumnVarNameInTable="columnnama" msprop:Generator_UserColumnName="nama">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="30" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="prodi" msprop:Generator_ColumnPropNameInRow="prodi" msprop:Generator_ColumnPropNameInTable="prodiColumn" msprop:Generator_ColumnVarNameInTable="columnprodi" msprop:Generator_UserColumnName="prodi">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="30" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="deskripsi" msprop:Generator_ColumnPropNameInRow="deskripsi" msprop:Generator_ColumnPropNameInTable="deskripsiColumn" msprop:Generator_ColumnVarNameInTable="columndeskripsi" msprop:Generator_UserColumnName="deskripsi">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="2147483647" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="status_pengaduan" msprop:Generator_ColumnPropNameInRow="status_pengaduan" msprop:Generator_ColumnPropNameInTable="status_pengaduanColumn" msprop:Generator_ColumnVarNameInTable="columnstatus_pengaduan" msprop:Generator_UserColumnName="status_pengaduan" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="8" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:vw_PengaduanMahasiswa" />
+      <xs:field xpath="mstns:nim" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

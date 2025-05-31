@@ -64,5 +64,12 @@ namespace home
             FstatusCs form3 = new FstatusCs();
             form3.Show();
         }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            this.Hide(); // Kalau mau sembunyikan Form2, bisa juga dihapus kalau nggak perlu
+            FormLaporan form3 = new FormLaporan();
+            form3.Show();
+        }
     }
 }

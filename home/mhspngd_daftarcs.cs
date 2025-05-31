@@ -42,35 +42,71 @@ namespace home
             DateTime tanggalPengaduan = datePickerPengaduan.Value;
             DateTime? tanggalSelesai = datePickerSelesai.Checked ? datePickerSelesai.Value : (DateTime?)null;
             string statusPengaduan = comboBoxStatus.SelectedItem?.ToString() ?? "Masuk";
-            try
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlConnection conn = new SqlConnection(connectionString))
+                SqlTransaction transaction = null;
+                try
                 {
+
+                    conn.Open();
+                    transaction = conn.BeginTransaction();
+
                     using (SqlCommand cmd = new SqlCommand("sp_CreatePengaduan", conn))
                     {
+
+                        cmd.Transaction = transaction; // Gunakan transaksi
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        // Tambahkan parameter untuk mencegah SQL Injection
+
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@id_pengaduan", idPengaduan);
                         cmd.Parameters.AddWithValue("@nim", nim);
                         cmd.Parameters.AddWithValue("@deskripsi", deskripsi);
                         cmd.Parameters.AddWithValue("@bukti", bukti);
                         cmd.Parameters.AddWithValue("@tanggal_pengaduan", tanggalPengaduan);
-
-                        if (tanggalSelesai.HasValue)
-                            cmd.Parameters.AddWithValue("@tanggal_selesai", tanggalSelesai.Value);
-                        else
-                            cmd.Parameters.AddWithValue("@tanggal_selesai", DBNull.Value);
-
-                        cmd.Parameters.AddWithValue("@status_pengaduan", statusPengaduan);
-
-                        conn.Open();
+                        /*  conn.Open();*/
                         cmd.ExecuteNonQuery();
-                        MessageBox.Show("Pengaduan berhasil disimpan!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        /*MessageBox.Show("Data berhasil disimpan!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);*/
                     }
+                    transaction.Commit(); // Commit transaksi jika semua berhasil
+                    lblmsg.Text = "Data berhasil disimpan!"; // Tampilkan pesan sukses
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Terjadi kesalahan: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                catch (SqlException ex)
+                {
+                    transaction?.Rollback();
+
+                    // Tangkap pesan dari stored procedure
+                    string errorMessage = ex.Message;
+
+                    // Deteksi error karena NIM duplikat
+                    if (errorMessage.Contains("ID Pengaduan tersebut sudah terdaftar"))
+                    {
+                        lblmsg.Text = "ID Pengaduan tersebut sudah terdaftar";
+                    }
+                    else if (errorMessage.Contains("Format NIM tidak valid"))
+                    {
+                        lblmsg.Text = "Format NIM tidak valid!";
+                    }
+                    else if (errorMessage.Contains("Format deskripsi tidak valid"))
+                    {
+                        lblmsg.Text = "Format deskripsi tidak valid!";
+                    }
+                    else if (errorMessage.Contains("Bukti tidak valid"))
+                    {
+                        lblmsg.Text = "Bukti tidak valid!";
+                    }
+                    else if (errorMessage.Contains("Tanggal pengaduan tidak valid"))
+                    {
+                        lblmsg.Text = "Tanggal pengaduan tidak valid!";
+                    }
+                    else
+                    {
+                        // Pesan umum jika tidak dikenali
+                        lblmsg.Text = "Gagal menyimpan data. Pastikan data yang dimasukkan sudah benar.";
+                    }
+
+                }
             }
         }
 

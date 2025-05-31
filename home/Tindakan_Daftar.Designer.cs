@@ -43,6 +43,7 @@
             this.comboPengaduan = new System.Windows.Forms.ComboBox();
             this.comboStatusTindakan = new System.Windows.Forms.ComboBox();
             this.comboPendamping = new System.Windows.Forms.ComboBox();
+            this.lblmsg = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button3
@@ -173,11 +174,21 @@
             this.comboPendamping.Size = new System.Drawing.Size(400, 24);
             this.comboPendamping.TabIndex = 55;
             // 
+            // lblmsg
+            // 
+            this.lblmsg.AutoSize = true;
+            this.lblmsg.Location = new System.Drawing.Point(179, 318);
+            this.lblmsg.Name = "lblmsg";
+            this.lblmsg.Size = new System.Drawing.Size(64, 16);
+            this.lblmsg.TabIndex = 56;
+            this.lblmsg.Text = "message";
+            // 
             // Tindakan_Daftar
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.comboPendamping);
             this.Controls.Add(this.comboStatusTindakan);
             this.Controls.Add(this.comboPengaduan);
@@ -218,5 +229,6 @@
         private System.Windows.Forms.ComboBox comboPengaduan;
         private System.Windows.Forms.ComboBox comboStatusTindakan;
         private System.Windows.Forms.ComboBox comboPendamping;
+        private System.Windows.Forms.Label lblmsg;
     }
 }

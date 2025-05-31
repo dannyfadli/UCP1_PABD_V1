@@ -50,6 +50,7 @@
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
+            this.lblmsg = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -125,6 +126,7 @@
             this.label2.Size = new System.Drawing.Size(36, 16);
             this.label2.TabIndex = 42;
             this.label2.Text = "Nim*";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // txtEmail
             // 
@@ -225,6 +227,7 @@
             this.comboBoxFakultas.Name = "comboBoxFakultas";
             this.comboBoxFakultas.Size = new System.Drawing.Size(338, 24);
             this.comboBoxFakultas.TabIndex = 55;
+            this.comboBoxFakultas.SelectedIndexChanged += new System.EventHandler(this.comboBoxFakultas_SelectedIndexChanged_1);
             // 
             // comboBoxProdi
             // 
@@ -290,11 +293,21 @@
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.BtnRefresh);
             // 
+            // lblmsg
+            // 
+            this.lblmsg.AutoSize = true;
+            this.lblmsg.Location = new System.Drawing.Point(586, 348);
+            this.lblmsg.Name = "lblmsg";
+            this.lblmsg.Size = new System.Drawing.Size(64, 16);
+            this.lblmsg.TabIndex = 59;
+            this.lblmsg.Text = "Message";
+            // 
             // Mhsupdate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(937, 450);
+            this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
@@ -350,5 +363,6 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Label lblmsg;
     }
 }

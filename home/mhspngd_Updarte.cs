@@ -85,30 +85,41 @@ namespace home
                 {
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
+                        SqlTransaction transaction = null;
                         try
                         {
                             conn.Open();
-                            SqlCommand cmd = new SqlCommand("sp_DeletePengaduan", conn);
+                            transaction = conn.BeginTransaction();
+                            SqlCommand cmd = new SqlCommand("sp_DeletePengaduan", conn, transaction);
                             cmd.CommandType = CommandType.StoredProcedure;
                             cmd.Parameters.AddWithValue("@id_pengaduan", id);
 
                             // Eksekusi langsung tanpa cek rowsAffected
                             cmd.ExecuteNonQuery();
 
-                            // Kalau tidak ada exception, berarti sukses
-                            MessageBox.Show("Data pengaduan berhasil dihapus!");
+                            transaction.Commit();
+                            lblmsg.Text = "Data Pengaduan berhasil dihapus!";
                             LoadData();
-                        }
-                        catch (SqlException ex)
-                        {
-                            MessageBox.Show("Gagal menghapus data pengaduan: " + ex.Message);
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("Error: " + ex.Message);
+                            transaction?.Rollback();
+                            /*essageBox.Show("Error saat menghapus Mahasiswa: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);*/
+                            if (ex.Message.Contains("tidak ditemukan"))
+                            {
+                                MessageBox.Show("Data Pengaduan tidak ditemukan atau sudah dihapus.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Gagal menghapus Pengaduan: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                     }
                 }
+            }
+            else
+            {
+                MessageBox.Show("Tekan kolom kosong paling kiri untuk memilih baris yang ingin dihapus!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -134,14 +145,18 @@ namespace home
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
+                SqlTransaction transaction = null;
+
                 try
                 {
                     conn.Open();
+                    transaction = conn.BeginTransaction();
 
                     // Ambil data lama untuk cek perubahan
-                    SqlCommand selectCmd = new SqlCommand("sp_GetPengaduanById", conn);
+                    SqlCommand selectCmd = new SqlCommand("sp_GetPengaduanById", conn, transaction);
                     selectCmd.CommandType = CommandType.StoredProcedure;
                     selectCmd.Parameters.AddWithValue("@id_pengaduan", txtIdPengaduan.Text.Trim());
+
                     SqlDataReader reader = selectCmd.ExecuteReader();
 
                     bool isChanged = false;
@@ -170,8 +185,9 @@ namespace home
                         return;
                     }
 
+
                     // Jika ada perubahan, lakukan update
-                    SqlCommand cmd = new SqlCommand("sp_UpdatePengaduan", conn);
+                    SqlCommand cmd = new SqlCommand("sp_UpdatePengaduan", conn, transaction);
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@id_pengaduan", txtIdPengaduan.Text.Trim());
@@ -190,19 +206,40 @@ namespace home
 
                     int result = (int)returnValue.Value;
 
+                    transaction.Commit();
+
                     if (result > 0)
                     {
-                        MessageBox.Show("Data pengaduan berhasil diperbarui!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        LoadData(); // Pastikan kamu punya fungsi LoadData()
+                        lblmsg.Text = "Data pengaduan berhasil diperbarui!";
+                        LoadData();
                     }
                     else
                     {
                         MessageBox.Show("Tidak ada perubahan data. Mungkin data yang diinput sama seperti sebelumnya.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
                 }
-                catch (Exception ex)
+                catch (SqlException ex)
                 {
-                    MessageBox.Show("Terjadi kesalahan saat update pengaduan:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    transaction?.Rollback();
+
+                    string errorMessage = ex.Message;
+
+                    if (errorMessage.Contains("tidak ditemukan"))
+                    {
+                        lblmsg.Text = "Data pengaduan tidak ditemukan.";
+                    }
+                    else if (errorMessage.Contains("Format tanggal tidak valid"))
+                    {
+                        lblmsg.Text = "Format tanggal tidak valid! Pastikan tanggal pengaduan dan tanggal selesai sudah benar.";
+                    }
+                    else if (errorMessage.Contains("NIM tidak boleh kosong"))
+                    {
+                        lblmsg.Text = "NIM tidak boleh kosong!";
+                    }
+                    else
+                    {
+                        MessageBox.Show("Terjadi kesalahan saat update pengaduan:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
         }

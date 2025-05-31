@@ -47,6 +47,7 @@
             this.txtDeskripsi = new System.Windows.Forms.TextBox();
             this.txtIdPengaduan = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.lblmsg = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -221,11 +222,21 @@
             this.label1.Text = "=========UpdatePengaduan=========";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
+            // lblmsg
+            // 
+            this.lblmsg.AutoSize = true;
+            this.lblmsg.Location = new System.Drawing.Point(533, 343);
+            this.lblmsg.Name = "lblmsg";
+            this.lblmsg.Size = new System.Drawing.Size(64, 16);
+            this.lblmsg.TabIndex = 83;
+            this.lblmsg.Text = "Massage";
+            // 
             // mhspngd_Updarte
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1005, 450);
+            this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.txtNim);
             this.Controls.Add(this.cmbStatus);
@@ -275,5 +286,6 @@
         private System.Windows.Forms.DateTimePicker dtpTglPengaduan;
         private System.Windows.Forms.TextBox txtNim;
         private System.Windows.Forms.Button btnDelete;
+        private System.Windows.Forms.Label lblmsg;
     }
 }

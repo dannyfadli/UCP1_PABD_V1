@@ -45,6 +45,7 @@
             this.comboBoxJK = new System.Windows.Forms.ComboBox();
             this.comboBoxProdi = new System.Windows.Forms.ComboBox();
             this.comboBoxFakultas = new System.Windows.Forms.ComboBox();
+            this.lblmsg = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button3
@@ -246,11 +247,21 @@
             this.comboBoxFakultas.TabIndex = 37;
             this.comboBoxFakultas.SelectedIndexChanged += new System.EventHandler(this.comboBoxFakultas_SelectedIndexChanged_1);
             // 
+            // lblmsg
+            // 
+            this.lblmsg.AutoSize = true;
+            this.lblmsg.Location = new System.Drawing.Point(167, 370);
+            this.lblmsg.Name = "lblmsg";
+            this.lblmsg.Size = new System.Drawing.Size(64, 16);
+            this.lblmsg.TabIndex = 38;
+            this.lblmsg.Text = "Message";
+            // 
             // Form4
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.comboBoxFakultas);
             this.Controls.Add(this.comboBoxProdi);
             this.Controls.Add(this.comboBoxJK);
@@ -295,5 +306,6 @@
         private System.Windows.Forms.ComboBox comboBoxJK;
         private System.Windows.Forms.ComboBox comboBoxProdi;
         private System.Windows.Forms.ComboBox comboBoxFakultas;
+        private System.Windows.Forms.Label lblmsg;
     }
 }

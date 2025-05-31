@@ -50,6 +50,7 @@ namespace home
             comboBoxFakultas.SelectedIndexChanged -= comboBoxFakultas_SelectedIndexChanged;
             comboBoxFakultas.SelectedIndexChanged += comboBoxFakultas_SelectedIndexChanged;
 
+            EnsureIndexs(); // Pastikan index sudah dibuat
             
         }
 
@@ -175,7 +176,7 @@ namespace home
         }
 
 
-         private void UpdateMahasiswa()
+/*         private void UpdateMahasiswa()
          {
              using (SqlConnection conn = new SqlConnection(connectionString))
              {
@@ -197,7 +198,7 @@ namespace home
                      MessageBox.Show("Data berhasil diperbarui!");
                  }
              }
-         }
+         }*/
 
 
         private void DeleteMahasiswa(object sender, EventArgs e)
@@ -217,21 +218,37 @@ namespace home
                 {
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
+                        SqlTransaction transaction = null;
+
                         try
                         {
                             conn.Open();
-
-                            SqlCommand cmd = new SqlCommand("sp_DeleteMahasiswa", conn);
-                            cmd.CommandType = CommandType.StoredProcedure;
-                            cmd.Parameters.AddWithValue("@nim", nim);
-                            cmd.ExecuteNonQuery();
-                            MessageBox.Show("Data Mahasiswa berhasil dihapus!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
+                            transaction = conn.BeginTransaction();
+                            using (SqlCommand cmd = new SqlCommand("sp_DeleteMahasiswa", conn, transaction)) // <-- pakai 3 parameter
+                            {
+                                cmd.CommandType = CommandType.StoredProcedure;
+                                cmd.Parameters.AddWithValue("@nim", nim);
+                                cmd.ExecuteNonQuery();
+                            }
+                            /*MessageBox.Show("Data Mahasiswa berhasil dihapus!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);*/
+                            transaction.Commit();
+                            lblmsg.Text = "Data Mahasiswa berhasil dihapus!";
                             LoadData();
+
+
                         }
                         catch (Exception ex)
                         {
-                            MessageBox.Show("Error saat menghapus Mahasiswa: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            transaction?.Rollback();
+                            /*essageBox.Show("Error saat menghapus Mahasiswa: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);*/
+                            if (ex.Message.Contains("tidak ditemukan"))
+                            {
+                                MessageBox.Show("Data mahasiswa tidak ditemukan atau sudah dihapus.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            }
+                            else
+                            {
+                                MessageBox.Show("Gagal menghapus mahasiswa: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                     }
                 }
@@ -282,12 +299,15 @@ namespace home
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
+                SqlTransaction transaction = null;
                 try
                 {
                     conn.Open();
+                    transaction = conn.BeginTransaction();
 
                     // Cek apakah ada perubahan data
                     SqlCommand selectCmd = new SqlCommand("sp_GetMahasiswaByNIM", conn);
+                    selectCmd.Transaction = transaction;
                     selectCmd.CommandType = CommandType.StoredProcedure;
                     selectCmd.Parameters.AddWithValue("@nim", txtNim.Text);
                     SqlDataReader reader = selectCmd.ExecuteReader();
@@ -320,6 +340,7 @@ namespace home
 
                     // Jika ada perubahan, lanjut update
                     SqlCommand cmd = new SqlCommand("sp_UpdateMahasiswa", conn);
+                    cmd.Transaction = transaction;
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@nim", txtNim.Text.Trim());
                     cmd.Parameters.AddWithValue("@nama", txtNama.Text.Trim());
@@ -329,13 +350,43 @@ namespace home
                     cmd.Parameters.AddWithValue("@no_hp", string.IsNullOrWhiteSpace(txtNoHP.Text) ? (object)DBNull.Value : txtNoHP.Text.Trim());
                     cmd.Parameters.AddWithValue("@email", string.IsNullOrWhiteSpace(txtEmail.Text) ? (object)DBNull.Value : txtEmail.Text.Trim());
                     cmd.ExecuteNonQuery();
-                    MessageBox.Show("Data mahasiswa berhasil di-update, nice~", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    /*MessageBox.Show("Data mahasiswa berhasil di-update, nice~", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);*/
                     LoadData();
+                    transaction.Commit();
+                    lblmsg.Text = "Data mahasiswa berhasil di-update, nice~";
+
 
                 }
-                catch (Exception ex)
+                catch (SqlException ex)
                 {
-                    MessageBox.Show("Kesalahan: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    transaction?.Rollback();
+
+                    string errorMessage = ex.Message;
+
+                    if (errorMessage.Contains("tidak ditemukan"))
+                    {
+                        lblmsg.Text = "Mahasiswa dengan NIM tersebut tidak ditemukan.";
+                    }
+                    else if (errorMessage.Contains("Format nomor HP tidak valid"))
+                    {
+                        lblmsg.Text = "Format nomor HP tidak valid! Harus diawali 62 dan panjang 11-14 digit.";
+                    }
+                    else if (errorMessage.Contains("Format email tidak valid"))
+                    {
+                        lblmsg.Text = "Format email tidak valid!";
+                    }
+                    else if (errorMessage.Contains("Jenis kelamin harus L atau P"))
+                    {
+                        lblmsg.Text = "Jenis kelamin harus L atau P!";
+                    }
+                    else if (errorMessage.Contains("NIM, nama, fakultas, dan prodi wajib diisi"))
+                    {
+                        lblmsg.Text = "NIM, nama, fakultas, dan prodi wajib diisi!";
+                    }
+                    else
+                    {
+                        lblmsg.Text = "Gagal meng-update data. Periksa kembali input yang dimasukkan.";
+                    }
                 }
             }
         }
@@ -476,5 +527,14 @@ namespace home
             _cache.Remove(CacheKey);
         }
 
+        private void comboBoxFakultas_SelectedIndexChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
