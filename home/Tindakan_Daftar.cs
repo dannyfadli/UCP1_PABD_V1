@@ -117,6 +117,7 @@ namespace home
                     conn.Open();
                     using (SqlCommand cmd = new SqlCommand("sp_AddTindakan", conn))
                     {
+                        cmd.Transaction = transaction = conn.BeginTransaction(); // Mulai transaksi
                         cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@Id_tindakan", idTindakan);
                         cmd.Parameters.AddWithValue("@Id_Pengaduan", idPengaduan);

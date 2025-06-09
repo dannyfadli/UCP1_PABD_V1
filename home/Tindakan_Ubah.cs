@@ -10,6 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.Caching;
+
+
 
 namespace home
 {
@@ -17,6 +20,12 @@ namespace home
     {
         string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
 
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly CacheItemPolicy _Policy = new CacheItemPolicy
+        {
+            AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(10) // Cache akan kedaluwarsa setelah 10 menit
+        };
+        private const string CacheKey = "TindakanData";
         public Tindakan_Ubah()
         {
             InitializeComponent();
@@ -52,7 +61,7 @@ namespace home
          }*/
 
        
-private void DeleteTindakan(object sender, EventArgs e)
+        private void DeleteTindakan(object sender, EventArgs e)
         {
             if (dataGridView1.SelectedRows.Count > 0)
             {
@@ -85,6 +94,7 @@ private void DeleteTindakan(object sender, EventArgs e)
 
                                 if (affected > 0)
                                 {
+                                    _cache.Remove(CacheKey);
                                     transaction.Commit();
                                     lblmsg.Text = "Data tindakan berhasil dihapus!";
                                     // Optional: Tampilkan popup
@@ -122,15 +132,37 @@ private void DeleteTindakan(object sender, EventArgs e)
 
         private void LoadData()
         {
+            // Cek apakah data sudah ada di cache
+            if (_cache.Contains(CacheKey))
+            {
+                dataGridView1.DataSource = _cache.Get(CacheKey) as DataTable;
+                return;
+            }
+
+            // Jika tidak ada di cache, ambil dari database
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = "SELECT * FROM Tindakan";
                 SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
                 DataTable dt = new DataTable();
                 adapter.Fill(dt);
+
+                // Set data ke DataGridView
                 dataGridView1.DataSource = dt;
+
+                // Simpan data ke cache
+                var policy = new CacheItemPolicy
+                {
+                    AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(10)
+                };
+
+                _cache.Set(CacheKey, dt, policy); // gunakan Set agar replace jika sudah ada
             }
         }
+
+
+
+
 
 
         private void btnUpdate_Click(object sender, EventArgs e)
@@ -194,8 +226,9 @@ private void DeleteTindakan(object sender, EventArgs e)
 
                     cmd.ExecuteNonQuery();
                     transaction.Commit();
+                    _cache.Remove(CacheKey);
 
-                   lblmsg.Text = "Data tindakan berhasil diperbarui!";
+                    lblmsg.Text = "Data tindakan berhasil diperbarui!";
                     LoadData();
                 }
                 catch (SqlException ex)
@@ -246,6 +279,13 @@ private void DeleteTindakan(object sender, EventArgs e)
             this.Hide();
             Tindakan form = new Tindakan();
             form.Show();
+
+        }
+
+        private void BtnRefresh(object sender, EventArgs e)
+        {
+            LoadData();
+            _cache.Remove(CacheKey);
         }
 
         private void dtpTanggalTindakan_ValueChanged(object sender, EventArgs e)

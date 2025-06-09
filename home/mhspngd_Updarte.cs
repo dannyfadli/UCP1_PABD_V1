@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Runtime.Caching;
+
 
 namespace home
 {
@@ -20,6 +22,12 @@ namespace home
 
         string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
 
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly CacheItemPolicy _Policy = new CacheItemPolicy
+        {
+            AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(10) // Cache akan kedaluwarsa setelah 10 menit
+        };
+        private const string CacheKey = "PengaduanData";
         public mhspngd_Updarte()
         {
             InitializeComponent();
@@ -96,7 +104,8 @@ namespace home
 
                             // Eksekusi langsung tanpa cek rowsAffected
                             cmd.ExecuteNonQuery();
-
+                            
+                            _cache.Remove(CacheKey); // Hapus cache setelah penghapusan
                             transaction.Commit();
                             lblmsg.Text = "Data Pengaduan berhasil dihapus!";
                             LoadData();
@@ -125,6 +134,12 @@ namespace home
 
         private void LoadData()
         {
+            if (_cache.Contains(CacheKey))
+            {
+                dataGridView1.DataSource = _cache.Get(CacheKey) as DataTable;
+                return;
+            }
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = "SELECT * FROM Pengaduan";
@@ -132,6 +147,13 @@ namespace home
                 DataTable dt = new DataTable();
                 adapter.Fill(dt);
                 dataGridView1.DataSource = dt;
+
+                var policy = new CacheItemPolicy
+                {
+                    AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(10) // cache 10 menit
+                };
+
+                _cache.Add(CacheKey, dt, policy);
             }
         }
 
@@ -206,6 +228,7 @@ namespace home
 
                     int result = (int)returnValue.Value;
 
+                
                     transaction.Commit();
 
                     if (result > 0)
@@ -277,6 +300,12 @@ namespace home
         private void txtDeskripsi_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void BtnRefresh(object sender, EventArgs e)
+        {
+            LoadData();
+            _cache.Remove(CacheKey);
         }
 
         private void label1_Click(object sender, EventArgs e)

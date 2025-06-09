@@ -9,6 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.Caching;
+using System.Collections;
+
 
 namespace home
 {
@@ -16,6 +19,12 @@ namespace home
     {
 
         private string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly CacheItemPolicy _Policy = new CacheItemPolicy
+        {
+            AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(10) // Cache akan kedaluwarsa setelah 10 menit
+        };
+        private const string CacheKey = "RiwayatStatusPengaduanCache";
         public form5()
         {
             InitializeComponent();
@@ -26,23 +35,35 @@ namespace home
             LoadData();
         }
 
-        private void LoadData() 
-        { 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+        private void LoadData()
+        {
+            try
             {
-                try
+                // Cek apakah data ada di cache
+                if (_cache.Contains(CacheKey))
                 {
-                    conn.Open();
-                    string query = "SELECT * FROM RiwayatStatusPengaduan";
-                    SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
-                    DataTable dataTable = new DataTable();
-                    adapter.Fill(dataTable);
-                    dataGridView1.DataSource = dataTable;
+                    dataGridView1.DataSource = (DataTable)_cache.Get(CacheKey);
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show("Error: " + ex.Message);
+                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    {
+                        conn.Open();
+                        string query = "SELECT * FROM RiwayatStatusPengaduan";
+                        SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
+                        DataTable dataTable = new DataTable();
+                        adapter.Fill(dataTable);
+
+                        dataGridView1.DataSource = dataTable;
+
+                        // Simpan data ke cache
+                        _cache.Set(CacheKey, dataTable, _Policy);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message);
             }
         }
 
@@ -84,7 +105,7 @@ namespace home
 
 
        
-private void btnUpdate_Click(object sender, EventArgs e)
+        private void btnUpdate_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtIdRiwayat.Text))
             {
@@ -176,7 +197,7 @@ private void btnUpdate_Click(object sender, EventArgs e)
         }
 
       
-private void btnDelete_Click(object sender, EventArgs e)
+        private void btnDelete_Click(object sender, EventArgs e)
         {
             if (dataGridView1.SelectedRows.Count > 0)
             {
@@ -248,6 +269,16 @@ private void btnDelete_Click(object sender, EventArgs e)
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void BtnRefresh(object sender, EventArgs e)
+        {
+            LoadData();
+            _cache.Remove(CacheKey);
+        }
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }

@@ -48,6 +48,7 @@
             this.txtIdPengaduan = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.lblmsg = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -231,11 +232,22 @@
             this.lblmsg.TabIndex = 83;
             this.lblmsg.Text = "Massage";
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(609, 389);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(102, 44);
+            this.button3.TabIndex = 84;
+            this.button3.Text = "Refresh";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.BtnRefresh);
+            // 
             // mhspngd_Updarte
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1005, 450);
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.txtNim);
@@ -287,5 +299,6 @@
         private System.Windows.Forms.TextBox txtNim;
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Label lblmsg;
+        private System.Windows.Forms.Button button3;
     }
 }

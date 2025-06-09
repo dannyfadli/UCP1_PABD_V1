@@ -46,6 +46,7 @@
             this.txtIdPendamping = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
             this.lblmsg = new System.Windows.Forms.Label();
+            this.btn_Refresh = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -206,11 +207,22 @@
             this.lblmsg.TabIndex = 102;
             this.lblmsg.Text = "Message";
             // 
+            // btn_Refresh
+            // 
+            this.btn_Refresh.Location = new System.Drawing.Point(622, 394);
+            this.btn_Refresh.Name = "btn_Refresh";
+            this.btn_Refresh.Size = new System.Drawing.Size(102, 44);
+            this.btn_Refresh.TabIndex = 103;
+            this.btn_Refresh.Text = "Refresh";
+            this.btn_Refresh.UseVisualStyleBackColor = true;
+            this.btn_Refresh.Click += new System.EventHandler(this.BtnRefresh);
+            // 
             // Tindakan_Ubah
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(999, 450);
+            this.Controls.Add(this.btn_Refresh);
             this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.txtIdPendamping);
@@ -257,5 +269,6 @@
         private System.Windows.Forms.TextBox txtIdPendamping;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label lblmsg;
+        private System.Windows.Forms.Button btn_Refresh;
     }
 }

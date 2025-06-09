@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
+using System.Runtime.Caching;
 
 namespace home
 {
@@ -11,6 +12,12 @@ namespace home
     {
         string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
 
+        private readonly MemoryCache _cache = MemoryCache.Default;
+        private readonly CacheItemPolicy _Policy = new CacheItemPolicy
+        {
+            AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(10) // Cache selama 10 menit
+        };
+        private const string CacheKey = "PendampingData";
         public Pendamping_Upadate()
         {
             InitializeComponent();
@@ -23,13 +30,26 @@ namespace home
 
         private void LoadData()
         {
+            // Cek apakah data sudah ada di cache
+            if (_cache.Contains(CacheKey))
+            {
+                dataGridView1.DataSource = _cache.Get(CacheKey) as DataTable;
+                return;
+            }
+
+            // Kalau belum ada di cache, ambil dari database
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 string query = "SELECT * FROM Pendamping";
                 SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
                 DataTable dt = new DataTable();
                 adapter.Fill(dt);
+
+                // Tampilkan ke DataGridView
                 dataGridView1.DataSource = dt;
+
+                // Simpan ke cache
+                _cache.Set(CacheKey, dt, _Policy);
             }
         }
 
@@ -54,63 +74,45 @@ namespace home
             }
         }*/
 
-        
+
         private void DeletePendamping(object sender, EventArgs e)
         {
             if (dataGridView1.SelectedRows.Count > 0)
             {
                 string id = dataGridView1.SelectedRows[0].Cells["id_pendamping"].Value.ToString();
-
-                DialogResult result = MessageBox.Show(
-                    $"Yakin ingin menghapus pendamping dengan ID: {id}?",
-                    "Konfirmasi",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning
-                );
+                DialogResult result = MessageBox.Show("Yakin ingin menghapus pendamping ini?", "Konfirmasi", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
                 if (result == DialogResult.Yes)
                 {
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
                         SqlTransaction transaction = null;
-
                         try
                         {
                             conn.Open();
                             transaction = conn.BeginTransaction();
+                            SqlCommand cmd = new SqlCommand("sp_DeletePendamping", conn, transaction);
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@id_pendamping", id);
 
-                            using (SqlCommand cmd = new SqlCommand("sp_DeletePendamping", conn, transaction))
-                            {
-                                cmd.CommandType = CommandType.StoredProcedure;
-                                cmd.Parameters.AddWithValue("@id_pendamping", id);
+                            // Eksekusi langsung tanpa cek rowsAffected
+                            cmd.ExecuteNonQuery();
 
-                                int affected = cmd.ExecuteNonQuery();
-
-                                if (affected > 0)
-                                {
-                                    transaction.Commit();
-                                    lblmsg.Text = "Data pendamping berhasil dihapus!";
-                                    // Optional: MessageBox.Show("Data pendamping berhasil dihapus!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    LoadData();
-                                }
-                                else
-                                {
-                                    transaction.Rollback();
-                                    MessageBox.Show("Data pendamping tidak ditemukan atau sudah dihapus.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                }
-                            }
+                            _cache.Remove(CacheKey); // Hapus cache setelah penghapusan
+                            transaction.Commit();
+                            lblmsg.Text = "Data Pendamping berhasil dihapus!";
+                            LoadData();
                         }
                         catch (Exception ex)
                         {
                             transaction?.Rollback();
-
                             if (ex.Message.Contains("tidak ditemukan"))
                             {
-                                MessageBox.Show("Data pendamping tidak ditemukan atau sudah dihapus.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                MessageBox.Show("Data Pendamping tidak ditemukan atau sudah dihapus.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             }
                             else
                             {
-                                MessageBox.Show("Gagal menghapus pendamping: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show("Gagal menghapus Pendamping: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
                         }
                     }
@@ -232,8 +234,25 @@ namespace home
         private void btnKembali_Click(object sender, EventArgs e)
         {
             this.Hide();
-            Form3 form = new Form3();
+            Pemdamping form = new Pemdamping();
             form.Show();
+        }
+
+
+        private void BtnRefresh(object sender, EventArgs e)
+        {
+            LoadData();
+            _cache.Remove(CacheKey);
+        }
+
+        private void txtEmail_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }

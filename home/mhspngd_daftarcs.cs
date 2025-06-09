@@ -42,6 +42,14 @@ namespace home
             DateTime tanggalPengaduan = datePickerPengaduan.Value;
             DateTime? tanggalSelesai = datePickerSelesai.Checked ? datePickerSelesai.Value : (DateTime?)null;
             string statusPengaduan = comboBoxStatus.SelectedItem?.ToString() ?? "Masuk";
+
+            if (string.IsNullOrWhiteSpace(idPengaduan) || string.IsNullOrWhiteSpace(nim) ||
+                               string.IsNullOrWhiteSpace(deskripsi) || string.IsNullOrWhiteSpace(bukti))
+            {
+                lblmsg.Text = "Semua field harus diisi!";
+                return;
+            }
+
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 SqlTransaction transaction = null;

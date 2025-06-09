@@ -352,6 +352,7 @@ namespace home
                     cmd.ExecuteNonQuery();
                     /*MessageBox.Show("Data mahasiswa berhasil di-update, nice~", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);*/
                     LoadData();
+
                     transaction.Commit();
                     lblmsg.Text = "Data mahasiswa berhasil di-update, nice~";
 
