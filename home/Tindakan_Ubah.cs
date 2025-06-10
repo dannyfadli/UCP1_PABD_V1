@@ -36,7 +36,10 @@ namespace home
             LoadData();
             cmbStatusTindakan.Items.AddRange(new string[] { "Direncanakan", "Dilaksanakan", "Ditunda" });
             cmbStatusTindakan.SelectedItem = "Direncanakan";
+
+            EnsureIndexesTindakan();
         }
+
 
         /* private void UpdateTindakan()
          {
@@ -129,6 +132,114 @@ namespace home
                 MessageBox.Show("Tekan kolom kosong paling kiri untuk memilih baris yang ingin dihapus!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
+        private void EnsureIndexesTindakan()
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                var indexScript = @"
+        IF NOT EXISTS (
+            SELECT 1 
+            FROM sys.indexes 
+            WHERE name = 'idx_Tindakan_IdPengaduan'
+              AND object_id = OBJECT_ID('dbo.Tindakan')
+        )
+        BEGIN
+            CREATE NONCLUSTERED INDEX idx_Tindakan_IdPengaduan
+            ON dbo.Tindakan(id_pengaduan);
+            PRINT 'Created idx_Tindakan_IdPengaduan';
+        END
+        ELSE
+            PRINT 'idx_Tindakan_IdPengaduan sudah ada.';
+
+        -- Indeks untuk kolom id_pendamping
+        IF NOT EXISTS (
+            SELECT 1 
+            FROM sys.indexes 
+            WHERE name = 'idx_Tindakan_IdPendamping'
+              AND object_id = OBJECT_ID('dbo.Tindakan')
+        )
+        BEGIN
+            CREATE NONCLUSTERED INDEX idx_Tindakan_IdPendamping
+            ON dbo.Tindakan(id_pendamping);
+            PRINT 'Created idx_Tindakan_IdPendamping';
+        END
+        ELSE
+            PRINT 'idx_Tindakan_IdPendamping sudah ada.';
+
+        -- Indeks untuk kolom status_tindakan
+        IF NOT EXISTS (
+            SELECT 1 
+            FROM sys.indexes 
+            WHERE name = 'idx_Tindakan_Status'
+              AND object_id = OBJECT_ID('dbo.Tindakan')
+        )
+        BEGIN
+            CREATE NONCLUSTERED INDEX idx_Tindakan_Status
+            ON dbo.Tindakan(status_tindakan);
+            PRINT 'Created idx_Tindakan_Status';
+        END
+        ELSE
+            PRINT 'idx_Tindakan_Status sudah ada.';
+        ";
+
+                using (var cmd = new SqlCommand(indexScript, conn))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private void AnalyzeQueryWithParams(string sqlQuery, Dictionary<string, object> parameters)
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.InfoMessage += (s, e) =>
+                {
+                    MessageBox.Show(e.Message, "STATISTICS INFO");
+                };
+
+                conn.Open();
+
+                var wrapped = $@"
+            SET STATISTICS IO ON;
+            SET STATISTICS TIME ON;
+            {sqlQuery};
+            SET STATISTICS IO OFF;
+            SET STATISTICS TIME OFF;";
+
+                using (var cmd = new SqlCommand(wrapped, conn))
+                {
+                    foreach (var param in parameters)
+                    {
+                        cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                    }
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private void btnAnalyzeTindakan_Click(object sender, EventArgs e)
+        {
+            string idPendamping = txtIdPendamping.Text.Trim();
+
+            string sqlQuery = @"
+        SELECT id_tindakan, id_pengaduan, deskripsi, tanggal_tindakan, status_tindakan
+        FROM dbo.Tindakan
+        WHERE id_pendamping = @idPendamping";
+
+            var parameters = new Dictionary<string, object>
+             {
+                 { "@idPendamping", idPendamping }
+             };
+
+            AnalyzeQueryWithParams(sqlQuery, parameters);
+        }
+
+
 
         private void LoadData()
         {
@@ -294,6 +405,11 @@ namespace home
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void cmbStatusTindakan_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }

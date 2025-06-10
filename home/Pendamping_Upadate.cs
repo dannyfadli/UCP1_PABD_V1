@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 using System.Runtime.Caching;
+using System.Collections.Generic;
 
 namespace home
 {
@@ -26,6 +27,7 @@ namespace home
         public void PendampingUpdate_Load(object sender, EventArgs e)
         {
             LoadData();
+            EnsureIndexesPendamping();
         }
 
         private void LoadData()
@@ -73,6 +75,118 @@ namespace home
                 }
             }
         }*/
+
+        private void EnsureIndexesPendamping()
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                var indexScript = @"
+        -- Indeks untuk kolom nama
+        IF NOT EXISTS (
+            SELECT 1 
+            FROM sys.indexes 
+            WHERE name = 'idx_Pendamping_Nama'
+              AND object_id = OBJECT_ID('dbo.Pendamping')
+        )
+        BEGIN
+            CREATE NONCLUSTERED INDEX idx_Pendamping_Nama
+            ON dbo.Pendamping(nama);
+            PRINT 'Created idx_Pendamping_Nama';
+        END
+        ELSE
+            PRINT 'idx_Pendamping_Nama sudah ada.';
+
+        -- Indeks untuk kolom no_hp
+        IF NOT EXISTS (
+            SELECT 1 
+            FROM sys.indexes 
+            WHERE name = 'idx_Pendamping_NoHP'
+              AND object_id = OBJECT_ID('dbo.Pendamping')
+        )
+        BEGIN
+            CREATE NONCLUSTERED INDEX idx_Pendamping_NoHP
+            ON dbo.Pendamping(no_hp);
+            PRINT 'Created idx_Pendamping_NoHP';
+        END
+        ELSE
+            PRINT 'idx_Pendamping_NoHP sudah ada.';
+
+        -- Indeks untuk kolom email (meskipun sudah UNIQUE)
+        IF NOT EXISTS (
+            SELECT 1 
+            FROM sys.indexes 
+            WHERE name = 'idx_Pendamping_Email'
+              AND object_id = OBJECT_ID('dbo.Pendamping')
+        )
+        BEGIN
+            CREATE NONCLUSTERED INDEX idx_Pendamping_Email
+            ON dbo.Pendamping(email);
+            PRINT 'Created idx_Pendamping_Email';
+        END
+        ELSE
+            PRINT 'idx_Pendamping_Email sudah ada.';
+        ";
+
+                using (var cmd = new SqlCommand(indexScript, conn))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        private void AnalyzeQuery(string sqlQuery, Dictionary<string, object> parameters)
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.InfoMessage += (s, e) => MessageBox.Show(e.Message, "STATISTICS INFO");
+                conn.Open();
+
+                var wrapped = $@"
+        SET STATISTICS IO ON;
+        SET STATISTICS TIME ON;
+        {sqlQuery};
+        SET STATISTICS IO OFF;
+        SET STATISTICS TIME OFF;";
+
+                using (var cmd = new SqlCommand(wrapped, conn))
+                {
+                    // Tambahkan parameter ke command
+                    foreach (var param in parameters)
+                    {
+                        cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                    }
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        private void btnAnalyzeTindakan_Click(object sender, EventArgs e)
+        {
+            string namaPendamping = txtNama.Text.Trim();
+
+            string sqlQuery = @"
+        SELECT T.id_tindakan, T.deskripsi, T.tanggal_tindakan, T.status_tindakan, P.nama
+        FROM dbo.Tindakan T
+        INNER JOIN dbo.Pendamping P ON T.id_pendamping = P.id_pendamping
+        WHERE P.nama = @namaPendamping";
+
+            var parameters = new Dictionary<string, object>
+             {
+                { "@namaPendamping", namaPendamping }
+             };
+
+            AnalyzeQuery(sqlQuery, parameters);
+        }
+
+
+
+
+
 
 
         private void DeletePendamping(object sender, EventArgs e)
@@ -139,7 +253,7 @@ namespace home
         }
 
       
-    private void btnUpdate_Click(object sender, EventArgs e)
+        private void btnUpdate_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtIdPendamping.Text) || string.IsNullOrWhiteSpace(txtNama.Text))
             {

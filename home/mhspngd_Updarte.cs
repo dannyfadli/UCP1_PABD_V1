@@ -37,6 +37,8 @@ namespace home
         {
             LoadData();
             dtpTglSelesai.ShowCheckBox = true;
+
+            EnsureIndexesPengaduan();
         }
 
         /*private void UpdatePengaduan()
@@ -189,7 +191,8 @@ namespace home
                         else if (!txtDeskripsi.Text.Equals(reader["deskripsi"].ToString())) isChanged = true;
                         else if (!txtBukti.Text.Equals(reader["bukti"].ToString())) isChanged = true;
                         else if (dtpTglPengaduan.Value.Date != Convert.ToDateTime(reader["tanggal_pengaduan"]).Date) isChanged = true;
-                        else if (dtpTglSelesai.Value.Date != Convert.ToDateTime(reader["tanggal_selesai"]).Date) isChanged = true;
+                        else if (!(reader["tanggal_selesai"] is DBNull) && dtpTglSelesai.Value.Date != Convert.ToDateTime(reader["tanggal_selesai"]).Date)
+                            isChanged = true;
                         else if (!cmbStatus.SelectedItem.ToString().Equals(reader["status_pengaduan"].ToString())) isChanged = true;
 
                         reader.Close();
@@ -266,6 +269,116 @@ namespace home
                 }
             }
         }
+
+        private void EnsureIndexesPengaduan()
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                var indexScript = @"
+        -- Indeks untuk mempercepat filter berdasarkan nim
+        IF NOT EXISTS (
+            SELECT 1 
+            FROM sys.indexes 
+            WHERE name = 'idx_Pengaduan_NIM'
+              AND object_id = OBJECT_ID('dbo.Pengaduan')
+        )
+        BEGIN
+            CREATE NONCLUSTERED INDEX idx_Pengaduan_NIM
+            ON dbo.Pengaduan(nim);
+            PRINT 'Created idx_Pengaduan_NIM';
+        END
+        ELSE
+            PRINT 'idx_Pengaduan_NIM sudah ada.';
+
+        -- Indeks untuk mempercepat filter berdasarkan status_pengaduan
+        IF NOT EXISTS (
+            SELECT 1 
+            FROM sys.indexes 
+            WHERE name = 'idx_Pengaduan_Status'
+              AND object_id = OBJECT_ID('dbo.Pengaduan')
+        )
+        BEGIN
+            CREATE NONCLUSTERED INDEX idx_Pengaduan_Status
+            ON dbo.Pengaduan(status_pengaduan);
+            PRINT 'Created idx_Pengaduan_Status';
+        END
+        ELSE
+            PRINT 'idx_Pengaduan_Status sudah ada.';
+
+        -- Indeks gabungan untuk pencarian berdasarkan tanggal dan status
+        IF NOT EXISTS (
+            SELECT 1 
+            FROM sys.indexes 
+            WHERE name = 'idx_Pengaduan_Tanggal_Status'
+              AND object_id = OBJECT_ID('dbo.Pengaduan')
+        )
+        BEGIN
+            CREATE NONCLUSTERED INDEX idx_Pengaduan_Tanggal_Status
+            ON dbo.Pengaduan(tanggal_pengaduan, status_pengaduan);
+            PRINT 'Created idx_Pengaduan_Tanggal_Status';
+        END
+        ELSE
+            PRINT 'idx_Pengaduan_Tanggal_Status sudah ada.';
+        ";
+
+                using (var cmd = new SqlCommand(indexScript, conn))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private void AnalyzeQuery(string sqlQuery, Dictionary<string, object> parameters = null)
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.InfoMessage += (s, e) => MessageBox.Show(e.Message, "STATISTICS INFO");
+                conn.Open();
+
+                var wrapped = $@"
+        SET STATISTICS IO ON;
+        SET STATISTICS TIME ON;
+        {sqlQuery}
+        SET STATISTICS IO OFF;
+        SET STATISTICS TIME OFF;";
+
+                using (var cmd = new SqlCommand(wrapped, conn))
+                {
+                    // Tambahkan parameter jika ada
+                    if (parameters != null)
+                    {
+                        foreach (var param in parameters)
+                        {
+                            cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                        }
+                    }
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        private void btnAnalyze_Click(object sender, EventArgs e)
+        {
+            string nim = txtNim.Text.Trim();
+            string status = cmbStatus.SelectedItem?.ToString();
+
+            string sqlQuery = "SELECT * FROM Pengaduan WHERE nim = @nim AND status_pengaduan = @status";
+
+            var parameters = new Dictionary<string, object>
+            {
+                { "@nim", nim },
+                { "@status", status }
+
+            };
+
+            AnalyzeQuery(sqlQuery, parameters);
+        }
+
+
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {

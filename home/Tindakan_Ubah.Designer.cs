@@ -47,6 +47,7 @@
             this.button3 = new System.Windows.Forms.Button();
             this.lblmsg = new System.Windows.Forms.Label();
             this.btn_Refresh = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -97,6 +98,7 @@
             this.cmbStatusTindakan.Name = "cmbStatusTindakan";
             this.cmbStatusTindakan.Size = new System.Drawing.Size(353, 24);
             this.cmbStatusTindakan.TabIndex = 98;
+            this.cmbStatusTindakan.SelectedIndexChanged += new System.EventHandler(this.cmbStatusTindakan_SelectedIndexChanged);
             // 
             // dtpTanggalTindakan
             // 
@@ -217,11 +219,22 @@
             this.btn_Refresh.UseVisualStyleBackColor = true;
             this.btn_Refresh.Click += new System.EventHandler(this.BtnRefresh);
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(814, 394);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(102, 44);
+            this.button4.TabIndex = 104;
+            this.button4.Text = "Analyze";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.btnAnalyzeTindakan_Click);
+            // 
             // Tindakan_Ubah
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(999, 450);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.btn_Refresh);
             this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.button3);
@@ -270,5 +283,6 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Label lblmsg;
         private System.Windows.Forms.Button btn_Refresh;
+        private System.Windows.Forms.Button button4;
     }
 }

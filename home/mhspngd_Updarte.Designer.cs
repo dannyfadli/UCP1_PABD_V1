@@ -49,6 +49,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.lblmsg = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -242,11 +243,22 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.BtnRefresh);
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(762, 389);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(102, 44);
+            this.button4.TabIndex = 85;
+            this.button4.Text = "Analyze";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.btnAnalyze_Click);
+            // 
             // mhspngd_Updarte
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1005, 450);
+            this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.btnDelete);
@@ -300,5 +312,6 @@
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.Label lblmsg;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
     }
 }
