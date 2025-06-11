@@ -33,6 +33,7 @@ namespace home
         private void form5_Load(object sender, EventArgs e)
         {
             LoadData();
+            EnsureIndexesRiwayatStatusPengaduan();
         }
 
         private void LoadData()
@@ -103,8 +104,172 @@ namespace home
          }*/
 
 
+        private void AnalyzeQuery(string sqlQuery)
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.InfoMessage += (s, e) => MessageBox.Show(e.Message, "STATISTICS INFO");
+                conn.Open();
 
-       
+                var wrapped = $@"
+            SET STATISTICS IO ON;
+            SET STATISTICS TIME ON;
+            {sqlQuery};
+            SET STATISTICS IO OFF;
+            SET STATISTICS TIME OFF;";
+
+                using (var cmd = new SqlCommand(wrapped, conn))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        private void AnalyzeRiwayatStatusQuery(string sqlQuery, Dictionary<string, object> parameters = null)
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                // Menampilkan hasil STATISTICS IO dan TIME lewat MessageBox
+                conn.InfoMessage += (s, e) =>
+                {
+                    MessageBox.Show(e.Message, "STATISTICS INFO");
+                };
+
+                conn.Open();
+
+                string wrapped = $@"
+SET STATISTICS IO ON;
+SET STATISTICS TIME ON;
+
+{sqlQuery}
+
+SET STATISTICS IO OFF;
+SET STATISTICS TIME OFF;
+";
+
+                using (var cmd = new SqlCommand(wrapped, conn))
+                {
+                    // Tambahkan parameter jika ada
+                    if (parameters != null)
+                    {
+                        foreach (var param in parameters)
+                        {
+                            cmd.Parameters.AddWithValue(param.Key, param.Value ?? DBNull.Value);
+                        }
+                    }
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        private void btnAnalyze_Click(object sender, EventArgs e)
+        {
+            // Contoh: Kamu bisa mengganti query ini sesuai kebutuhan analisis
+            string query = @"
+SELECT * 
+FROM RiwayatStatusPengaduan 
+WHERE id_pengaduan = @id_pengaduan AND status_baru = @status_baru";
+
+            var parameters = new Dictionary<string, object>
+    {
+        { "@id_pengaduan", "P01" },
+        { "@status_baru", "Diproses" }
+    };
+
+            try
+            {
+                AnalyzeRiwayatStatusQuery(query, parameters);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Gagal menganalisis query:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+
+
+        private void EnsureIndexesRiwayatStatusPengaduan()
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+
+                var indexScript = @"
+                -- Indeks gabungan untuk pencarian berdasarkan id_pengaduan dan status_baru
+                IF NOT EXISTS (
+                    SELECT 1 
+                    FROM sys.indexes 
+                    WHERE name = 'idx_Riwayat_Pengaduan_Status'
+                      AND object_id = OBJECT_ID('dbo.RiwayatStatusPengaduan')
+                )
+                BEGIN
+                    CREATE NONCLUSTERED INDEX idx_Riwayat_Pengaduan_Status
+                    ON dbo.RiwayatStatusPengaduan(id_pengaduan, status_baru);
+                    PRINT 'Created idx_Riwayat_Pengaduan_Status';
+                END
+                ELSE
+                    PRINT 'idx_Riwayat_Pengaduan_Status sudah ada.';
+
+                -- Indeks untuk kolom tanggal_perubahan
+                IF NOT EXISTS (
+                    SELECT 1 
+                    FROM sys.indexes 
+                    WHERE name = 'idx_Riwayat_Tanggal'
+                      AND object_id = OBJECT_ID('dbo.RiwayatStatusPengaduan')
+                )
+                BEGIN
+                    CREATE NONCLUSTERED INDEX idx_Riwayat_Tanggal
+                    ON dbo.RiwayatStatusPengaduan(tanggal_perubahan);
+                    PRINT 'Created idx_Riwayat_Tanggal';
+                END
+                ELSE
+                    PRINT 'idx_Riwayat_Tanggal sudah ada.';
+
+                -- Indeks untuk kolom status_baru
+                IF NOT EXISTS (
+                    SELECT 1 
+                    FROM sys.indexes 
+                    WHERE name = 'idx_Riwayat_StatusBaru'
+                      AND object_id = OBJECT_ID('dbo.RiwayatStatusPengaduan')
+                )
+                BEGIN
+                    CREATE NONCLUSTERED INDEX idx_Riwayat_StatusBaru
+                    ON dbo.RiwayatStatusPengaduan(status_baru);
+                    PRINT 'Created idx_Riwayat_StatusBaru';
+                END
+                ELSE
+                    PRINT 'idx_Riwayat_StatusBaru sudah ada.';
+
+                -- Indeks gabungan untuk id_pengaduan, status_baru, dan tanggal_perubahan
+                IF NOT EXISTS (
+                    SELECT 1 
+                    FROM sys.indexes 
+                    WHERE name = 'idx_Riwayat_Multi'
+                      AND object_id = OBJECT_ID('dbo.RiwayatStatusPengaduan')
+                )
+                BEGIN
+                    CREATE NONCLUSTERED INDEX idx_Riwayat_Multi
+                    ON dbo.RiwayatStatusPengaduan(id_pengaduan, status_baru, tanggal_perubahan);
+                    PRINT 'Created idx_Riwayat_Multi';
+                END
+                ELSE
+                    PRINT 'idx_Riwayat_Multi sudah ada.';
+                ";
+
+                using (var cmd = new SqlCommand(indexScript, conn))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+
+
         private void btnUpdate_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrWhiteSpace(txtIdRiwayat.Text))
@@ -196,12 +361,27 @@ namespace home
             }
         }
 
-      
+
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (dataGridView1.SelectedRows.Count > 0)
             {
-                string id = dataGridView1.SelectedRows[0].Cells["id_riwayat"].Value.ToString();
+                var selectedCell = dataGridView1.SelectedRows[0].Cells["id_riwayat"].Value;
+
+                if (selectedCell == null || string.IsNullOrWhiteSpace(selectedCell.ToString()))
+                {
+                    MessageBox.Show("ID tidak valid.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                string id = selectedCell.ToString();
+
+                // Validasi format ID: harus 3 karakter dan seperti R01, R02, dst.
+                if (!System.Text.RegularExpressions.Regex.IsMatch(id, @"^R\d{2}$"))
+                {
+                    MessageBox.Show("Format ID riwayat tidak valid. Gunakan format R01, R02, dst.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
 
                 DialogResult result = MessageBox.Show(
                     $"Yakin ingin menghapus data dengan ID: {id}?",
@@ -224,22 +404,13 @@ namespace home
                             using (SqlCommand cmd = new SqlCommand("sp_DeleteRiwayatStatusPengaduan", conn, transaction))
                             {
                                 cmd.CommandType = CommandType.StoredProcedure;
-                                cmd.Parameters.AddWithValue("@id_riwayat", id);
+                                cmd.Parameters.Add("@id_riwayat", SqlDbType.Char, 3).Value = id;
 
-                                int affected = cmd.ExecuteNonQuery();
+                                cmd.ExecuteNonQuery();
 
-                                if (affected > 0)
-                                {
-                                    transaction.Commit();
-                                    lblmsg.Text = "Data berhasil dihapus.";
-                                    // Optional: MessageBox.Show("Data berhasil dihapus.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    LoadData();
-                                }
-                                else
-                                {
-                                    transaction.Rollback();
-                                    MessageBox.Show("Data tidak ditemukan atau sudah dihapus.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                }
+                                transaction.Commit();
+                                lblmsg.Text = "Data berhasil dihapus.";
+                                LoadData();
                             }
                         }
                         catch (SqlException ex)
