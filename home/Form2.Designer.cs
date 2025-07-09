@@ -40,10 +40,10 @@
             // 
             this.button2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(399, 235);
+            this.button2.Location = new System.Drawing.Point(894, 341);
             this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(288, 72);
+            this.button2.Size = new System.Drawing.Size(328, 104);
             this.button2.TabIndex = 21;
             this.button2.Text = "Pendamping";
             this.button2.UseVisualStyleBackColor = true;
@@ -53,10 +53,10 @@
             // 
             this.button4.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button4.Location = new System.Drawing.Point(65, 235);
+            this.button4.Location = new System.Drawing.Point(536, 341);
             this.button4.Margin = new System.Windows.Forms.Padding(4);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(288, 72);
+            this.button4.Size = new System.Drawing.Size(328, 104);
             this.button4.TabIndex = 20;
             this.button4.Text = "Tindakan";
             this.button4.UseVisualStyleBackColor = true;
@@ -66,10 +66,10 @@
             // 
             this.button3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(399, 117);
+            this.button3.Location = new System.Drawing.Point(894, 208);
             this.button3.Margin = new System.Windows.Forms.Padding(4);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(288, 72);
+            this.button3.Size = new System.Drawing.Size(328, 104);
             this.button3.TabIndex = 19;
             this.button3.Text = "Pengaduan";
             this.button3.UseVisualStyleBackColor = true;
@@ -79,10 +79,10 @@
             // 
             this.botton2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.botton2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botton2.Location = new System.Drawing.Point(67, 354);
+            this.botton2.Location = new System.Drawing.Point(538, 476);
             this.botton2.Margin = new System.Windows.Forms.Padding(4);
             this.botton2.Name = "botton2";
-            this.botton2.Size = new System.Drawing.Size(288, 72);
+            this.botton2.Size = new System.Drawing.Size(328, 104);
             this.botton2.TabIndex = 18;
             this.botton2.Text = "Riwayat Status";
             this.botton2.UseVisualStyleBackColor = true;
@@ -92,10 +92,10 @@
             // 
             this.button1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(65, 115);
+            this.button1.Location = new System.Drawing.Point(536, 206);
             this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(290, 74);
+            this.button1.Size = new System.Drawing.Size(330, 106);
             this.button1.TabIndex = 17;
             this.button1.Text = "Mahasiswa";
             this.button1.UseVisualStyleBackColor = true;
@@ -105,10 +105,10 @@
             // 
             this.button5.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(399, 354);
+            this.button5.Location = new System.Drawing.Point(894, 476);
             this.button5.Margin = new System.Windows.Forms.Padding(4);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(288, 72);
+            this.button5.Size = new System.Drawing.Size(328, 104);
             this.button5.TabIndex = 22;
             this.button5.Text = "Laporan";
             this.button5.UseVisualStyleBackColor = true;
@@ -118,7 +118,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(816, 582);
+            this.ClientSize = new System.Drawing.Size(1838, 859);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button4);

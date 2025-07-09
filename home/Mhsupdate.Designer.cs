@@ -59,9 +59,10 @@
             // textBox1
             // 
             this.textBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.textBox1.Location = new System.Drawing.Point(914, 552);
+            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBox1.Location = new System.Drawing.Point(933, 544);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(635, 22);
+            this.textBox1.Size = new System.Drawing.Size(705, 30);
             this.textBox1.TabIndex = 60;
             this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
@@ -117,6 +118,7 @@
             // 
             this.comboBoxFakultas.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.comboBoxFakultas.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxFakultas.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxFakultas.FormattingEnabled = true;
             this.comboBoxFakultas.Items.AddRange(new object[] {
             "Teknik",
@@ -128,9 +130,9 @@
             "Kedokteran dan Ilmu Kesehatan",
             "Pertanian",
             "Vokasi"});
-            this.comboBoxFakultas.Location = new System.Drawing.Point(419, 354);
+            this.comboBoxFakultas.Location = new System.Drawing.Point(419, 345);
             this.comboBoxFakultas.Name = "comboBoxFakultas";
-            this.comboBoxFakultas.Size = new System.Drawing.Size(338, 24);
+            this.comboBoxFakultas.Size = new System.Drawing.Size(338, 33);
             this.comboBoxFakultas.TabIndex = 55;
             this.comboBoxFakultas.SelectedIndexChanged += new System.EventHandler(this.comboBoxFakultas_SelectedIndexChanged_1);
             // 
@@ -138,6 +140,7 @@
             // 
             this.comboBoxProdi.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.comboBoxProdi.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxProdi.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxProdi.FormattingEnabled = true;
             this.comboBoxProdi.Items.AddRange(new object[] {
             "Teknik Mesin",
@@ -164,9 +167,9 @@
             "Agribisnis",
             "Teknologi Rekayasa Otomotif",
             "Teknik Elektro-medis"});
-            this.comboBoxProdi.Location = new System.Drawing.Point(419, 398);
+            this.comboBoxProdi.Location = new System.Drawing.Point(419, 389);
             this.comboBoxProdi.Name = "comboBoxProdi";
-            this.comboBoxProdi.Size = new System.Drawing.Size(338, 24);
+            this.comboBoxProdi.Size = new System.Drawing.Size(338, 33);
             this.comboBoxProdi.TabIndex = 54;
             // 
             // button3
@@ -184,13 +187,14 @@
             // comboBox1
             // 
             this.comboBox1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.comboBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "L",
             "P"});
-            this.comboBox1.Location = new System.Drawing.Point(419, 303);
+            this.comboBox1.Location = new System.Drawing.Point(419, 294);
             this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(338, 24);
+            this.comboBox1.Size = new System.Drawing.Size(338, 33);
             this.comboBox1.TabIndex = 52;
             // 
             // button1
@@ -311,35 +315,39 @@
             // txtEmail
             // 
             this.txtEmail.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.txtEmail.Location = new System.Drawing.Point(419, 501);
+            this.txtEmail.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtEmail.Location = new System.Drawing.Point(419, 492);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(338, 22);
+            this.txtEmail.Size = new System.Drawing.Size(338, 30);
             this.txtEmail.TabIndex = 41;
             this.txtEmail.TextChanged += new System.EventHandler(this.txtEmail_TextChanged);
             // 
             // txtNoHP
             // 
             this.txtNoHP.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.txtNoHP.Location = new System.Drawing.Point(419, 450);
+            this.txtNoHP.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNoHP.Location = new System.Drawing.Point(419, 441);
             this.txtNoHP.Name = "txtNoHP";
-            this.txtNoHP.Size = new System.Drawing.Size(338, 22);
+            this.txtNoHP.Size = new System.Drawing.Size(338, 30);
             this.txtNoHP.TabIndex = 40;
             this.txtNoHP.Text = "62";
             // 
             // txtNama
             // 
             this.txtNama.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.txtNama.Location = new System.Drawing.Point(419, 260);
+            this.txtNama.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNama.Location = new System.Drawing.Point(419, 251);
             this.txtNama.Name = "txtNama";
-            this.txtNama.Size = new System.Drawing.Size(338, 22);
+            this.txtNama.Size = new System.Drawing.Size(338, 30);
             this.txtNama.TabIndex = 36;
             // 
             // txtNim
             // 
             this.txtNim.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.txtNim.Location = new System.Drawing.Point(419, 219);
+            this.txtNim.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNim.Location = new System.Drawing.Point(419, 210);
             this.txtNim.Name = "txtNim";
-            this.txtNim.Size = new System.Drawing.Size(338, 22);
+            this.txtNim.Size = new System.Drawing.Size(338, 30);
             this.txtNim.TabIndex = 35;
             // 
             // label1
@@ -358,7 +366,7 @@
             this.label9.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(817, 548);
+            this.label9.Location = new System.Drawing.Point(837, 547);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(100, 25);
             this.label9.TabIndex = 61;

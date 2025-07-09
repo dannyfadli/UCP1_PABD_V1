@@ -39,7 +39,7 @@
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Showcard Gothic", 28.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(92, 30);
+            this.label1.Location = new System.Drawing.Point(620, 236);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(586, 59);
             this.label1.TabIndex = 4;
@@ -50,7 +50,7 @@
             // 
             this.button1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(292, 264);
+            this.button1.Location = new System.Drawing.Point(824, 466);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(152, 60);
             this.button1.TabIndex = 3;
@@ -61,25 +61,27 @@
             // txtPassword
             // 
             this.txtPassword.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.txtPassword.Location = new System.Drawing.Point(245, 193);
+            this.txtPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPassword.Location = new System.Drawing.Point(775, 389);
             this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(256, 22);
+            this.txtPassword.Size = new System.Drawing.Size(256, 45);
             this.txtPassword.TabIndex = 2;
             this.txtPassword.UseSystemPasswordChar = true;
             // 
             // txtuser
             // 
             this.txtuser.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.txtuser.Location = new System.Drawing.Point(245, 126);
+            this.txtuser.Font = new System.Drawing.Font("Microsoft Sans Serif", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtuser.Location = new System.Drawing.Point(775, 322);
             this.txtuser.Name = "txtuser";
-            this.txtuser.Size = new System.Drawing.Size(256, 22);
+            this.txtuser.Size = new System.Drawing.Size(256, 45);
             this.txtuser.TabIndex = 0;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 544);
+            this.ClientSize = new System.Drawing.Size(1836, 859);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.txtPassword);

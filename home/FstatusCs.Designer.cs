@@ -43,9 +43,11 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(12, 399);
+            this.button4.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button4.Location = new System.Drawing.Point(41, 765);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(98, 39);
+            this.button4.Size = new System.Drawing.Size(134, 59);
             this.button4.TabIndex = 39;
             this.button4.Text = "Kembali";
             this.button4.UseVisualStyleBackColor = true;
@@ -53,43 +55,53 @@
             // 
             // datePickerSelesai
             // 
-            this.datePickerSelesai.Location = new System.Drawing.Point(185, 216);
+            this.datePickerSelesai.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.datePickerSelesai.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.datePickerSelesai.Location = new System.Drawing.Point(878, 447);
             this.datePickerSelesai.Name = "datePickerSelesai";
-            this.datePickerSelesai.Size = new System.Drawing.Size(400, 22);
+            this.datePickerSelesai.Size = new System.Drawing.Size(400, 30);
             this.datePickerSelesai.TabIndex = 58;
             // 
             // label8
             // 
+            this.label8.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(27, 107);
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(610, 338);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(99, 16);
+            this.label8.Size = new System.Drawing.Size(161, 25);
             this.label8.TabIndex = 57;
-            this.label8.Text = "id_pengaduan*";
+            this.label8.Text = "Id_Pengaduan*";
             // 
             // label5
             // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 206);
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(610, 447);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(129, 16);
+            this.label5.Size = new System.Drawing.Size(217, 25);
             this.label5.TabIndex = 56;
-            this.label5.Text = "tanggal_perubahan*";
+            this.label5.Text = "Tanggal_Perubahan*";
             // 
             // label4
             // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(27, 56);
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(610, 286);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(72, 16);
+            this.label4.Size = new System.Drawing.Size(126, 25);
             this.label4.TabIndex = 55;
-            this.label4.Text = "id_riwayat*";
+            this.label4.Text = "Id_Riwayat*";
             // 
             // txtIdRiwayat
             // 
-            this.txtIdRiwayat.Location = new System.Drawing.Point(185, 50);
+            this.txtIdRiwayat.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtIdRiwayat.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtIdRiwayat.Location = new System.Drawing.Point(878, 281);
             this.txtIdRiwayat.Name = "txtIdRiwayat";
-            this.txtIdRiwayat.Size = new System.Drawing.Size(400, 22);
+            this.txtIdRiwayat.Size = new System.Drawing.Size(400, 30);
             this.txtIdRiwayat.TabIndex = 53;
             this.txtIdRiwayat.TextChanged += new System.EventHandler(this.txtIdRiwayat_TextChanged);
             this.txtIdRiwayat.Enter += new System.EventHandler(this.txtIdRiwayat_Enter);
@@ -97,31 +109,37 @@
             // 
             // comboBoxStatus
             // 
+            this.comboBoxStatus.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.comboBoxStatus.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxStatus.FormattingEnabled = true;
             this.comboBoxStatus.Items.AddRange(new object[] {
             "Masuk",
             "Diproses",
             "Selesai"});
-            this.comboBoxStatus.Location = new System.Drawing.Point(185, 154);
+            this.comboBoxStatus.Location = new System.Drawing.Point(878, 385);
             this.comboBoxStatus.Name = "comboBoxStatus";
-            this.comboBoxStatus.Size = new System.Drawing.Size(400, 24);
+            this.comboBoxStatus.Size = new System.Drawing.Size(400, 33);
             this.comboBoxStatus.TabIndex = 60;
             // 
             // label1
             // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(29, 162);
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(610, 393);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(81, 16);
+            this.label1.Size = new System.Drawing.Size(140, 25);
             this.label1.TabIndex = 59;
-            this.label1.Text = "status_baru*";
+            this.label1.Text = "Status_Baru*";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(600, 381);
+            this.button1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(1668, 765);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(98, 39);
+            this.button1.Size = new System.Drawing.Size(134, 59);
             this.button1.TabIndex = 61;
             this.button1.Text = "Submit";
             this.button1.UseVisualStyleBackColor = true;
@@ -129,18 +147,22 @@
             // 
             // comboIdPengaduan
             // 
+            this.comboIdPengaduan.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.comboIdPengaduan.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboIdPengaduan.FormattingEnabled = true;
-            this.comboIdPengaduan.Location = new System.Drawing.Point(185, 99);
+            this.comboIdPengaduan.Location = new System.Drawing.Point(878, 330);
             this.comboIdPengaduan.Name = "comboIdPengaduan";
-            this.comboIdPengaduan.Size = new System.Drawing.Size(400, 24);
+            this.comboIdPengaduan.Size = new System.Drawing.Size(400, 33);
             this.comboIdPengaduan.TabIndex = 62;
             // 
             // lblmsg
             // 
+            this.lblmsg.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblmsg.AutoSize = true;
-            this.lblmsg.Location = new System.Drawing.Point(182, 259);
+            this.lblmsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblmsg.Location = new System.Drawing.Point(873, 499);
             this.lblmsg.Name = "lblmsg";
-            this.lblmsg.Size = new System.Drawing.Size(64, 16);
+            this.lblmsg.Size = new System.Drawing.Size(100, 25);
             this.lblmsg.TabIndex = 63;
             this.lblmsg.Text = "Massage";
             // 
@@ -148,7 +170,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1840, 863);
             this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.comboIdPengaduan);
             this.Controls.Add(this.button1);
@@ -162,6 +184,7 @@
             this.Controls.Add(this.button4);
             this.Name = "FstatusCs";
             this.Text = "FstatusCs";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.FstatusCs_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

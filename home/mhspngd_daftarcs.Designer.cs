@@ -152,26 +152,29 @@
             // txtBukti
             // 
             this.txtBukti.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.txtBukti.Location = new System.Drawing.Point(834, 419);
+            this.txtBukti.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtBukti.Location = new System.Drawing.Point(834, 413);
             this.txtBukti.Name = "txtBukti";
-            this.txtBukti.Size = new System.Drawing.Size(497, 22);
+            this.txtBukti.Size = new System.Drawing.Size(497, 30);
             this.txtBukti.TabIndex = 39;
             // 
             // txtDeskripsi
             // 
             this.txtDeskripsi.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.txtDeskripsi.Location = new System.Drawing.Point(834, 368);
+            this.txtDeskripsi.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDeskripsi.Location = new System.Drawing.Point(834, 362);
             this.txtDeskripsi.Name = "txtDeskripsi";
-            this.txtDeskripsi.Size = new System.Drawing.Size(497, 22);
+            this.txtDeskripsi.Size = new System.Drawing.Size(497, 30);
             this.txtDeskripsi.TabIndex = 38;
             // 
             // txtIdPengaduan
             // 
             this.txtIdPengaduan.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtIdPengaduan.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtIdPengaduan.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.txtIdPengaduan.Location = new System.Drawing.Point(834, 282);
+            this.txtIdPengaduan.Location = new System.Drawing.Point(834, 276);
             this.txtIdPengaduan.Name = "txtIdPengaduan";
-            this.txtIdPengaduan.Size = new System.Drawing.Size(497, 22);
+            this.txtIdPengaduan.Size = new System.Drawing.Size(497, 30);
             this.txtIdPengaduan.TabIndex = 36;
             this.txtIdPengaduan.Enter += new System.EventHandler(this.txtIdPengaduan_Enter);
             this.txtIdPengaduan.Leave += new System.EventHandler(this.txtIdPengaduan_Leave);
@@ -191,40 +194,44 @@
             // datePickerPengaduan
             // 
             this.datePickerPengaduan.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.datePickerPengaduan.Location = new System.Drawing.Point(834, 469);
+            this.datePickerPengaduan.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.datePickerPengaduan.Location = new System.Drawing.Point(834, 463);
             this.datePickerPengaduan.Name = "datePickerPengaduan";
-            this.datePickerPengaduan.Size = new System.Drawing.Size(497, 22);
+            this.datePickerPengaduan.Size = new System.Drawing.Size(497, 30);
             this.datePickerPengaduan.TabIndex = 52;
             // 
             // datePickerSelesai
             // 
             this.datePickerSelesai.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.datePickerSelesai.Location = new System.Drawing.Point(834, 513);
+            this.datePickerSelesai.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.datePickerSelesai.Location = new System.Drawing.Point(834, 507);
             this.datePickerSelesai.Name = "datePickerSelesai";
-            this.datePickerSelesai.Size = new System.Drawing.Size(497, 22);
+            this.datePickerSelesai.Size = new System.Drawing.Size(497, 30);
             this.datePickerSelesai.TabIndex = 53;
             this.datePickerSelesai.Value = new System.DateTime(2025, 4, 23, 19, 43, 11, 0);
             // 
             // comboBoxStatus
             // 
             this.comboBoxStatus.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.comboBoxStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxStatus.FormattingEnabled = true;
             this.comboBoxStatus.Items.AddRange(new object[] {
             "Masuk",
             "Diproses ",
             "Selesai"});
-            this.comboBoxStatus.Location = new System.Drawing.Point(834, 566);
+            this.comboBoxStatus.Location = new System.Drawing.Point(834, 560);
             this.comboBoxStatus.Name = "comboBoxStatus";
-            this.comboBoxStatus.Size = new System.Drawing.Size(497, 24);
+            this.comboBoxStatus.Size = new System.Drawing.Size(497, 33);
             this.comboBoxStatus.TabIndex = 54;
             // 
             // comboNIM
             // 
             this.comboNIM.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.comboNIM.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboNIM.FormattingEnabled = true;
-            this.comboNIM.Location = new System.Drawing.Point(834, 321);
+            this.comboNIM.Location = new System.Drawing.Point(834, 315);
             this.comboNIM.Name = "comboNIM";
-            this.comboNIM.Size = new System.Drawing.Size(497, 24);
+            this.comboNIM.Size = new System.Drawing.Size(497, 33);
             this.comboNIM.TabIndex = 55;
             this.comboNIM.SelectedIndexChanged += new System.EventHandler(this.comboNIM_SelectedIndexChanged);
             // 
@@ -233,7 +240,7 @@
             this.lblmsg.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblmsg.AutoSize = true;
             this.lblmsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblmsg.Location = new System.Drawing.Point(829, 623);
+            this.lblmsg.Location = new System.Drawing.Point(829, 613);
             this.lblmsg.Name = "lblmsg";
             this.lblmsg.Size = new System.Drawing.Size(100, 25);
             this.lblmsg.TabIndex = 56;

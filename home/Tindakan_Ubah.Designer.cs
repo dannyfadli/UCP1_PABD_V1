@@ -53,9 +53,11 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(223, 394);
+            this.button1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(532, 610);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(102, 44);
+            this.button1.Size = new System.Drawing.Size(124, 60);
             this.button1.TabIndex = 87;
             this.button1.Text = "Update";
             this.button1.UseVisualStyleBackColor = true;
@@ -63,21 +65,24 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(543, 49);
+            this.dataGridView1.Location = new System.Drawing.Point(947, 247);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
-            this.dataGridView1.Size = new System.Drawing.Size(395, 304);
+            this.dataGridView1.Size = new System.Drawing.Size(505, 282);
             this.dataGridView1.TabIndex = 86;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(13, 396);
+            this.button2.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(44, 763);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(102, 44);
+            this.button2.Size = new System.Drawing.Size(124, 60);
             this.button2.TabIndex = 85;
             this.button2.Text = "Kembali";
             this.button2.UseVisualStyleBackColor = true;
@@ -85,116 +90,144 @@
             // 
             // label1
             // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(294, 9);
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(708, 207);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(0, 16);
+            this.label1.Size = new System.Drawing.Size(0, 25);
             this.label1.TabIndex = 80;
             // 
             // cmbStatusTindakan
             // 
+            this.cmbStatusTindakan.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.cmbStatusTindakan.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbStatusTindakan.FormattingEnabled = true;
-            this.cmbStatusTindakan.Location = new System.Drawing.Point(168, 293);
+            this.cmbStatusTindakan.Location = new System.Drawing.Point(519, 491);
             this.cmbStatusTindakan.Name = "cmbStatusTindakan";
-            this.cmbStatusTindakan.Size = new System.Drawing.Size(353, 24);
+            this.cmbStatusTindakan.Size = new System.Drawing.Size(402, 33);
             this.cmbStatusTindakan.TabIndex = 98;
             this.cmbStatusTindakan.SelectedIndexChanged += new System.EventHandler(this.cmbStatusTindakan_SelectedIndexChanged);
             // 
             // dtpTanggalTindakan
             // 
-            this.dtpTanggalTindakan.Location = new System.Drawing.Point(167, 237);
+            this.dtpTanggalTindakan.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.dtpTanggalTindakan.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.dtpTanggalTindakan.Location = new System.Drawing.Point(518, 435);
             this.dtpTanggalTindakan.Name = "dtpTanggalTindakan";
-            this.dtpTanggalTindakan.Size = new System.Drawing.Size(353, 22);
+            this.dtpTanggalTindakan.Size = new System.Drawing.Size(402, 30);
             this.dtpTanggalTindakan.TabIndex = 96;
             this.dtpTanggalTindakan.ValueChanged += new System.EventHandler(this.dtpTanggalTindakan_ValueChanged);
             // 
             // label7
             // 
+            this.label7.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(10, 243);
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(276, 438);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(121, 16);
+            this.label7.Size = new System.Drawing.Size(194, 25);
             this.label7.TabIndex = 95;
             this.label7.Text = "Tanggal_tindakan*";
             // 
             // label6
             // 
+            this.label6.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(10, 193);
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(276, 388);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(69, 16);
+            this.label6.Size = new System.Drawing.Size(110, 25);
             this.label6.TabIndex = 94;
             this.label6.Text = "Deskripsi*";
             // 
             // label5
             // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(10, 149);
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(276, 344);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(106, 16);
+            this.label5.Size = new System.Drawing.Size(169, 25);
             this.label5.TabIndex = 93;
             this.label5.Text = "Id_pendamping*";
             // 
             // label4
             // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(10, 293);
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(276, 488);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(109, 16);
+            this.label4.Size = new System.Drawing.Size(179, 25);
             this.label4.TabIndex = 92;
             this.label4.Text = "Status Tindakan*";
             // 
             // label3
             // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(10, 99);
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(276, 294);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(100, 16);
+            this.label3.Size = new System.Drawing.Size(161, 25);
             this.label3.TabIndex = 91;
             this.label3.Text = "Id_Pengaduan*";
             // 
             // label2
             // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(10, 55);
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(276, 250);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(87, 16);
+            this.label2.Size = new System.Drawing.Size(141, 25);
             this.label2.TabIndex = 90;
             this.label2.Text = "Id_Tindakan*";
             // 
             // txtDeskripsi
             // 
-            this.txtDeskripsi.Location = new System.Drawing.Point(168, 187);
+            this.txtDeskripsi.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtDeskripsi.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtDeskripsi.Location = new System.Drawing.Point(519, 385);
             this.txtDeskripsi.Name = "txtDeskripsi";
-            this.txtDeskripsi.Size = new System.Drawing.Size(353, 22);
+            this.txtDeskripsi.Size = new System.Drawing.Size(402, 30);
             this.txtDeskripsi.TabIndex = 89;
             // 
             // txtIdTindakan
             // 
-            this.txtIdTindakan.Location = new System.Drawing.Point(168, 49);
+            this.txtIdTindakan.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtIdTindakan.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtIdTindakan.Location = new System.Drawing.Point(519, 247);
             this.txtIdTindakan.Name = "txtIdTindakan";
-            this.txtIdTindakan.Size = new System.Drawing.Size(353, 22);
+            this.txtIdTindakan.Size = new System.Drawing.Size(402, 30);
             this.txtIdTindakan.TabIndex = 88;
             // 
             // txtIdPengaduan
             // 
-            this.txtIdPengaduan.Location = new System.Drawing.Point(168, 99);
+            this.txtIdPengaduan.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtIdPengaduan.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtIdPengaduan.Location = new System.Drawing.Point(519, 297);
             this.txtIdPengaduan.Name = "txtIdPengaduan";
-            this.txtIdPengaduan.Size = new System.Drawing.Size(353, 22);
+            this.txtIdPengaduan.Size = new System.Drawing.Size(402, 30);
             this.txtIdPengaduan.TabIndex = 99;
             // 
             // txtIdPendamping
             // 
-            this.txtIdPendamping.Location = new System.Drawing.Point(168, 146);
+            this.txtIdPendamping.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtIdPendamping.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtIdPendamping.Location = new System.Drawing.Point(519, 344);
             this.txtIdPendamping.Name = "txtIdPendamping";
-            this.txtIdPendamping.Size = new System.Drawing.Size(353, 22);
+            this.txtIdPendamping.Size = new System.Drawing.Size(402, 30);
             this.txtIdPendamping.TabIndex = 100;
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(426, 396);
+            this.button3.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(735, 612);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(102, 44);
+            this.button3.Size = new System.Drawing.Size(124, 60);
             this.button3.TabIndex = 101;
             this.button3.Text = "Delete";
             this.button3.UseVisualStyleBackColor = true;
@@ -202,18 +235,22 @@
             // 
             // lblmsg
             // 
+            this.lblmsg.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblmsg.AutoSize = true;
-            this.lblmsg.Location = new System.Drawing.Point(562, 366);
+            this.lblmsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblmsg.Location = new System.Drawing.Point(942, 541);
             this.lblmsg.Name = "lblmsg";
-            this.lblmsg.Size = new System.Drawing.Size(64, 16);
+            this.lblmsg.Size = new System.Drawing.Size(100, 25);
             this.lblmsg.TabIndex = 102;
             this.lblmsg.Text = "Message";
             // 
             // btn_Refresh
             // 
-            this.btn_Refresh.Location = new System.Drawing.Point(622, 394);
+            this.btn_Refresh.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.btn_Refresh.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_Refresh.Location = new System.Drawing.Point(931, 610);
             this.btn_Refresh.Name = "btn_Refresh";
-            this.btn_Refresh.Size = new System.Drawing.Size(102, 44);
+            this.btn_Refresh.Size = new System.Drawing.Size(124, 60);
             this.btn_Refresh.TabIndex = 103;
             this.btn_Refresh.Text = "Refresh";
             this.btn_Refresh.UseVisualStyleBackColor = true;
@@ -221,9 +258,11 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(814, 394);
+            this.button4.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button4.Location = new System.Drawing.Point(1123, 610);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(102, 44);
+            this.button4.Size = new System.Drawing.Size(124, 60);
             this.button4.TabIndex = 104;
             this.button4.Text = "Analyze";
             this.button4.UseVisualStyleBackColor = true;
@@ -233,7 +272,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(999, 450);
+            this.ClientSize = new System.Drawing.Size(1839, 859);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.btn_Refresh);
             this.Controls.Add(this.lblmsg);
@@ -256,6 +295,7 @@
             this.Controls.Add(this.label1);
             this.Name = "Tindakan_Ubah";
             this.Text = "Tindakan_Ubah";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.TindakanUpdate_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);

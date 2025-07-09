@@ -189,6 +189,9 @@ namespace home
             }
         }
 
+        private void lblmsg_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 }

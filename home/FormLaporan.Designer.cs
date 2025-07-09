@@ -34,19 +34,22 @@
             // 
             // reportViewer1
             // 
-            this.reportViewer1.Location = new System.Drawing.Point(12, 12);
+            this.reportViewer1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.reportViewer1.Location = new System.Drawing.Point(45, 49);
             this.reportViewer1.Name = "reportViewer1";
-            this.reportViewer1.Size = new System.Drawing.Size(776, 374);
+            this.reportViewer1.Size = new System.Drawing.Size(1738, 650);
             this.reportViewer1.TabIndex = 0;
             this.reportViewer1.Load += new System.EventHandler(this.reportViewer1_Load);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(12, 394);
+            this.button2.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(45, 749);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(102, 44);
+            this.button2.Size = new System.Drawing.Size(143, 59);
             this.button2.TabIndex = 34;
-            this.button2.Text = "Pevieos";
+            this.button2.Text = "Previeos";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.btnKembali_Click);
             // 
@@ -54,11 +57,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1839, 856);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.reportViewer1);
             this.Name = "FormLaporan";
             this.Text = "FormLaporan";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.FormLaporan_Load);
             this.ResumeLayout(false);
 
