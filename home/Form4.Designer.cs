@@ -50,9 +50,11 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(686, 396);
+            this.button3.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(1560, 802);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(102, 44);
+            this.button3.Size = new System.Drawing.Size(155, 62);
             this.button3.TabIndex = 34;
             this.button3.Text = "Submit";
             this.button3.UseVisualStyleBackColor = true;
@@ -60,140 +62,164 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(15, 396);
+            this.button2.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(42, 802);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(102, 44);
+            this.button2.Size = new System.Drawing.Size(155, 62);
             this.button2.TabIndex = 33;
-            this.button2.Text = "Pevieos";
+            this.button2.Text = "Previeos";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.btnKembali_Click);
             // 
             // label8
             // 
+            this.label8.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(12, 331);
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(497, 562);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(46, 16);
+            this.label8.Size = new System.Drawing.Size(74, 25);
             this.label8.TabIndex = 32;
             this.label8.Text = "Email*";
             this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
             // label7
             // 
+            this.label7.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(12, 280);
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(497, 511);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(46, 16);
+            this.label7.Size = new System.Drawing.Size(77, 25);
             this.label7.TabIndex = 31;
             this.label7.Text = "no-hp*";
             this.label7.Click += new System.EventHandler(this.label7_Click);
             // 
             // label6
             // 
+            this.label6.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 230);
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(497, 461);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(44, 16);
+            this.label6.Size = new System.Drawing.Size(71, 25);
             this.label6.TabIndex = 30;
             this.label6.Text = "Prodi*";
             this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
             // label5
             // 
+            this.label5.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(12, 186);
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(497, 417);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(63, 16);
+            this.label5.Size = new System.Drawing.Size(103, 25);
             this.label5.TabIndex = 29;
             this.label5.Text = "Fakultas*";
             this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
             // label4
             // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 135);
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(497, 366);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(96, 16);
+            this.label4.Size = new System.Drawing.Size(159, 25);
             this.label4.TabIndex = 28;
             this.label4.Text = "Jenis-Kelamin*";
             this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // label3
             // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 90);
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(497, 321);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(49, 16);
+            this.label3.Size = new System.Drawing.Size(77, 25);
             this.label3.TabIndex = 27;
             this.label3.Text = "Nama*";
             this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // label2
             // 
+            this.label2.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 46);
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(497, 277);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(36, 16);
+            this.label2.Size = new System.Drawing.Size(58, 25);
             this.label2.TabIndex = 26;
             this.label2.Text = "Nim*";
             this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(170, 325);
+            this.txtEmail.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtEmail.Location = new System.Drawing.Point(709, 564);
             this.txtEmail.Name = "txtEmail";
-            this.txtEmail.Size = new System.Drawing.Size(400, 22);
+            this.txtEmail.Size = new System.Drawing.Size(603, 22);
             this.txtEmail.TabIndex = 25;
             this.txtEmail.TextChanged += new System.EventHandler(this.textBox7_TextChanged);
             // 
             // txtNoHP
             // 
-            this.txtNoHP.Location = new System.Drawing.Point(170, 280);
+            this.txtNoHP.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtNoHP.Location = new System.Drawing.Point(709, 519);
             this.txtNoHP.Name = "txtNoHP";
-            this.txtNoHP.Size = new System.Drawing.Size(400, 22);
+            this.txtNoHP.Size = new System.Drawing.Size(603, 22);
             this.txtNoHP.TabIndex = 24;
             this.txtNoHP.TextChanged += new System.EventHandler(this.textBox6_TextChanged);
             // 
             // txtNama
             // 
-            this.txtNama.Location = new System.Drawing.Point(170, 84);
+            this.txtNama.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtNama.Location = new System.Drawing.Point(709, 323);
             this.txtNama.Name = "txtNama";
-            this.txtNama.Size = new System.Drawing.Size(400, 22);
+            this.txtNama.Size = new System.Drawing.Size(603, 22);
             this.txtNama.TabIndex = 20;
             this.txtNama.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // txtNIM
             // 
-            this.txtNIM.Location = new System.Drawing.Point(170, 43);
+            this.txtNIM.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.txtNIM.Location = new System.Drawing.Point(709, 282);
             this.txtNIM.Name = "txtNIM";
-            this.txtNIM.Size = new System.Drawing.Size(400, 22);
+            this.txtNIM.Size = new System.Drawing.Size(603, 22);
             this.txtNIM.TabIndex = 19;
             this.txtNIM.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // label1
             // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(264, 11);
+            this.label1.Font = new System.Drawing.Font("Showcard Gothic", 28.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(686, 130);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(230, 16);
+            this.label1.Size = new System.Drawing.Size(432, 59);
             this.label1.TabIndex = 18;
-            this.label1.Text = "=========DataMahasiswa=========";
+            this.label1.Text = "Data Mahasiswa";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // comboBoxJK
             // 
+            this.comboBoxJK.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.comboBoxJK.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxJK.FormattingEnabled = true;
             this.comboBoxJK.Items.AddRange(new object[] {
             "L",
             "P"});
-            this.comboBoxJK.Location = new System.Drawing.Point(170, 127);
+            this.comboBoxJK.Location = new System.Drawing.Point(709, 366);
             this.comboBoxJK.Name = "comboBoxJK";
-            this.comboBoxJK.Size = new System.Drawing.Size(400, 24);
+            this.comboBoxJK.Size = new System.Drawing.Size(603, 24);
             this.comboBoxJK.TabIndex = 35;
             // 
             // comboBoxProdi
             // 
+            this.comboBoxProdi.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.comboBoxProdi.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxProdi.FormattingEnabled = true;
             this.comboBoxProdi.Items.AddRange(new object[] {
@@ -221,14 +247,15 @@
             "Agribisnis",
             "Teknologi Rekayasa Otomotif",
             "Teknik Elektro-medis"});
-            this.comboBoxProdi.Location = new System.Drawing.Point(170, 222);
+            this.comboBoxProdi.Location = new System.Drawing.Point(709, 461);
             this.comboBoxProdi.Name = "comboBoxProdi";
-            this.comboBoxProdi.Size = new System.Drawing.Size(400, 24);
+            this.comboBoxProdi.Size = new System.Drawing.Size(603, 24);
             this.comboBoxProdi.TabIndex = 36;
             this.comboBoxProdi.SelectedIndexChanged += new System.EventHandler(this.comboBoxProdi_SelectedIndexChanged);
             // 
             // comboBoxFakultas
             // 
+            this.comboBoxFakultas.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.comboBoxFakultas.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxFakultas.FormattingEnabled = true;
             this.comboBoxFakultas.Items.AddRange(new object[] {
@@ -241,18 +268,20 @@
             "Kedokteran dan Ilmu Kesehatan",
             "Pertanian",
             "Vokasi"});
-            this.comboBoxFakultas.Location = new System.Drawing.Point(170, 178);
+            this.comboBoxFakultas.Location = new System.Drawing.Point(709, 417);
             this.comboBoxFakultas.Name = "comboBoxFakultas";
-            this.comboBoxFakultas.Size = new System.Drawing.Size(400, 24);
+            this.comboBoxFakultas.Size = new System.Drawing.Size(603, 24);
             this.comboBoxFakultas.TabIndex = 37;
             this.comboBoxFakultas.SelectedIndexChanged += new System.EventHandler(this.comboBoxFakultas_SelectedIndexChanged_1);
             // 
             // lblmsg
             // 
+            this.lblmsg.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.lblmsg.AutoSize = true;
-            this.lblmsg.Location = new System.Drawing.Point(167, 370);
+            this.lblmsg.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblmsg.Location = new System.Drawing.Point(704, 621);
             this.lblmsg.Name = "lblmsg";
-            this.lblmsg.Size = new System.Drawing.Size(64, 16);
+            this.lblmsg.Size = new System.Drawing.Size(100, 25);
             this.lblmsg.TabIndex = 38;
             this.lblmsg.Text = "Message";
             // 
@@ -260,7 +289,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1841, 904);
             this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.comboBoxFakultas);
             this.Controls.Add(this.comboBoxProdi);
@@ -281,6 +310,8 @@
             this.Controls.Add(this.label1);
             this.Name = "Form4";
             this.Text = "Form4";
+            this.TopMost = true;
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Form4_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

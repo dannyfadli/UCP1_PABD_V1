@@ -38,10 +38,12 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(263, 235);
+            this.button2.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(399, 235);
             this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(250, 44);
+            this.button2.Size = new System.Drawing.Size(288, 72);
             this.button2.TabIndex = 21;
             this.button2.Text = "Pendamping";
             this.button2.UseVisualStyleBackColor = true;
@@ -49,10 +51,12 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(263, 173);
+            this.button4.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button4.Location = new System.Drawing.Point(65, 235);
             this.button4.Margin = new System.Windows.Forms.Padding(4);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(250, 44);
+            this.button4.Size = new System.Drawing.Size(288, 72);
             this.button4.TabIndex = 20;
             this.button4.Text = "Tindakan";
             this.button4.UseVisualStyleBackColor = true;
@@ -60,10 +64,12 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(263, 107);
+            this.button3.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(399, 117);
             this.button3.Margin = new System.Windows.Forms.Padding(4);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(250, 44);
+            this.button3.Size = new System.Drawing.Size(288, 72);
             this.button3.TabIndex = 19;
             this.button3.Text = "Pengaduan";
             this.button3.UseVisualStyleBackColor = true;
@@ -71,21 +77,25 @@
             // 
             // botton2
             // 
-            this.botton2.Location = new System.Drawing.Point(263, 309);
+            this.botton2.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.botton2.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botton2.Location = new System.Drawing.Point(67, 354);
             this.botton2.Margin = new System.Windows.Forms.Padding(4);
             this.botton2.Name = "botton2";
-            this.botton2.Size = new System.Drawing.Size(250, 44);
+            this.botton2.Size = new System.Drawing.Size(288, 72);
             this.botton2.TabIndex = 18;
-            this.botton2.Text = "Riiwayat Status";
+            this.botton2.Text = "Riwayat Status";
             this.botton2.UseVisualStyleBackColor = true;
             this.botton2.Click += new System.EventHandler(this.btnstatusn_Click);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(263, 39);
+            this.button1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(65, 115);
             this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(250, 44);
+            this.button1.Size = new System.Drawing.Size(290, 74);
             this.button1.TabIndex = 17;
             this.button1.Text = "Mahasiswa";
             this.button1.UseVisualStyleBackColor = true;
@@ -93,10 +103,12 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(263, 378);
+            this.button5.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button5.Location = new System.Drawing.Point(399, 354);
             this.button5.Margin = new System.Windows.Forms.Padding(4);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(250, 44);
+            this.button5.Size = new System.Drawing.Size(288, 72);
             this.button5.TabIndex = 22;
             this.button5.Text = "Laporan";
             this.button5.UseVisualStyleBackColor = true;
@@ -106,7 +118,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(796, 450);
+            this.ClientSize = new System.Drawing.Size(816, 582);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button4);
@@ -115,6 +127,7 @@
             this.Controls.Add(this.button1);
             this.Name = "Form2";
             this.Text = "Form2";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
 

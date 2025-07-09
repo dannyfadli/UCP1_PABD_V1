@@ -37,9 +37,11 @@ namespace home
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(11, 400);
+            this.button4.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button4.Location = new System.Drawing.Point(47, 764);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(98, 39);
+            this.button4.Size = new System.Drawing.Size(137, 53);
             this.button4.TabIndex = 7;
             this.button4.Text = "Kembali";
             this.button4.UseVisualStyleBackColor = true;
@@ -47,9 +49,11 @@ namespace home
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(419, 164);
+            this.button3.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(944, 331);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(195, 76);
+            this.button3.Size = new System.Drawing.Size(290, 131);
             this.button3.TabIndex = 6;
             this.button3.Text = "Ubah data \r\nPengaduan";
             this.button3.UseVisualStyleBackColor = true;
@@ -57,11 +61,13 @@ namespace home
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(164, 164);
+            this.button1.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(595, 331);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(195, 76);
+            this.button1.Size = new System.Drawing.Size(290, 131);
             this.button1.TabIndex = 4;
-            this.button1.Text = "DaftarPengaduan";
+            this.button1.Text = "Daftar Pengaduan";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -69,12 +75,13 @@ namespace home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(1837, 862);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
             this.Name = "mhspngd";
             this.Text = "mhspengaduan";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.mhspngd_Load);
             this.ResumeLayout(false);
 
