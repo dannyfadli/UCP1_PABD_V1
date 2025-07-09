@@ -1,4 +1,5 @@
-﻿using System;
+﻿using home.home;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -12,7 +13,7 @@ using System.Windows.Forms;
 
 namespace home
 {
-    public partial class PreviewForm : Form
+    public partial class PreviewForm : BaseForm
     {
         public PreviewForm()
         {

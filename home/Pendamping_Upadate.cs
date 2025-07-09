@@ -28,6 +28,15 @@ namespace home
         {
             LoadData();
             EnsureIndexesPendamping();
+            textBox1.TextChanged += SearchDataPendamping_TextChanged;
+        }
+
+        private void SearchDataPendamping_TextChanged(object sender, EventArgs e)
+        {
+            _cache.Remove(CacheKey);
+
+            string kw = textBox1.Text.Trim();
+            SearchDataPendamping(string.IsNullOrEmpty(kw) ? null : kw);
         }
 
         private void LoadData()
@@ -345,6 +354,39 @@ namespace home
             }
         }
 
+        private void SearchDataPendamping(string keyword)
+        {
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("sp_SearchPendamping", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        if (string.IsNullOrWhiteSpace(keyword))
+                            cmd.Parameters.AddWithValue("@keyword", DBNull.Value);
+                        else
+                            cmd.Parameters.AddWithValue("@keyword", keyword);
+
+                        DataTable dt = new DataTable();
+                        new SqlDataAdapter(cmd).Fill(dt);
+
+                        dataGridView1.DataSource = dt;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Gagal melakukan pencarian pendamping: " + ex.Message,
+                                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+
+
         private void btnKembali_Click(object sender, EventArgs e)
         {
             this.Hide();
@@ -363,6 +405,8 @@ namespace home
         {
 
         }
+
+
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {

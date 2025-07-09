@@ -51,6 +51,7 @@
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.lblmsg = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -142,6 +143,7 @@
             this.txtNoHP.Name = "txtNoHP";
             this.txtNoHP.Size = new System.Drawing.Size(338, 22);
             this.txtNoHP.TabIndex = 40;
+            this.txtNoHP.Text = "62";
             // 
             // txtNama
             // 
@@ -169,7 +171,7 @@
             // dataGridView1
             // 
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(589, 41);
+            this.dataGridView1.Location = new System.Drawing.Point(589, 9);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 24;
@@ -302,11 +304,20 @@
             this.lblmsg.TabIndex = 59;
             this.lblmsg.Text = "Message";
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(589, 323);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(338, 22);
+            this.textBox1.TabIndex = 60;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
             // Mhsupdate
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(937, 450);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.lblmsg);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
@@ -364,5 +375,6 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Label lblmsg;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }

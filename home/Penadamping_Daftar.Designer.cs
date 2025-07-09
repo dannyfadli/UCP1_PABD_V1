@@ -125,6 +125,8 @@
             this.txtIdPendamping.Name = "txtIdPendamping";
             this.txtIdPendamping.Size = new System.Drawing.Size(400, 22);
             this.txtIdPendamping.TabIndex = 37;
+            this.txtIdPendamping.Enter += new System.EventHandler(this.txtIdPendamping_Enter);
+            this.txtIdPendamping.Leave += new System.EventHandler(this.txtIdPendamping_Leave);
             // 
             // label1
             // 

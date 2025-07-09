@@ -272,90 +272,86 @@ WHERE id_pengaduan = @id_pengaduan AND status_baru = @status_baru";
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtIdRiwayat.Text))
+            // 1. Tangkap input
+            string idRiwayat = txtIdRiwayat.Text.Trim();
+            string statusBaru = comboBoxStatus.SelectedItem?.ToString() ?? "";
+            DateTime tanggalBaru = datePickerSelesai.Value.Date;
+
+            // 2. Validasi sebelum mulai transaksi
+            if (string.IsNullOrEmpty(idRiwayat))
             {
-                MessageBox.Show("Pilih data riwayat yang ingin diubah dulu ya~", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                lblmsg.Text = "Pilih data riwayat yang ingin diubah dulu ya~";
+                return;
+            }
+            if (string.IsNullOrEmpty(statusBaru))
+            {
+                lblmsg.Text = "Status tidak boleh kosong!";
+                return;
+            }
+            if (tanggalBaru > DateTime.Today.AddDays(30))
+            {
+                lblmsg.Text = "Tanggal perubahan maksimal hanya sampai 30 hari ke depan!";
                 return;
             }
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            // 3. Lakukan update di dalam transaksi
+            using (var conn = new SqlConnection(connectionString))
             {
-                SqlTransaction transaction = null;
-
-                try
+                conn.Open();
+                using (var tx = conn.BeginTransaction())
                 {
-                    conn.Open();
-                    transaction = conn.BeginTransaction();
-
-                    // Ambil data lama berdasarkan id_riwayat
-                    SqlCommand selectCmd = new SqlCommand("sp_GetRiwayatStatusById", conn, transaction);
-                    selectCmd.CommandType = CommandType.StoredProcedure;
-                    selectCmd.Parameters.AddWithValue("@id_riwayat", txtIdRiwayat.Text.Trim());
-
-                    SqlDataReader reader = selectCmd.ExecuteReader();
-                    bool isChanged = false;
-
-                    if (reader.Read())
+                    try
                     {
-                        string oldIdPengaduan = reader["id_pengaduan"]?.ToString() ?? "";
-                        string oldStatusBaru = reader["status_baru"]?.ToString() ?? "";
-                        DateTime oldTanggalPerubahan = Convert.ToDateTime(reader["tanggal_perubahan"]);
-
-                        reader.Close();
-
-                        if (!comboIdPengaduan.Text.Trim().Equals(oldIdPengaduan)) isChanged = true;
-                        else if (!(comboBoxStatus.SelectedItem?.ToString() ?? "").Equals(oldStatusBaru)) isChanged = true;
-                        else if (datePickerSelesai.Value.Date != oldTanggalPerubahan.Date) isChanged = true;
-
-                        if (!isChanged)
+                        // 4. Call SP
+                        using (var cmd = new SqlCommand("sp_UpdateStatusAndTanggalRiwayat", conn, tx))
                         {
-                            MessageBox.Show("Tidak ada perubahan data yang dilakukan.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@id_riwayat", idRiwayat);
+                            cmd.Parameters.AddWithValue("@status_baru", statusBaru);
+                            cmd.Parameters.AddWithValue("@tanggal_perubahan", tanggalBaru);
+
+                            int rowsAffected = cmd.ExecuteNonQuery();
+                            if (rowsAffected == 0)
+                            {
+                                // SP tidak menemukan record untuk di-update
+                                lblmsg.Text = "Update gagal: ID riwayat tidak ditemukan.";
+                                tx.Rollback();
+                                return;
+                            }
+                        }
+
+                        // 5. Commit jika berhasil
+                        tx.Commit();
+                        lblmsg.Text = "Status dan tanggal berhasil diperbarui.";
+                        LoadData();
+                    }
+                    catch (SqlException ex)
+                    {
+                        tx.Rollback();
+                        int code = ex.Errors[0].Number;
+                        switch (code)
+                        {
+                            case 53021:
+                                lblmsg.Text = "Format ID riwayat tidak valid! Gunakan pola R01, R02, …";
+                                break;
+                            case 53022:
+                                lblmsg.Text = "Status tidak valid! Pilih: Masuk, Diproses, atau Selesai.";
+                                break;
+                            case 53023:
+                                lblmsg.Text = "ID riwayat tidak ditemukan.";
+                                break;
+                            case 53025:
+                                lblmsg.Text = "Tanggal perubahan maksimal hanya sampai 30 hari ke depan!";
+                                break;
+                            default:
+                                lblmsg.Text = "Terjadi kesalahan saat memperbarui data.";
+                                break;
                         }
                     }
-                    else
+                    catch (Exception)
                     {
-                        reader.Close();
-                        MessageBox.Show("Data riwayat status tidak ditemukan.", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-
-                    // Lanjut update jika ada perubahan
-                    SqlCommand cmd = new SqlCommand("sp_UpdateRiwayatStatusPengaduan", conn, transaction);
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("@id_riwayat", txtIdRiwayat.Text.Trim());
-                    cmd.Parameters.AddWithValue("@id_pengaduan", comboIdPengaduan.Text.Trim());
-                    cmd.Parameters.AddWithValue("@status_baru", comboBoxStatus.SelectedItem?.ToString() ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@tanggal_perubahan", datePickerSelesai.Value.Date);
-
-                    cmd.ExecuteNonQuery();
-                    transaction.Commit();
-
-                   lblmsg.Text = "Data riwayat status berhasil diperbarui!";
-                    LoadData();
-                }
-                catch (SqlException ex)
-                {
-                    transaction?.Rollback();
-
-                    string msg = ex.Message;
-
-                    if (msg.Contains("tidak ditemukan"))
-                    {
-                        lblmsg.Text = "Riwayat status dengan ID tersebut tidak ditemukan.";
-                    }
-                    else if (msg.Contains("Tanggal tidak valid"))
-                    {
-                        lblmsg.Text = "Tanggal perubahan tidak valid!";
-                    }
-                    else if (msg.Contains("Status baru wajib diisi"))
-                    {
-                        lblmsg.Text = "Status baru wajib diisi!";
-                    }
-                    else
-                    {
-                        lblmsg.Text = "Gagal meng-update data. Periksa kembali input yang dimasukkan.";
+                        tx.Rollback();
+                        lblmsg.Text = "Terjadi kesalahan tak terduga. Coba lagi nanti.";
                     }
                 }
             }
@@ -374,12 +370,12 @@ WHERE id_pengaduan = @id_pengaduan AND status_baru = @status_baru";
                     return;
                 }
 
-                string id = selectedCell.ToString();
+                string id = selectedCell.ToString().Trim();
 
-                // Validasi format ID: harus 3 karakter dan seperti R01, R02, dst.
-                if (!System.Text.RegularExpressions.Regex.IsMatch(id, @"^R\d{2}$"))
+                // Validasi format ID: harus 5 karakter dan seperti R0001, R0002, dst.
+                if (!System.Text.RegularExpressions.Regex.IsMatch(id, @"^R\d{4}$"))
                 {
-                    MessageBox.Show("Format ID riwayat tidak valid. Gunakan format R01, R02, dst.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("Format ID riwayat tidak valid. Gunakan format R0001, R0002, dst.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -404,7 +400,7 @@ WHERE id_pengaduan = @id_pengaduan AND status_baru = @status_baru";
                             using (SqlCommand cmd = new SqlCommand("sp_DeleteRiwayatStatusPengaduan", conn, transaction))
                             {
                                 cmd.CommandType = CommandType.StoredProcedure;
-                                cmd.Parameters.Add("@id_riwayat", SqlDbType.Char, 3).Value = id;
+                                cmd.Parameters.Add("@id_riwayat", SqlDbType.Char, 5).Value = id;
 
                                 cmd.ExecuteNonQuery();
 
@@ -431,6 +427,7 @@ WHERE id_pengaduan = @id_pengaduan AND status_baru = @status_baru";
                 MessageBox.Show("Tekan kolom kosong paling kiri untuk memilih baris yang ingin dihapus!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
+
 
         private void btnBack_Click(object sender, EventArgs e)
         {

@@ -25,23 +25,34 @@ namespace home
         private void btnSubmit_Click(object sender, EventArgs e)
         {
             // Ambil data dari inputan form
-            string nim = txtNIM.Text;
+           /* string nim = txtNIM.Text;
             string nama = txtNama.Text;
             string jenis_kelamin = comboBoxJK.SelectedItem.ToString();
             string fakultas = comboBoxFakultas.SelectedItem?.ToString();
             string prodi = comboBoxProdi.SelectedItem?.ToString();
             string no_hp = txtNoHP.Text;
-            string email = txtEmail.Text;
+            string email = txtEmail.Text;*/
 
-           
-            if (txtNIM.Text == "" || txtNama.Text == "" || comboBoxJK.SelectedItem == null ||
-                                       comboBoxFakultas.SelectedItem == null || comboBoxProdi.SelectedItem == null ||
-                                                          txtNoHP.Text == "" || txtEmail.Text == "")
+
+            if (string.IsNullOrWhiteSpace(txtNIM.Text) ||
+        string.IsNullOrWhiteSpace(txtNama.Text) ||
+        comboBoxJK.SelectedItem == null ||
+        comboBoxFakultas.SelectedItem == null ||
+        comboBoxProdi.SelectedItem == null ||
+        string.IsNullOrWhiteSpace(txtNoHP.Text) ||
+        string.IsNullOrWhiteSpace(txtEmail.Text))
             {
-                   /* MessageBox.Show("Semua field harus diisi!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);*/
-                   lblmsg.Text = "Semua field harus diisi!";
-                    return;
+                lblmsg.Text = "Semua field harus diisi!";
+                return;
             }
+
+            string nim = txtNIM.Text.Trim();
+            string nama = txtNama.Text.Trim();
+            string jenis_kelamin = comboBoxJK.SelectedItem.ToString().Trim();
+            string fakultas = comboBoxFakultas.SelectedItem.ToString().Trim();
+            string prodi = comboBoxProdi.SelectedItem.ToString().Trim();
+            string no_hp = txtNoHP.Text.Trim();
+            string email = txtEmail.Text.Trim();
 
 
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -78,36 +89,25 @@ namespace home
                 {
                     transaction?.Rollback();
 
-                    // Tangkap pesan dari stored procedure
                     string errorMessage = ex.Message;
 
-                    // Deteksi error karena NIM duplikat
-                    if (errorMessage.Contains("Mahasiswa dengan NIM tersebut sudah terdaftar"))
-                    {
+                    if (errorMessage.Contains("sudah terdaftar"))
                         lblmsg.Text = "Mahasiswa dengan NIM tersebut sudah terdaftar!";
-                    }
                     else if (errorMessage.Contains("Format nomor HP tidak valid"))
-                    {
-                        lblmsg.Text = "Format nomor HP tidak valid!";
-                    }
+                        lblmsg.Text = "Format nomor HP tidak valid! Harus dimulai dengan 62 dan 11-14 digit.";
                     else if (errorMessage.Contains("Format email tidak valid"))
-                    {
                         lblmsg.Text = "Format email tidak valid!";
-                    }
                     else if (errorMessage.Contains("Jenis kelamin harus L atau P"))
-                    {
                         lblmsg.Text = "Jenis kelamin harus L atau P!";
-                    }
-                    else if (errorMessage.Contains("NIM, nama, fakultas, dan prodi wajib diisi"))
-                    {
+                    else if (errorMessage.Contains("wajib diisi"))
                         lblmsg.Text = "NIM, nama, fakultas, dan prodi wajib diisi!";
-                    }
                     else
-                    {
-                        // Pesan umum jika tidak dikenali
-                        lblmsg.Text = "Gagal menyimpan data. Pastikan data yang dimasukkan sudah benar."; //
-                    }
-
+                        lblmsg.Text = "Gagal menyimpan data. Periksa kembali input Anda.";
+                }
+                catch (Exception ex)
+                {
+                    transaction?.Rollback();
+                    lblmsg.Text = "Terjadi error: " + ex.Message;
                 }
 
             }

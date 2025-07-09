@@ -1,4 +1,5 @@
-﻿using NPOI.SS.Formula.Functions;
+﻿using home.home;
+using NPOI.SS.Formula.Functions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,7 +14,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace home
 {
-    public partial class FstatusCs : Form
+    public partial class FstatusCs : BaseForm
     {
         string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
         public FstatusCs()
@@ -21,21 +22,24 @@ namespace home
             InitializeComponent();
         }
 
-        
-private void BtnSubmit_Click(object sender, EventArgs e)
+
+        private void BtnSubmit_Click(object sender, EventArgs e)
         {
-            // Validasi input wajib
-            if (comboIdPengaduan.SelectedItem == null || comboBoxStatus.SelectedItem == null || string.IsNullOrWhiteSpace(txtIdRiwayat.Text))
+            // Validasi input
+            if (comboIdPengaduan.SelectedItem == null ||
+                comboBoxStatus.SelectedItem == null ||
+                string.IsNullOrWhiteSpace(txtIdRiwayat.Text))
             {
                 lblmsg.Text = "Pastikan semua field telah diisi.";
                 return;
             }
 
-            // Ambil data dari form
-            string idPengaduan = ((KeyValuePair<string, string>)comboIdPengaduan.SelectedItem).Key;
-            DateTime tanggalPerubahan = datePickerSelesai.Value;
-            string statusPengaduan = comboBoxStatus.SelectedItem.ToString();
+            // Ambil data input dari form
             string idRiwayat = txtIdRiwayat.Text.Trim();
+            var selectedItem = (KeyValuePair<string, string>)comboIdPengaduan.SelectedItem;
+            string idPengaduan = selectedItem.Key;
+            string statusPengaduan = comboBoxStatus.SelectedItem.ToString();
+            DateTime tanggalPerubahan = datePickerSelesai.Value;
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -46,13 +50,12 @@ private void BtnSubmit_Click(object sender, EventArgs e)
                     conn.Open();
                     transaction = conn.BeginTransaction();
 
-                    using (SqlCommand cmd = new SqlCommand("sp_InsertRiwayatStatus", conn))
+                    using (SqlCommand cmd = new SqlCommand("sp_InsertRiwayatStatus", conn, transaction))
                     {
-                        cmd.Transaction = transaction;
                         cmd.CommandType = CommandType.StoredProcedure;
 
-                        cmd.Parameters.AddWithValue("@id_pengaduan", idPengaduan);
                         cmd.Parameters.AddWithValue("@id_riwayat", idRiwayat);
+                        cmd.Parameters.AddWithValue("@id_pengaduan", idPengaduan);
                         cmd.Parameters.AddWithValue("@status_baru", statusPengaduan);
                         cmd.Parameters.AddWithValue("@tanggal_perubahan", tanggalPerubahan);
 
@@ -60,31 +63,31 @@ private void BtnSubmit_Click(object sender, EventArgs e)
                     }
 
                     transaction.Commit();
-                    lblmsg.Text = "Data berhasil disimpan.";
-                    // Jika ingin menggunakan MessageBox:
-                    // MessageBox.Show("Data berhasil disimpan.", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    lblmsg.Text = "Riwayat status berhasil ditambahkan!";
                 }
                 catch (SqlException ex)
                 {
                     transaction?.Rollback();
-                    string errorMessage = ex.Message;
 
-                    // Deteksi error yang umum dari stored procedure (jika ada)
-                    if (errorMessage.Contains("Riwayat dengan ID tersebut sudah ada"))
-                    {
+                    string msg = ex.Message;
+
+                    if (msg.Contains("ID Riwayat sudah digunakan"))
                         lblmsg.Text = "Riwayat dengan ID tersebut sudah ada!";
-                    }
-                    else if (errorMessage.Contains("Format ID riwayat tidak valid"))
-                    {
-                        lblmsg.Text = "Format ID riwayat tidak valid!";
-                    }
+                    else if (msg.Contains("Format ID Riwayat tidak valid"))
+                        lblmsg.Text = "Format ID Riwayat tidak valid!";
+                    else if (msg.Contains("Status hanya boleh"))
+                        lblmsg.Text = "Status hanya boleh: Masuk, Diproses, atau Selesai.";
+                    else if (msg.Contains("ID Pengaduan tidak ditemukan"))
+                        lblmsg.Text = "ID Pengaduan tidak ditemukan!";
+                    else if (msg.Contains("Tanggal perubahan tidak boleh"))
+                        lblmsg.Text = "Tanggal perubahan tidak boleh di masa depan!";
                     else
-                    {
                         lblmsg.Text = "Terjadi kesalahan saat menyimpan data.";
-                    }
                 }
             }
         }
+
+
         private void btnKembali_Click(object sender, EventArgs e)
         {
             this.Hide();
@@ -119,10 +122,35 @@ private void BtnSubmit_Click(object sender, EventArgs e)
                 catch (Exception ex)
                 {
                     MessageBox.Show("Gagal memuat data: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                
-
+               
                 }
             }
         }
+        private void txtIdRiwayat_Enter(object sender, EventArgs e)
+        {
+            if (txtIdRiwayat.Text == "Contoh: R0001")
+            {
+                txtIdRiwayat.Text = "";
+                txtIdRiwayat.ForeColor = Color.Black;
+            }
+        }
+
+        private void txtIdRiwayat_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtIdRiwayat.Text))
+            {
+                txtIdRiwayat.Text = "Contoh: R0001";
+                txtIdRiwayat.ForeColor = Color.Gray;
+            }
+        }
+
+
+        private void txtIdRiwayat_TextChanged(object sender, EventArgs e)
+        {
+        
+     
+
+        }
     }
+
 }

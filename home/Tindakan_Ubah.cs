@@ -63,75 +63,73 @@ namespace home
              }
          }*/
 
-       
+
         private void DeleteTindakan(object sender, EventArgs e)
         {
-            if (dataGridView1.SelectedRows.Count > 0)
+            // Pastikan user memilih satu baris
+            if (dataGridView1.SelectedRows.Count == 0)
             {
-                string id = dataGridView1.SelectedRows[0].Cells["id_tindakan"].Value.ToString();
+                MessageBox.Show("Klik kotak paling kiri untuk memilih baris yang ingin dihapus.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
 
-                DialogResult result = MessageBox.Show(
-                    $"Yakin ingin menghapus tindakan dengan ID: {id}?",
-                    "Konfirmasi",
-                    MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning
-                );
+            // Ambil nilai id_tindakan dari baris yang dipilih
+            string id = dataGridView1.SelectedRows[0].Cells["id_tindakan"].Value.ToString().Trim();
 
-                if (result == DialogResult.Yes)
+            // Validasi id
+            if (string.IsNullOrWhiteSpace(id) || id.StartsWith("Contoh"))
+            {
+                MessageBox.Show("ID tindakan tidak valid atau belum dipilih.", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Konfirmasi penghapusan
+            DialogResult result = MessageBox.Show(
+                $"Yakin ingin menghapus tindakan dengan ID: {id}?",
+                "Konfirmasi Penghapusan",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning
+            );
+
+            if (result != DialogResult.Yes) return;
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                        conn.Open();
+                using (SqlTransaction transaction = conn.BeginTransaction())
                 {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+
+                    try
                     {
-                        SqlTransaction transaction = null;
-
-                        try
+                        using (SqlCommand cmd = new SqlCommand("sp_DeleteTindakan", conn, transaction))
                         {
-                            conn.Open();
-                            transaction = conn.BeginTransaction();
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.Parameters.AddWithValue("@id_tindakan", id);
 
-                            using (SqlCommand cmd = new SqlCommand("sp_DeleteTindakan", conn, transaction))
-                            {
-                                cmd.CommandType = CommandType.StoredProcedure;
-                                cmd.Parameters.AddWithValue("@id_tindakan", id);
-
-                                int affected = cmd.ExecuteNonQuery();
-
-                                if (affected > 0)
-                                {
-                                    _cache.Remove(CacheKey);
-                                    transaction.Commit();
-                                    lblmsg.Text = "Data tindakan berhasil dihapus!";
-                                    // Optional: Tampilkan popup
-                                    // MessageBox.Show("Data tindakan berhasil dihapus!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    LoadData();
-                                }
-                                else
-                                {
-                                    transaction.Rollback();
-                                    MessageBox.Show("Data tindakan tidak ditemukan atau sudah dihapus.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            transaction?.Rollback();
-
-                            if (ex.Message.Contains("tidak ditemukan"))
-                            {
-                                MessageBox.Show("Data tindakan tidak ditemukan atau sudah dihapus.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            }
-                            else
-                            {
-                                MessageBox.Show("Gagal menghapus tindakan: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
+                            cmd.ExecuteNonQuery();
+                            transaction.Commit();
+                            lblmsg.Text = "Data tindakan berhasil dihapus!";
+                            LoadData();
+                            if (_cache.Contains(CacheKey)) _cache.Remove(CacheKey);
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        if (ex.Message.Contains("tidak ditemukan"))
+                        {
+                            MessageBox.Show("Data tindakan tidak ditemukan atau sudah dihapus.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show("Terjadi kesalahan saat menghapus data: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+
                 }
             }
-            else
-            {
-                MessageBox.Show("Tekan kolom kosong paling kiri untuk memilih baris yang ingin dihapus!", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
         }
+
 
         private void EnsureIndexesTindakan()
         {
@@ -278,7 +276,15 @@ namespace home
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtIdTindakan.Text) || string.IsNullOrWhiteSpace(txtIdPengaduan.Text))
+            string idTindakan = txtIdTindakan.Text.Trim();
+            string idPengaduan = txtIdPengaduan.Text.Trim();
+            string idPendamping = txtIdPendamping.Text.Trim();
+            string deskripsi = txtDeskripsi.Text.Trim();
+            DateTime tanggalTindakan = dtpTanggalTindakan.Value.Date;
+            string statusTindakan = cmbStatusTindakan.SelectedItem?.ToString();
+
+            // Validasi awal
+            if (string.IsNullOrWhiteSpace(idTindakan) || string.IsNullOrWhiteSpace(idPengaduan))
             {
                 MessageBox.Show("Pilih data tindakan yang ingin diubah dulu ya~", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -287,57 +293,64 @@ namespace home
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 SqlTransaction transaction = null;
+
                 try
                 {
                     conn.Open();
                     transaction = conn.BeginTransaction();
 
                     // Ambil data lama
-                    SqlCommand selectCmd = new SqlCommand("sp_GetTindakanById", conn, transaction);
-                    selectCmd.CommandType = CommandType.StoredProcedure;
-                    selectCmd.Parameters.AddWithValue("@id_tindakan", txtIdTindakan.Text.Trim());
-
-                    SqlDataReader reader = selectCmd.ExecuteReader();
-
                     bool isChanged = false;
-
-                    if (reader.Read())
+                    using (SqlCommand selectCmd = new SqlCommand("sp_GetTindakanById", conn, transaction))
                     {
-                        if (!txtIdPengaduan.Text.Equals(reader["id_pengaduan"].ToString())) isChanged = true;
-                        else if (!txtIdPendamping.Text.Equals(reader["id_pendamping"] == DBNull.Value ? "" : reader["id_pendamping"].ToString())) isChanged = true;
-                        else if (!txtDeskripsi.Text.Equals(reader["deskripsi"].ToString())) isChanged = true;
-                        else if (dtpTanggalTindakan.Value.Date != Convert.ToDateTime(reader["tanggal_tindakan"]).Date) isChanged = true;
-                        else if (!cmbStatusTindakan.SelectedItem?.ToString().Equals(reader["status_tindakan"].ToString()) ?? false) isChanged = true;
+                        selectCmd.CommandType = CommandType.StoredProcedure;
+                        selectCmd.Parameters.AddWithValue("@id_tindakan", idTindakan);
 
-                        reader.Close();
-
-                        if (!isChanged)
+                        using (SqlDataReader reader = selectCmd.ExecuteReader())
                         {
-                            MessageBox.Show("Tidak ada perubahan data yang dilakukan.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
+                            if (reader.Read())
+                            {
+                                if (!idPengaduan.Equals(reader["id_pengaduan"].ToString()))
+                                    isChanged = true;
+                                else if (!idPendamping.Equals(reader["id_pendamping"] == DBNull.Value ? "" : reader["id_pendamping"].ToString()))
+                                    isChanged = true;
+                                else if (!deskripsi.Equals(reader["deskripsi"].ToString()))
+                                    isChanged = true;
+                                else if (tanggalTindakan != Convert.ToDateTime(reader["tanggal_tindakan"]).Date)
+                                    isChanged = true;
+                                else if (!(statusTindakan?.Equals(reader["status_tindakan"].ToString()) ?? false))
+                                    isChanged = true;
+                            }
+                            else
+                            {
+                                MessageBox.Show("Data tindakan tidak ditemukan.", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                                return;
+                            }
                         }
                     }
-                    else
+
+                    if (!isChanged)
                     {
-                        reader.Close();
-                        MessageBox.Show("Data tindakan tidak ditemukan.", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Tidak ada perubahan data yang dilakukan.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
 
-                    // Lanjut update jika ada perubahan
-                    SqlCommand cmd = new SqlCommand("sp_UpdateTindakan", conn, transaction);
-                    cmd.CommandType = CommandType.StoredProcedure;
+                    // Update data
+                    using (SqlCommand cmd = new SqlCommand("sp_UpdateTindakan", conn, transaction))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@id_tindakan", idTindakan);
+                        cmd.Parameters.AddWithValue("@id_pengaduan", idPengaduan);
+                        cmd.Parameters.AddWithValue("@id_pendamping", string.IsNullOrWhiteSpace(idPendamping) ? DBNull.Value : (object)idPendamping);
+                        cmd.Parameters.AddWithValue("@deskripsi", deskripsi);
+                        cmd.Parameters.AddWithValue("@tanggal_tindakan", tanggalTindakan);
+                        cmd.Parameters.AddWithValue("@status_tindakan", statusTindakan ?? (object)DBNull.Value);
 
-                    cmd.Parameters.AddWithValue("@id_tindakan", txtIdTindakan.Text.Trim());
-                    cmd.Parameters.AddWithValue("@id_pengaduan", txtIdPengaduan.Text.Trim());
-                    cmd.Parameters.AddWithValue("@id_pendamping", string.IsNullOrWhiteSpace(txtIdPendamping.Text) ? (object)DBNull.Value : txtIdPendamping.Text.Trim());
-                    cmd.Parameters.AddWithValue("@deskripsi", txtDeskripsi.Text.Trim());
-                    cmd.Parameters.AddWithValue("@tanggal_tindakan", dtpTanggalTindakan.Value.Date);
-                    cmd.Parameters.AddWithValue("@status_tindakan", cmbStatusTindakan.SelectedItem?.ToString() ?? (object)DBNull.Value);
+                        cmd.ExecuteNonQuery();
+                    }
 
-                    cmd.ExecuteNonQuery();
                     transaction.Commit();
-                    _cache.Remove(CacheKey);
+                    _cache?.Remove(CacheKey); // Opsional: hanya jika cache dipakai
 
                     lblmsg.Text = "Data tindakan berhasil diperbarui!";
                     LoadData();
@@ -349,24 +362,22 @@ namespace home
                     string msg = ex.Message;
 
                     if (msg.Contains("tidak ditemukan"))
-                    {
                         lblmsg.Text = "Tindakan dengan ID tersebut tidak ditemukan.";
-                    }
-                    else if (msg.Contains("Format tanggal tidak valid"))
-                    {
-                        lblmsg.Text = "Format tanggal tidak valid!";
-                    }
-                    else if (msg.Contains("ID pengaduan wajib diisi"))
-                    {
-                        lblmsg.Text = "ID pengaduan wajib diisi!";
-                    }
+                    else if (msg.Contains("tanggal tidak boleh sebelum"))
+                        lblmsg.Text = "Tanggal tindakan tidak boleh lebih awal dari tanggal pengaduan.";
+                    else if (msg.Contains("wajib diisi"))
+                        lblmsg.Text = "Data penting belum diisi!";
+                    else if (msg.Contains("format ID"))
+                        lblmsg.Text = "Format ID tindakan harus T0001, T0002, ...";
+                    else if (msg.Contains("status tindakan tidak valid"))
+                        lblmsg.Text = "Status hanya boleh Direncanakan, Dilaksanakan, atau Ditunda.";
                     else
-                    {
                         lblmsg.Text = "Gagal meng-update data. Periksa kembali input yang dimasukkan.";
-                    }
                 }
             }
         }
+
+
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex >= 0)

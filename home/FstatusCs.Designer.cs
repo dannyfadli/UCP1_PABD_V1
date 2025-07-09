@@ -91,6 +91,9 @@
             this.txtIdRiwayat.Name = "txtIdRiwayat";
             this.txtIdRiwayat.Size = new System.Drawing.Size(400, 22);
             this.txtIdRiwayat.TabIndex = 53;
+            this.txtIdRiwayat.TextChanged += new System.EventHandler(this.txtIdRiwayat_TextChanged);
+            this.txtIdRiwayat.Enter += new System.EventHandler(this.txtIdRiwayat_Enter);
+            this.txtIdRiwayat.Leave += new System.EventHandler(this.txtIdRiwayat_Leave);
             // 
             // comboBoxStatus
             // 

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace home
@@ -94,93 +95,72 @@ namespace home
 
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            string idTindakan = txtIdTindakan.Text;
+            string idTindakan = txtIdTindakan.Text.Trim();
             string idPengaduan = ((KeyValuePair<string, string>)comboPengaduan.SelectedItem).Key;
             string idPendamping = ((KeyValuePair<string, string>)comboPendamping.SelectedItem).Key;
-            string deskripsi = txtDeskripsi.Text;
-            DateTime tanggalTindakan = datePickerTindakan.Value;
+            string deskripsi = txtDeskripsi.Text.Trim();
+            DateTime tanggalTindakan = datePickerTindakan.Value.Date;
             string statusTindakan = comboStatusTindakan.SelectedItem?.ToString();
 
-
-            if (string.IsNullOrEmpty(idTindakan) || string.IsNullOrEmpty(idPengaduan) || string.IsNullOrEmpty(deskripsi) || string.IsNullOrEmpty(statusTindakan))
+            // Validasi field wajib
+            if (string.IsNullOrWhiteSpace(idTindakan) || string.IsNullOrWhiteSpace(idPengaduan) ||
+                string.IsNullOrWhiteSpace(deskripsi) || string.IsNullOrWhiteSpace(statusTindakan))
             {
-                /* MessageBox.Show("Semua field harus diisi!", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);*/
-                lblmsg.Text = "Semua field harus diisi!";
+                lblmsg.Text = "Semua field wajib diisi!";
                 return;
             }
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 SqlTransaction transaction = null;
+
                 try
                 {
                     conn.Open();
-                    using (SqlCommand cmd = new SqlCommand("sp_AddTindakan", conn))
+                    transaction = conn.BeginTransaction();
+
+                    using (SqlCommand cmd = new SqlCommand("sp_AddTindakan", conn, transaction))
                     {
-                        cmd.Transaction = transaction = conn.BeginTransaction(); // Mulai transaksi
                         cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@Id_tindakan", idTindakan);
-                        cmd.Parameters.AddWithValue("@Id_Pengaduan", idPengaduan);
 
-                        if (!string.IsNullOrEmpty(idPendamping))
-                            cmd.Parameters.AddWithValue("@Id_Pendamping", idPendamping);
-                        else
-                            cmd.Parameters.AddWithValue("@Id_Pendamping", DBNull.Value);
+                        cmd.Parameters.AddWithValue("@id_tindakan", idTindakan);
+                        cmd.Parameters.AddWithValue("@id_pengaduan", idPengaduan);
+                        cmd.Parameters.AddWithValue("@id_pendamping",
+                            string.IsNullOrWhiteSpace(idPendamping) ? DBNull.Value : (object)idPendamping);
+                        cmd.Parameters.AddWithValue("@deskripsi", deskripsi);
+                        cmd.Parameters.AddWithValue("@tanggal_tindakan", tanggalTindakan);
+                        cmd.Parameters.AddWithValue("@status_tindakan", statusTindakan);
 
-                        cmd.Parameters.AddWithValue("@Deskripsi", deskripsi);
-                        cmd.Parameters.AddWithValue("@Tanggal_Tindakan", tanggalTindakan);
-                        cmd.Parameters.AddWithValue("@Status_Tindakan", statusTindakan);
-
-                        //conn.Open();
                         cmd.ExecuteNonQuery();
-                       // MessageBox.Show("Tindakan berhasil disimpan!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    transaction.Commit(); // Commit transaksi jika semua berhasil
-                    lblmsg.Text = "Data berhasil disimpan!"; // Tampilkan pesan sukses
 
+                    transaction.Commit();
+                    lblmsg.Text = "Data tindakan berhasil disimpan!";
                 }
                 catch (SqlException ex)
                 {
                     transaction?.Rollback();
+                    string error = ex.Message;
 
-                    // Tangkap pesan dari stored procedure
-                    string errorMessage = ex.Message;
-
-                    // Deteksi error karena NIM duplikat
-                    if (errorMessage.Contains("Mahasiswa dengan ID_Tindakan tersebut sudah terdaftar"))
-                    {
-                        lblmsg.Text = "Mahasiswa dengan ID_Tindakan tersebut sudah terdaftar!";
-                    }
-                    else if (errorMessage.Contains("Format ID_Pengaduan tidak valid"))
-                    {
-                        lblmsg.Text = "Format ID_Pengaduan tidak valid!";
-                    }
-                    else if (errorMessage.Contains("Format ID_Pendamping tidak valid"))
-                    {
-                        lblmsg.Text = "Format ID_Pendamping tidak valid!";
-                    }
-                    else if (errorMessage.Contains("Deskripsi harus diisi"))
-                    {
-                        lblmsg.Text = "Deskripsi harus diisi";
-                    }
-                    else if (errorMessage.Contains("Tanggal wajib diisi"))
-                    {
-                        lblmsg.Text = "Tanggal wajib diisi!";
-                    }
-                    else if (errorMessage.Contains("Status Tindakan tidak boleh kosong"))
-                    {
-                        lblmsg.Text = "Status Tindakan tidak boleh kosong!";
-                    }
+                    // Mapping error SQL ke UI
+                    if (error.Contains("ID tindakan sudah digunakan"))
+                        lblmsg.Text = "ID Tindakan sudah terdaftar.";
+                    else if (error.Contains("Format ID tindakan tidak valid"))
+                        lblmsg.Text = "Gunakan format ID: T0001, T0002, ...";
+                    else if (error.Contains("ID pengaduan tidak ditemukan"))
+                        lblmsg.Text = "ID Pengaduan tidak ditemukan.";
+                    else if (error.Contains("ID pendamping tidak ditemukan"))
+                        lblmsg.Text = "ID Pendamping tidak ditemukan.";
+                    else if (error.Contains("Tanggal tindakan tidak boleh sebelum tanggal pengaduan"))
+                        lblmsg.Text = "Tanggal tindakan tidak boleh lebih awal dari tanggal pengaduan.";
+                    else if (error.Contains("Status tindakan tidak valid"))
+                        lblmsg.Text = "Status hanya boleh: Direncanakan, Dilaksanakan, atau Ditunda.";
+                    else if (error.Contains("wajib diisi"))
+                        lblmsg.Text = "Semua data wajib diisi (kecuali pendamping).";
                     else
-                    {
-                        // Pesan umum jika tidak dikenali
-                        lblmsg.Text = "Gagal menyimpan data. Pastikan data yang dimasukkan sudah benar."; //
-                    }
+                        lblmsg.Text = "Gagal menyimpan data. Silakan cek kembali.";
                 }
-
             }
-
-
         }
 
         private void btnKembali_Click(object sender, EventArgs e)
@@ -189,5 +169,26 @@ namespace home
             Tindakan form = new Tindakan();
             form.Show();
         }
+
+
+        private void txtIdTindakan_Enter(object sender, EventArgs e)
+        {
+            if (txtIdTindakan.Text == "Contoh: T0001")
+            {
+                txtIdTindakan.Text = "";
+                txtIdTindakan.ForeColor = Color.Black;
+            }
+        }
+
+        private void txtIdTindakan_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtIdTindakan.Text))
+            {
+                txtIdTindakan.Text = "Contoh: T0001";
+                txtIdTindakan.ForeColor = Color.Gray;
+            }
+        }
+
+
     }
 }

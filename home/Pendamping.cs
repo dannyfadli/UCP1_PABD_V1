@@ -8,11 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.Caching;
+using home.home;
 
 
 namespace home
 {
-    public partial class Pendamping : Form
+    public partial class Pendamping : BaseForm
     {
         public Pendamping()
         {

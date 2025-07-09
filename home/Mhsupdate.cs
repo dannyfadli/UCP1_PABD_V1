@@ -39,6 +39,7 @@ namespace home
         {
 
             LoadData();
+            textBox1.TextChanged += SearchDataMahasiswa_TextChanged;
 
             // Hindari dobel isi
             if (comboBoxFakultas.Items.Count == 0)
@@ -52,6 +53,14 @@ namespace home
 
             EnsureIndexs(); // Pastikan index sudah dibuat
             
+        }
+
+        private void SearchDataMahasiswa_TextChanged(object sender, EventArgs e)
+        {
+            _cache.Remove(CacheKey);
+
+            string kw = textBox1.Text.Trim();
+            SearchDataMahasiswa(string.IsNullOrEmpty(kw) ? null : kw);
         }
 
         private void EnsureIndexs()
@@ -291,7 +300,7 @@ namespace home
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            if (txtNim.Text == "" || txtNama.Text == "")
+            if (string.IsNullOrWhiteSpace(txtNim.Text) || string.IsNullOrWhiteSpace(txtNama.Text))
             {
                 MessageBox.Show("Pilih data yang mau diubah dulu dong~", "Peringatan", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -300,63 +309,68 @@ namespace home
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 SqlTransaction transaction = null;
+
                 try
                 {
                     conn.Open();
                     transaction = conn.BeginTransaction();
 
-                    // Cek apakah ada perubahan data
-                    SqlCommand selectCmd = new SqlCommand("sp_GetMahasiswaByNIM", conn);
-                    selectCmd.Transaction = transaction;
-                    selectCmd.CommandType = CommandType.StoredProcedure;
-                    selectCmd.Parameters.AddWithValue("@nim", txtNim.Text);
-                    SqlDataReader reader = selectCmd.ExecuteReader();
-
-                    bool isChanged = false;
-
-                    if (reader.Read())
+                    // Ambil data mahasiswa berdasarkan NIM
+                    using (SqlCommand selectCmd = new SqlCommand("sp_GetMahasiswaByNIM", conn, transaction))
                     {
-                        if (!txtNama.Text.Equals(reader["nama"].ToString())) isChanged = true;
-                        else if (!comboBox1.SelectedItem.ToString().Equals(reader["jenis_kelamin"].ToString())) isChanged = true;
-                        else if (!comboBoxFakultas.SelectedItem.ToString().Equals(reader["fakultas"].ToString())) isChanged = true;
-                        else if (!comboBoxProdi.SelectedItem.ToString().Equals(reader["prodi"].ToString())) isChanged = true;
-                        else if (!txtNoHP.Text.Equals(reader["no_hp"].ToString())) isChanged = true;
-                        else if (!txtEmail.Text.Equals(reader["email"].ToString())) isChanged = true;
+                        selectCmd.CommandType = CommandType.StoredProcedure;
+                        selectCmd.Parameters.AddWithValue("@nim", txtNim.Text.Trim());
 
-                        reader.Close();
-
-                        if (!isChanged)
+                        using (SqlDataReader reader = selectCmd.ExecuteReader())
                         {
-                            MessageBox.Show("Tidak ada perubahan data yang dilakukan.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            return;
+                            if (!reader.Read())
+                            {
+                                lblmsg.Text = "Data mahasiswa tidak ditemukan.";
+                                return;
+                            }
+
+                            bool isChanged =
+                                !txtNama.Text.Trim().Equals(reader["nama"].ToString()) ||
+                                !comboBox1.SelectedItem?.ToString().Equals(reader["jenis_kelamin"].ToString()) == true ||
+                                !comboBoxFakultas.SelectedItem?.ToString().Equals(reader["fakultas"].ToString()) == true ||
+                                !comboBoxProdi.SelectedItem?.ToString().Equals(reader["prodi"].ToString()) == true ||
+                                !txtNoHP.Text.Trim().Equals(reader["no_hp"].ToString()) ||
+                                !txtEmail.Text.Trim().Equals(reader["email"].ToString());
+
+                            if (!isChanged)
+                            {
+                                lblmsg.Text = "Tidak ada perubahan data yang dilakukan.";
+                                return;
+                            }
                         }
                     }
-                    else
+
+                    // Normalisasi no_hp: awali dengan 62 jika belum
+                    string no_hp = txtNoHP.Text.Trim();
+                    if (!no_hp.StartsWith("62"))
                     {
-                        reader.Close();
-                        MessageBox.Show("Data mahasiswa tidak ditemukan.", "Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
+                        no_hp = "62" + no_hp.TrimStart('0');
                     }
 
-                    // Jika ada perubahan, lanjut update
-                    SqlCommand cmd = new SqlCommand("sp_UpdateMahasiswa", conn);
-                    cmd.Transaction = transaction;
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@nim", txtNim.Text.Trim());
-                    cmd.Parameters.AddWithValue("@nama", txtNama.Text.Trim());
-                    cmd.Parameters.AddWithValue("@jenis_kelamin", comboBox1.SelectedItem?.ToString() ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@fakultas", comboBoxFakultas.SelectedItem?.ToString() ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@prodi", comboBoxProdi.SelectedItem?.ToString() ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@no_hp", string.IsNullOrWhiteSpace(txtNoHP.Text) ? (object)DBNull.Value : txtNoHP.Text.Trim());
-                    cmd.Parameters.AddWithValue("@email", string.IsNullOrWhiteSpace(txtEmail.Text) ? (object)DBNull.Value : txtEmail.Text.Trim());
-                    cmd.ExecuteNonQuery();
-                    /*MessageBox.Show("Data mahasiswa berhasil di-update, nice~", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);*/
-                    LoadData();
+                    // Lanjutkan proses update
+                    using (SqlCommand cmd = new SqlCommand("sp_UpdateMahasiswa", conn, transaction))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        cmd.Parameters.AddWithValue("@nim", txtNim.Text.Trim());
+                        cmd.Parameters.AddWithValue("@nama", txtNama.Text.Trim());
+                        cmd.Parameters.AddWithValue("@jenis_kelamin", comboBox1.SelectedItem?.ToString() ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@fakultas", comboBoxFakultas.SelectedItem?.ToString() ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@prodi", comboBoxProdi.SelectedItem?.ToString() ?? (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@no_hp", string.IsNullOrWhiteSpace(no_hp) ? (object)DBNull.Value : no_hp);
+                        cmd.Parameters.AddWithValue("@email", string.IsNullOrWhiteSpace(txtEmail.Text) ? (object)DBNull.Value : txtEmail.Text.Trim());
+
+                        cmd.ExecuteNonQuery();
+                    }
 
                     transaction.Commit();
+                    LoadData();
                     lblmsg.Text = "Data mahasiswa berhasil di-update, nice~";
-
-
                 }
                 catch (SqlException ex)
                 {
@@ -365,29 +379,17 @@ namespace home
                     string errorMessage = ex.Message;
 
                     if (errorMessage.Contains("tidak ditemukan"))
-                    {
                         lblmsg.Text = "Mahasiswa dengan NIM tersebut tidak ditemukan.";
-                    }
                     else if (errorMessage.Contains("Format nomor HP tidak valid"))
-                    {
                         lblmsg.Text = "Format nomor HP tidak valid! Harus diawali 62 dan panjang 11-14 digit.";
-                    }
                     else if (errorMessage.Contains("Format email tidak valid"))
-                    {
                         lblmsg.Text = "Format email tidak valid!";
-                    }
                     else if (errorMessage.Contains("Jenis kelamin harus L atau P"))
-                    {
                         lblmsg.Text = "Jenis kelamin harus L atau P!";
-                    }
                     else if (errorMessage.Contains("NIM, nama, fakultas, dan prodi wajib diisi"))
-                    {
                         lblmsg.Text = "NIM, nama, fakultas, dan prodi wajib diisi!";
-                    }
                     else
-                    {
                         lblmsg.Text = "Gagal meng-update data. Periksa kembali input yang dimasukkan.";
-                    }
                 }
             }
         }
@@ -489,6 +491,37 @@ namespace home
             }
         }
 
+        private void SearchDataMahasiswa(string keyword)
+        {
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("sp_SearchMahasiswa", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        if (string.IsNullOrWhiteSpace(keyword))
+                            cmd.Parameters.AddWithValue("@keyword", DBNull.Value);
+                        else
+                            cmd.Parameters.AddWithValue("@keyword", keyword);
+
+                        DataTable dt = new DataTable();
+                        new SqlDataAdapter(cmd).Fill(dt);
+
+                        dataGridView1.DataSource = dt;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Gagal melakukan pencarian mahasiswa: " + ex.Message,
+                                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
         private void BtnAnalyze_Click(object sender, EventArgs e)
         {
             // Ambil input fakultas dan prodi (opsional)
@@ -534,6 +567,11 @@ namespace home
         }
 
         private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
         }

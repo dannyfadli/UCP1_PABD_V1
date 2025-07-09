@@ -1,4 +1,5 @@
-﻿using System;
+﻿using home.home;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,7 +11,7 @@ using System.Windows.Forms;
 
 namespace home
 {
-    public partial class Form7 : Form
+    public partial class Form7 : BaseForm
     {
         public Form7()
         {

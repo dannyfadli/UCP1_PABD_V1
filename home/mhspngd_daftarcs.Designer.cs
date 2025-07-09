@@ -147,10 +147,13 @@
             // 
             // txtIdPengaduan
             // 
+            this.txtIdPengaduan.ForeColor = System.Drawing.SystemColors.GrayText;
             this.txtIdPengaduan.Location = new System.Drawing.Point(170, 43);
             this.txtIdPengaduan.Name = "txtIdPengaduan";
             this.txtIdPengaduan.Size = new System.Drawing.Size(400, 22);
             this.txtIdPengaduan.TabIndex = 36;
+            this.txtIdPengaduan.Enter += new System.EventHandler(this.txtIdPengaduan_Enter);
+            this.txtIdPengaduan.Leave += new System.EventHandler(this.txtIdPengaduan_Leave);
             // 
             // label1
             // 

@@ -22,18 +22,20 @@ namespace home
             InitializeComponent();
         }
 
-    
+
         private void btnSubmit_Click(object sender, EventArgs e)
         {
-            // Ambil data dari inputan form
-            string idPendamping = txtIdPendamping.Text;
-            string nama = txtNama.Text;
-            string noHp = txtNoHP.Text;
-            string email = txtEmail.Text;
+            // Ambil dan trimming data input
+            string idPendamping = txtIdPendamping.Text.Trim();
+            string nama = txtNama.Text.Trim();
+            string noHp = txtNoHP.Text.Trim();
+            string email = txtEmail.Text.Trim();
 
-            // Validasi input
-            if (string.IsNullOrWhiteSpace(idPendamping) || string.IsNullOrWhiteSpace(nama) ||
-                string.IsNullOrWhiteSpace(noHp) || string.IsNullOrWhiteSpace(email))
+            // Validasi input kosong
+            if (string.IsNullOrWhiteSpace(idPendamping) ||
+                string.IsNullOrWhiteSpace(nama) ||
+                string.IsNullOrWhiteSpace(noHp) ||
+                string.IsNullOrWhiteSpace(email))
             {
                 lblmsg.Text = "Semua field harus diisi!";
                 return;
@@ -48,9 +50,8 @@ namespace home
                     conn.Open();
                     transaction = conn.BeginTransaction();
 
-                    using (SqlCommand cmd = new SqlCommand("sp_InsertPendamping", conn))
+                    using (SqlCommand cmd = new SqlCommand("sp_InsertPendamping", conn, transaction))
                     {
-                        cmd.Transaction = transaction;
                         cmd.CommandType = CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@id_pendamping", idPendamping);
@@ -63,34 +64,33 @@ namespace home
 
                     transaction.Commit();
                     lblmsg.Text = "Pendamping berhasil ditambahkan!";
-                    // Atau jika ingin pakai MessageBox:
                     // MessageBox.Show("Pendamping berhasil ditambahkan!", "Sukses", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (SqlException ex)
                 {
                     transaction?.Rollback();
-                    string errorMessage = ex.Message;
 
-                    // Deteksi error umum dari stored procedure
-                    if (errorMessage.Contains("Pendamping dengan ID tersebut sudah terdaftar"))
-                    {
+                    // Mapping error SQL berdasarkan isi pesan
+                    string msg = ex.Message;
+
+                    if (msg.Contains("ID Pendamping sudah terdaftar"))
                         lblmsg.Text = "Pendamping dengan ID tersebut sudah terdaftar!";
-                    }
-                    else if (errorMessage.Contains("Format nomor HP tidak valid"))
-                    {
-                        lblmsg.Text = "Format nomor HP tidak valid!";
-                    }
-                    else if (errorMessage.Contains("Format email tidak valid"))
-                    {
+                    else if (msg.Contains("Nama hanya boleh mengandung huruf"))
+                        lblmsg.Text = "Nama hanya boleh terdiri dari huruf dan spasi!";
+                    else if (msg.Contains("No HP harus diawali"))
+                        lblmsg.Text = "Nomor HP harus diawali dengan '62' dan 11-14 karakter!";
+                    else if (msg.Contains("Format email tidak valid"))
                         lblmsg.Text = "Format email tidak valid!";
-                    }
+                    else if (msg.Contains("Email sudah digunakan"))
+                        lblmsg.Text = "Email sudah digunakan oleh pendamping lain!";
+                    else if (msg.Contains("Format ID Pendamping tidak valid"))
+                        lblmsg.Text = "Format ID harus D0001, D0002, dst.";
                     else
-                    {
                         lblmsg.Text = "Gagal menyimpan data. Pastikan data yang dimasukkan sudah benar.";
-                    }
                 }
             }
         }
+
 
         private void btnKembali_Click(object sender, EventArgs e)
         {
@@ -104,5 +104,26 @@ namespace home
         {
 
         }
+
+        private void txtIdPendamping_Enter(object sender, EventArgs e)
+        {
+            if (txtIdPendamping.Text == "Contoh: D0001")
+            {
+                txtIdPendamping.Text = "";
+                txtIdPendamping.ForeColor = Color.Black;
+            }
+        }
+
+        private void txtIdPendamping_Leave(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtIdPendamping.Text))
+            {
+                txtIdPendamping.Text = "Contoh: D0001";
+                txtIdPendamping.ForeColor = Color.Gray;
+            }
+        }
+
+
+
     }
 }

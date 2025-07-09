@@ -191,7 +191,7 @@ namespace home
                         else if (!txtDeskripsi.Text.Equals(reader["deskripsi"].ToString())) isChanged = true;
                         else if (!txtBukti.Text.Equals(reader["bukti"].ToString())) isChanged = true;
                         else if (dtpTglPengaduan.Value.Date != Convert.ToDateTime(reader["tanggal_pengaduan"]).Date) isChanged = true;
-                        else if (!(reader["tanggal_selesai"] is DBNull) && dtpTglSelesai.Value.Date != Convert.ToDateTime(reader["tanggal_selesai"]).Date)
+                        else if (!(reader["tanggal_Perkiraan_selesai"] is DBNull) && dtpTglSelesai.Value.Date != Convert.ToDateTime(reader["tanggal_Perkiraan_selesai"]).Date)
                             isChanged = true;
                         else if (!cmbStatus.SelectedItem.ToString().Equals(reader["status_pengaduan"].ToString())) isChanged = true;
 
@@ -220,7 +220,7 @@ namespace home
                     cmd.Parameters.AddWithValue("@deskripsi", txtDeskripsi.Text.Trim());
                     cmd.Parameters.AddWithValue("@bukti", txtBukti.Text.Trim());
                     cmd.Parameters.AddWithValue("@tanggal_pengaduan", dtpTglPengaduan.Value.Date);
-                    cmd.Parameters.AddWithValue("@tanggal_selesai", dtpTglSelesai.Value.Date);
+                    cmd.Parameters.AddWithValue("@tanggal_Perkiraan_selesai", dtpTglSelesai.Value.Date);
                     cmd.Parameters.AddWithValue("@status_pengaduan", cmbStatus.SelectedItem?.ToString());
 
                     SqlParameter returnValue = new SqlParameter("@ReturnVal", SqlDbType.Int);
@@ -390,7 +390,7 @@ namespace home
                 txtDeskripsi.Text = row.Cells["deskripsi"].Value.ToString();
                 txtBukti.Text = row.Cells["bukti"].Value?.ToString();
                 dtpTglPengaduan.Value = Convert.ToDateTime(row.Cells["tanggal_pengaduan"].Value);
-                dtpTglSelesai.Value = row.Cells["tanggal_selesai"].Value == DBNull.Value ? DateTime.Now : Convert.ToDateTime(row.Cells["tanggal_selesai"].Value);
+                dtpTglSelesai.Value = row.Cells["tanggal_Perkiraan_selesai"].Value == DBNull.Value ? DateTime.Now : Convert.ToDateTime(row.Cells["tanggal_Perkiraan_selesai"].Value);
                 cmbStatus.SelectedItem = row.Cells["status_pengaduan"].Value.ToString();
 
                 txtIdPengaduan.ReadOnly = true;

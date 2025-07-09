@@ -129,10 +129,13 @@
             // 
             // txtIdTindakan
             // 
+            this.txtIdTindakan.ForeColor = System.Drawing.SystemColors.GrayText;
             this.txtIdTindakan.Location = new System.Drawing.Point(170, 43);
             this.txtIdTindakan.Name = "txtIdTindakan";
             this.txtIdTindakan.Size = new System.Drawing.Size(400, 22);
             this.txtIdTindakan.TabIndex = 36;
+            this.txtIdTindakan.Enter += new System.EventHandler(this.txtIdTindakan_Enter);
+            this.txtIdTindakan.Leave += new System.EventHandler(this.txtIdTindakan_Leave);
             // 
             // label1
             // 
