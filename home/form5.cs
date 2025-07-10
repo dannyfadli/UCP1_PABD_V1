@@ -32,6 +32,7 @@ namespace home
         {
             InitializeComponent();
             strKonek = kn.connectionString();
+
         }
 
         private void form5_Load(object sender, EventArgs e)
@@ -185,6 +186,8 @@ SET STATISTICS TIME OFF;
 SELECT * 
 FROM RiwayatStatusPengaduan 
 WHERE id_pengaduan = @id_pengaduan AND status_baru = @status_baru";
+
+            AnalyzeQuery(query);
 
             var parameters = new Dictionary<string, object>
     {

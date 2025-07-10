@@ -15,16 +15,19 @@ namespace home
 {
     public partial class PreviewForm : BaseForm
     {
+        Koneksi kn = new Koneksi();
+        string strKonek = "";
         public PreviewForm()
         {
             InitializeComponent();
+            strKonek = kn.connectionString();
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }
-             private string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+             //private string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
 
         // Konstruktor menerima DataTable dan menampilkan data di DataGridView
         public PreviewForm(DataTable data)
@@ -87,7 +90,7 @@ namespace home
                              VALUES 
                              (@nim, @nama, @jenis_kelamin, @fakultas, @prodi, @no_hp, @email)";
 
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                     {
                         conn.Open();
                         using (SqlCommand cmd = new SqlCommand(query, conn))

@@ -10,35 +10,24 @@ namespace home
 {
     internal class Koneksi
     {
-        public string connectionString() // untuk membangun dan mengembalikan string koneksi ke database
+        public string connectionString()
         {
-            string connectStr = "";
             try
             {
-                string localIP = GetLocalIPAddress(); // mendeklarasikan ipaddress
-                connectStr = $"Server={localIP};Initial Catalog=layananPengaduan;Integrated Security=True;";
-
+                string serverIP = "192.168.1.16"; // IP kamu
+                string connectStr = $"Server={serverIP},1433;" +
+                                    $"Initial Catalog=layananPengaduan;" +
+                                    $"User ID=SA;" +
+                                    $"Password=15975321dny;" +
+                                    $"TrustServerCertificate=True;";
                 return connectStr;
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("Koneksi gagal: " + ex.Message);
                 return string.Empty;
             }
         }
 
-        public static string GetLocalIPAddress() // untuk mengambil IP Address pada PC yang menjalankan aplikasi
-        {
-            // mengambil informasi tentang local host
-            var host = Dns.GetHostEntry(Dns.GetHostName());
-            foreach (var ip in host.AddressList)
-            {
-                if (ip.AddressFamily == AddressFamily.InterNetwork) // Mengambil IPv4
-                {
-                    return ip.ToString();
-                }
-            }
-            throw new Exception("Tidak ada alamat IP yang ditemukan.");
-        }
     }
 }
