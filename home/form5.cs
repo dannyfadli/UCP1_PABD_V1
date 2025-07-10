@@ -181,18 +181,17 @@ SET STATISTICS TIME OFF;
 
         private void btnAnalyze_Click(object sender, EventArgs e)
         {
-            // Contoh: Kamu bisa mengganti query ini sesuai kebutuhan analisis
             string query = @"
-SELECT * 
-FROM RiwayatStatusPengaduan 
-WHERE id_pengaduan = @id_pengaduan AND status_baru = @status_baru";
-
-            AnalyzeQuery(query);
+SELECT *
+FROM RiwayatStatusPengaduan
+WHERE id_pengaduan = @id_pengaduan
+  AND status_baru  = @status_baru";
 
             var parameters = new Dictionary<string, object>
     {
-        { "@id_pengaduan", "P01" },
-        { "@status_baru", "Diproses" }
+        // Sesuaikan dengan rule CHAR(5): 'P' + 4 digit
+        { "@id_pengaduan", "P0001" },
+        { "@status_baru",  "Diproses" }
     };
 
             try
