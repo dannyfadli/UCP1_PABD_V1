@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace home
 {
-    public partial class Form3 : Form
+    public partial class Form3 : BaseForm
     {
         public Form3()
         {

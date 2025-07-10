@@ -16,10 +16,15 @@ namespace home
 {
     public partial class FstatusCs : BaseForm
     {
-        string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        //string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+
+        Koneksi kn = new Koneksi();
+        string strKonek = "";
+
         public FstatusCs()
         {
             InitializeComponent();
+            strKonek = kn.connectionString();
         }
 
 
@@ -41,7 +46,7 @@ namespace home
             string statusPengaduan = comboBoxStatus.SelectedItem.ToString();
             DateTime tanggalPerubahan = datePickerSelesai.Value;
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 SqlTransaction transaction = null;
 
@@ -97,7 +102,7 @@ namespace home
 
         private void FstatusCs_Load(object sender, EventArgs e)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             { 
                
                 try

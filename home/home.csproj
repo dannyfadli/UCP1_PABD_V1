@@ -131,6 +131,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -192,6 +193,12 @@
     <Compile Include="Form7.Designer.cs">
       <DependentUpon>Form7.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormChartStatus.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormChartStatus.Designer.cs">
+      <DependentUpon>FormChartStatus.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormLaporan.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -204,6 +211,7 @@
     <Compile Include="FstatusCs.Designer.cs">
       <DependentUpon>FstatusCs.cs</DependentUpon>
     </Compile>
+    <Compile Include="Koneksi.cs" />
     <Compile Include="Penadamping_Daftar.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -302,6 +310,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form7.resx">
       <DependentUpon>Form7.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormChartStatus.resx">
+      <DependentUpon>FormChartStatus.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormLaporan.resx">
       <DependentUpon>FormLaporan.cs</DependentUpon>

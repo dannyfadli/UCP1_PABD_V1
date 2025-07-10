@@ -18,7 +18,10 @@ namespace home
     public partial class form5 : Form
     {
 
-        private string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        //private string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        Koneksi kn = new Koneksi();
+        string strKonek = "";
+
         private readonly MemoryCache _cache = MemoryCache.Default;
         private readonly CacheItemPolicy _Policy = new CacheItemPolicy
         {
@@ -28,12 +31,22 @@ namespace home
         public form5()
         {
             InitializeComponent();
+            strKonek = kn.connectionString();
         }
 
         private void form5_Load(object sender, EventArgs e)
         {
             LoadData();
             EnsureIndexesRiwayatStatusPengaduan();
+            textBox1.TextChanged += SearchDataRiwayatStatus_TextChanged;
+        }
+
+        private void SearchDataRiwayatStatus_TextChanged(object sender, EventArgs e)
+        {
+            _cache.Remove(CacheKey);
+
+            string kw = textBox1.Text.Trim();
+            SearchDataRiwayat(string.IsNullOrEmpty(kw) ? null : kw);
         }
 
         private void LoadData()
@@ -47,7 +60,7 @@ namespace home
                 }
                 else
                 {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                     {
                         conn.Open();
                         string query = "SELECT * FROM RiwayatStatusPengaduan";
@@ -106,7 +119,7 @@ namespace home
 
         private void AnalyzeQuery(string sqlQuery)
         {
-            using (var conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(kn.connectionString()))
             {
                 conn.InfoMessage += (s, e) => MessageBox.Show(e.Message, "STATISTICS INFO");
                 conn.Open();
@@ -128,7 +141,7 @@ namespace home
 
         private void AnalyzeRiwayatStatusQuery(string sqlQuery, Dictionary<string, object> parameters = null)
         {
-            using (var conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(kn.connectionString()))
             {
                 // Menampilkan hasil STATISTICS IO dan TIME lewat MessageBox
                 conn.InfoMessage += (s, e) =>
@@ -194,7 +207,7 @@ WHERE id_pengaduan = @id_pengaduan AND status_baru = @status_baru";
 
         private void EnsureIndexesRiwayatStatusPengaduan()
         {
-            using (var conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(kn.connectionString()))
             {
                 conn.Open();
 
@@ -295,7 +308,7 @@ WHERE id_pengaduan = @id_pengaduan AND status_baru = @status_baru";
             }
 
             // 3. Lakukan update di dalam transaksi
-            using (var conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(kn.connectionString()))
             {
                 conn.Open();
                 using (var tx = conn.BeginTransaction())
@@ -388,7 +401,7 @@ WHERE id_pengaduan = @id_pengaduan AND status_baru = @status_baru";
 
                 if (result == DialogResult.Yes)
                 {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                     {
                         SqlTransaction transaction = null;
 
@@ -428,6 +441,37 @@ WHERE id_pengaduan = @id_pengaduan AND status_baru = @status_baru";
             }
         }
 
+
+        private void SearchDataRiwayat(string keyword)
+        {
+
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
+            {
+                try
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("sp_SearchRiwayatStatus", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        if (string.IsNullOrWhiteSpace(keyword))
+                            cmd.Parameters.AddWithValue("@keyword", DBNull.Value);
+                        else
+                            cmd.Parameters.AddWithValue("@keyword", keyword);
+
+                        DataTable dt = new DataTable();
+                        new SqlDataAdapter(cmd).Fill(dt);
+
+                        dataGridView1.DataSource = dt;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Gagal melakukan pencarian riwayat status pengaduan: " + ex.Message,
+                                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
 
         private void btnBack_Click(object sender, EventArgs e)
         {

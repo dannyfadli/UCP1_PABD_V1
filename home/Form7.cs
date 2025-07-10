@@ -37,6 +37,14 @@ namespace home
             daftarForm.Show();
         }
 
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            FormChartStatus daftarForm = new FormChartStatus();
+            daftarForm.Show();
+        }
+
+
         private void btnKembali_Click(object sender, EventArgs e)
         {
             this.Hide();

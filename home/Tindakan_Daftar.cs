@@ -10,11 +10,14 @@ namespace home
 {
     public partial class Tindakan_Daftar : BaseForm
     {
-        string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        //string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        Koneksi kn = new Koneksi();
+        string strKonek = "";
 
         public Tindakan_Daftar()
         {
             InitializeComponent();
+            strKonek = kn.connectionString();
         }
 
         private void mhspngd_daftarcs_Load(object sender, EventArgs e)
@@ -29,7 +32,7 @@ namespace home
 
         private void LoadComboPengaduan()
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 try
                 {
@@ -61,7 +64,7 @@ namespace home
 
         private void LoadComboPendamping()
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 try
                 {
@@ -110,7 +113,7 @@ namespace home
                 return;
             }
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 SqlTransaction transaction = null;
 

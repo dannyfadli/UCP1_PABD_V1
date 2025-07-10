@@ -15,11 +15,14 @@ namespace home
 {
     public partial class Form4 : BaseForm
     {
-        string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        Koneksi kn = new Koneksi();
+        string strKonek = "";
+        //string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
 
         public Form4()
         {
             InitializeComponent();
+            strKonek = kn.connectionString(); // Mengambil string koneksi dari Koneksi.cs
         }
 
         private void btnSubmit_Click(object sender, EventArgs e)
@@ -55,7 +58,7 @@ namespace home
             string email = txtEmail.Text.Trim();
 
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 SqlTransaction transaction = null;
                 try {

@@ -16,10 +16,13 @@ namespace home
 
     public partial class mhspngd_daftarcs : BaseForm
     {
-        string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        //string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        Koneksi kn = new Koneksi();
+        string strKonek = "";
         public mhspngd_daftarcs()
         {
             InitializeComponent();
+            strKonek = kn.connectionString();
         }
 
         private void mhspngd_daftarcs_Load(object sender, EventArgs e)
@@ -52,7 +55,7 @@ namespace home
                 return;
             }
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 SqlTransaction transaction = null;
                 try
@@ -104,7 +107,7 @@ namespace home
 
         private void LoadComboBoxData()
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 try
                 {

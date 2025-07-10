@@ -20,7 +20,9 @@ namespace home
     public partial class mhspngd_Updarte : BaseForm
     {
 
-        string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        //string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        Koneksi kn = new Koneksi();
+        string strKonek = "";
 
         private readonly MemoryCache _cache = MemoryCache.Default;
         private readonly CacheItemPolicy _Policy = new CacheItemPolicy
@@ -31,15 +33,27 @@ namespace home
         public mhspngd_Updarte()
         {
             InitializeComponent();
+            strKonek = kn.connectionString();
         }
 
         public void PengaduanUpdate_Load(object sender, EventArgs e)
         {
             LoadData();
             dtpTglSelesai.ShowCheckBox = true;
+            textBox1.TextChanged += SearchDataPengaduan_TextChanged;
 
             EnsureIndexesPengaduan();
+           
         }
+
+        private void SearchDataPengaduan_TextChanged(object sender, EventArgs e)
+        {
+            _cache.Remove(CacheKey);
+
+            string kw = textBox1.Text.Trim();
+            SearchDataPengaduan(string.IsNullOrEmpty(kw) ? null : kw);
+        }
+
 
         /*private void UpdatePengaduan()
         {
@@ -93,7 +107,7 @@ namespace home
 
                 if (result == DialogResult.Yes)
                 {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                     {
                         SqlTransaction transaction = null;
                         try
@@ -142,7 +156,7 @@ namespace home
                 return;
             }
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 string query = "SELECT * FROM Pengaduan";
                 SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
@@ -167,7 +181,7 @@ namespace home
                 return;
             }
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 SqlTransaction transaction = null;
 
@@ -272,7 +286,7 @@ namespace home
 
         private void EnsureIndexesPengaduan()
         {
-            using (var conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(kn.connectionString()))
             {
                 conn.Open();
 
@@ -332,7 +346,7 @@ namespace home
 
         private void AnalyzeQuery(string sqlQuery, Dictionary<string, object> parameters = null)
         {
-            using (var conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(kn.connectionString()))
             {
                 conn.InfoMessage += (s, e) => MessageBox.Show(e.Message, "STATISTICS INFO");
                 conn.Open();
@@ -356,6 +370,39 @@ namespace home
                     }
 
                     cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
+        private void SearchDataPengaduan(string keyword)
+        {
+
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
+            {
+                try
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("sp_SearchPengaduan", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        // Tangani keyword yang kosong atau null
+                        if (string.IsNullOrWhiteSpace(keyword))
+                            cmd.Parameters.AddWithValue("@keyword", DBNull.Value);
+                        else
+                            cmd.Parameters.AddWithValue("@keyword", keyword);
+
+                        DataTable dt = new DataTable();
+                        new SqlDataAdapter(cmd).Fill(dt);
+
+                        dataGridView1.DataSource = dt;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Gagal melakukan pencarian pengaduan: " + ex.Message,
+                                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

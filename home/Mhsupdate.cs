@@ -20,7 +20,9 @@ namespace home
 {
     public partial class Mhsupdate : BaseForm
     {
-        string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        //string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        Koneksi kn = new Koneksi();
+        string strKonek = "";
 
         private readonly MemoryCache _cache = MemoryCache.Default;
         private readonly CacheItemPolicy _Policy = new CacheItemPolicy
@@ -32,7 +34,7 @@ namespace home
         public Mhsupdate()
         {
             InitializeComponent();
-            
+            strKonek = kn.connectionString(); // Ambil string koneksi dari Koneksi.cs
         }
 
         public void Mhsupdate_Load(object sender, EventArgs e)
@@ -65,7 +67,7 @@ namespace home
 
         private void EnsureIndexs()
         {
-            using (var conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(kn.connectionString()))
             {
                 conn.Open();
 
@@ -225,7 +227,7 @@ namespace home
 
                 if (result == DialogResult.Yes)
                 {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                     {
                         SqlTransaction transaction = null;
 
@@ -278,7 +280,7 @@ namespace home
             else
             {
                 dt = new DataTable();
-                using (var conn = new SqlConnection(connectionString))
+                using (var conn = new SqlConnection(kn.connectionString()))
                 {
                     conn.Open();
 
@@ -306,7 +308,7 @@ namespace home
                 return;
             }
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 SqlTransaction transaction = null;
 
@@ -421,7 +423,7 @@ namespace home
 
         private void AnalyzeQuery(string sqlQuery)
         {
-            using (var conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(kn.connectionString()))
             {
                 conn.InfoMessage += (s, e) => MessageBox.Show(e.Message, "STATISTICS INFO");
                 conn.Open();
@@ -494,7 +496,7 @@ namespace home
         private void SearchDataMahasiswa(string keyword)
         {
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 try
                 {

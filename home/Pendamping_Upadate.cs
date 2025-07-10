@@ -11,7 +11,9 @@ namespace home
 {
     public partial class Pendamping_Upadate : BaseForm
     {
-        string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        //string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        Koneksi kn = new Koneksi();
+        string strKonek = "";
 
         private readonly MemoryCache _cache = MemoryCache.Default;
         private readonly CacheItemPolicy _Policy = new CacheItemPolicy
@@ -22,6 +24,7 @@ namespace home
         public Pendamping_Upadate()
         {
             InitializeComponent();
+            strKonek = kn.connectionString();
         }
 
         public void PendampingUpdate_Load(object sender, EventArgs e)
@@ -49,7 +52,7 @@ namespace home
             }
 
             // Kalau belum ada di cache, ambil dari database
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 string query = "SELECT * FROM Pendamping";
                 SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
@@ -87,7 +90,7 @@ namespace home
 
         private void EnsureIndexesPendamping()
         {
-            using (var conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(kn.connectionString()))
             {
                 conn.Open();
 
@@ -148,7 +151,7 @@ namespace home
 
         private void AnalyzeQuery(string sqlQuery, Dictionary<string, object> parameters)
         {
-            using (var conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(kn.connectionString()))
             {
                 conn.InfoMessage += (s, e) => MessageBox.Show(e.Message, "STATISTICS INFO");
                 conn.Open();
@@ -207,7 +210,7 @@ namespace home
 
                 if (result == DialogResult.Yes)
                 {
-                    using (SqlConnection conn = new SqlConnection(connectionString))
+                    using (SqlConnection conn = new SqlConnection(kn.connectionString()))
                     {
                         SqlTransaction transaction = null;
                         try
@@ -270,7 +273,7 @@ namespace home
                 return;
             }
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 SqlTransaction transaction = null;
 
@@ -357,7 +360,7 @@ namespace home
         private void SearchDataPendamping(string keyword)
         {
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 try
                 {

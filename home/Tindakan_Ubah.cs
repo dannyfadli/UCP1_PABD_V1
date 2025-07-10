@@ -18,7 +18,9 @@ namespace home
 {
     public partial class Tindakan_Ubah : BaseForm
     {
-        string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        //string connectionString = "Data Source=LAPTOP-CUMP4OII\\DANNY;Initial Catalog=layananPengaduan;Integrated Security=True";
+        Koneksi kn = new Koneksi();
+        string strKonek = "";
 
         private readonly MemoryCache _cache = MemoryCache.Default;
         private readonly CacheItemPolicy _Policy = new CacheItemPolicy
@@ -29,6 +31,7 @@ namespace home
         public Tindakan_Ubah()
         {
             InitializeComponent();
+            strKonek = kn.connectionString();
         }
 
         public void TindakanUpdate_Load(object sender, EventArgs e)
@@ -36,9 +39,20 @@ namespace home
             LoadData();
             cmbStatusTindakan.Items.AddRange(new string[] { "Direncanakan", "Dilaksanakan", "Ditunda" });
             cmbStatusTindakan.SelectedItem = "Direncanakan";
+            textBox1.TextChanged += SearchDataTindakan_TextChanged;
 
             EnsureIndexesTindakan();
         }
+
+
+        private void SearchDataTindakan_TextChanged(object sender, EventArgs e)
+        {
+            _cache.Remove(CacheKey);
+
+            string kw = textBox1.Text.Trim();
+            SearchDataTindakan(string.IsNullOrEmpty(kw) ? null : kw);
+        }
+
 
 
         /* private void UpdateTindakan()
@@ -93,7 +107,7 @@ namespace home
 
             if (result != DialogResult.Yes) return;
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                         conn.Open();
                 using (SqlTransaction transaction = conn.BeginTransaction())
@@ -133,7 +147,7 @@ namespace home
 
         private void EnsureIndexesTindakan()
         {
-            using (var conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(kn.connectionString()))
             {
                 conn.Open();
 
@@ -192,7 +206,7 @@ namespace home
 
         private void AnalyzeQueryWithParams(string sqlQuery, Dictionary<string, object> parameters)
         {
-            using (var conn = new SqlConnection(connectionString))
+            using (var conn = new SqlConnection(kn.connectionString()))
             {
                 conn.InfoMessage += (s, e) =>
                 {
@@ -249,7 +263,7 @@ namespace home
             }
 
             // Jika tidak ada di cache, ambil dari database
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 string query = "SELECT * FROM Tindakan";
                 SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
@@ -290,7 +304,7 @@ namespace home
                 return;
             }
 
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
             {
                 SqlTransaction transaction = null;
 
@@ -395,6 +409,38 @@ namespace home
                 txtIdPendamping.ReadOnly = true;
             }
         }
+
+        private void SearchDataTindakan(string keyword)
+        {
+
+            using (SqlConnection conn = new SqlConnection(kn.connectionString()))
+            {
+                try
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("sp_SearchTindakan", conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        if (string.IsNullOrWhiteSpace(keyword))
+                            cmd.Parameters.AddWithValue("@keyword", DBNull.Value);
+                        else
+                            cmd.Parameters.AddWithValue("@keyword", keyword);
+
+                        DataTable dt = new DataTable();
+                        new SqlDataAdapter(cmd).Fill(dt);
+
+                        dataGridView1.DataSource = dt;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Gagal melakukan pencarian tindakan: " + ex.Message,
+                                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
 
         private void btnKembali_Click(object sender, EventArgs e)
         {
